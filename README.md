@@ -17,8 +17,12 @@ Ubah `ADMIN_PASSWORD` dan `SESSION_SECRET` di `.env` sebelum dipakai sungguhan.
 | URL | Isi |
 | --- | --- |
 | `/admin` | Dashboard (butuh password) |
-| `/u/<slug>` | Undangan umum, tanpa nama tamu |
-| `/u/<slug>/<nama-tamu>` | Undangan personal, nama tamu tampil di cover |
+| `/<slug>` | Undangan umum, tanpa nama tamu. Slug bawaan: `<istri>-with-<suami>` |
+| `/<slug>?to=Nama+Tamu` | Undangan personal, nama dari `?to=` tampil di cover |
+
+Contoh: `https://domain-anda.com/ani-with-budi?to=Tamu+Undangan`.
+Jika nama cocok dengan daftar tamu, RSVP-nya tercatat pada tamu itu; nama yang belum ada di daftar
+otomatis ditambahkan saat mereka mengonfirmasi kehadiran. Slug `admin`, `api`, `files`, dan `u` dipakai sistem.
 
 ## Template
 

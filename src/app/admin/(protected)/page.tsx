@@ -36,8 +36,8 @@ export default async function AdminHome() {
             <input type="datetime-local" name="eventDate" required />
           </label>
           <label>
-            Slug URL (opsional)
-            <input name="slug" placeholder="budi-ani" />
+            Slug URL (opsional, bawaan: istri-with-suami)
+            <input name="slug" placeholder="ani-with-budi" />
           </label>
         </ActionForm>
       </div>
@@ -62,7 +62,7 @@ export default async function AdminHome() {
                 <div className="inv-card-body">
                   <span>{formatDate(inv.eventDate)}</span>
                   <span className="meta">
-                    {inv.guests.length} tamu · {yes.length} hadir · <code>/u/{inv.slug}</code>
+                    {inv.guests.length} tamu · {yes.length} hadir · <code>/{inv.slug}</code>
                   </span>
                   <span className="go">Kelola &rarr;</span>
                 </div>

@@ -13,7 +13,15 @@ import ShareButtons from "@/components/admin/ShareButtons";
 import UploadField from "@/components/admin/UploadField";
 import PaletteField from "@/components/admin/PaletteField";
 import PreviewFrame from "@/components/admin/PreviewFrame";
-import { BODY_FONTS, HEADING_FONTS, TEMPLATES, parseGallery, toJakartaInput } from "@/lib/util";
+import {
+  BODY_FONTS,
+  HEADING_FONTS,
+  TEMPLATES,
+  guestPath,
+  invitationPath,
+  parseGallery,
+  toJakartaInput,
+} from "@/lib/util";
 
 export default async function ManageInvitation({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -46,8 +54,8 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
         <h1>{couple}</h1>
         <p className="hint">
           <span className="chip">{TEMPLATES.find((t) => t.id === inv.template)?.name ?? inv.template}</span> Link umum:{" "}
-          <code>/u/{inv.slug}</code> ·{" "}
-          <a href={`/u/${inv.slug}`} target="_blank" rel="noreferrer">
+          <code>{invitationPath(inv.slug)}</code> ·{" "}
+          <a href={invitationPath(inv.slug)} target="_blank" rel="noreferrer">
             Lihat undangan
           </a>
         </p>
@@ -68,7 +76,7 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
         <h2>Tamu & link personal</h2>
         <ActionForm action={addGuests.bind(null, inv.id)} submit="Tambah tamu">
           <label>
-            Satu tamu per baris. Nomor WhatsApp opsional, pisahkan dengan |
+            Satu tamu per baris, nama harus unik. Nomor WhatsApp opsional, pisahkan dengan |
             <textarea name="guests" rows={4} placeholder={"Budi Santoso | 081234567890\nKeluarga Pak Andi\nIbu Sari"} />
           </label>
         </ActionForm>
@@ -87,7 +95,7 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
               </thead>
               <tbody>
                 {inv.guests.map((g) => {
-                  const path = `/u/${inv.slug}/${g.slug}`;
+                  const path = guestPath(inv.slug, g.name);
                   return (
                     <tr key={g.id}>
                       <td>
@@ -152,8 +160,8 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
             <input name="title" defaultValue={inv.title} />
           </label>
           <label>
-            Slug URL
-            <input name="slug" defaultValue={inv.slug} required />
+            Slug URL (bagian setelah domain)
+            <input name="slug" defaultValue={inv.slug} required placeholder="ani-with-budi" />
           </label>
           <label>
             Tanggal & jam (WIB)
@@ -259,7 +267,7 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
       </div>
         </div>
         <aside className="manage-aside">
-          <PreviewFrame path={`/u/${inv.slug}`} formId="invitation-form" />
+          <PreviewFrame path={guestPath(inv.slug, "Tamu Undangan")} formId="invitation-form" />
         </aside>
       </div>
     </>

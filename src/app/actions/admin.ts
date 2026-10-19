@@ -7,7 +7,10 @@ import { checkPassword, createSession, destroySession, requireAdmin } from "@/li
 import {
   BODY_FONTS,
   HEADING_FONTS,
+  RESERVED_SLUGS,
   TEMPLATES,
+  cleanGuestName,
+  defaultSlug,
   done,
   extractMapSrc,
   fail,
@@ -37,9 +40,11 @@ export async function createInvitation(_prev: ActionResult, fd: FormData): Promi
   const date = str(fd, "eventDate");
   if (!groomName || !brideName || !date) return fail("Nama mempelai dan tanggal wajib diisi.");
 
-  const base = slugify(str(fd, "slug") || `${groomName}-${brideName}`) || "undangan";
-  let slug = base;
-  for (let i = 2; await db.invitation.findUnique({ where: { slug } }); i++) slug = `${base}-${i}`;
+  // Bawaan: "<istri>-with-<suami>", mis. "ani-with-budi".
+  const base = slugify(str(fd, "slug")) || defaultSlug(groomName, brideName) || "undangan";
+  const root = RESERVED_SLUGS.includes(base) ? `${base}-undangan` : base;
+  let slug = root;
+  for (let i = 2; await db.invitation.findUnique({ where: { slug } }); i++) slug = `${root}-${i}`;
 
   const inv = await db.invitation.create({
     data: { slug, groomName, brideName, eventDate: parseJakartaInput(date) },
@@ -56,6 +61,7 @@ export async function updateInvitation(id: string, _prev: ActionResult, fd: Form
 
   const slug = slugify(str(fd, "slug"));
   if (!slug) return fail("Slug tidak valid.");
+  if (RESERVED_SLUGS.includes(slug)) return fail("Slug itu dipakai sistem. Pilih yang lain.");
   const clash = await db.invitation.findUnique({ where: { slug } });
   if (clash && clash.id !== id) return fail("Slug sudah dipakai undangan lain.");
 
@@ -95,7 +101,7 @@ export async function updateInvitation(id: string, _prev: ActionResult, fd: Form
     },
   });
   revalidatePath(`/admin/${id}`);
-  revalidatePath(`/u/${slug}`, "layout");
+  revalidatePath(`/${slug}`);
   return done("Tersimpan.");
 }
 
@@ -115,18 +121,24 @@ export async function addGuests(invitationId: string, _prev: ActionResult, fd: F
     (await db.guest.findMany({ where: { invitationId }, select: { slug: true } })).map((g) => g.slug),
   );
   let added = 0;
+  let skipped = 0;
   for (const line of lines) {
-    const [name, phone = ""] = line.split("|").map((s) => s.trim());
+    const [rawName, phone = ""] = line.split("|").map((s) => s.trim());
+    const name = cleanGuestName(rawName);
     if (!name) continue;
-    const base = slugify(name) || "tamu";
-    let slug = base;
-    for (let i = 2; existing.has(slug); i++) slug = `${base}-${i}`;
+    // Nama tamu menjadi kunci di link (?to=Nama), jadi harus unik per undangan.
+    const slug = slugify(name) || "tamu";
+    if (existing.has(slug)) {
+      skipped++;
+      continue;
+    }
     existing.add(slug);
     await db.guest.create({ data: { invitationId, name, slug, phone } });
     added++;
   }
   revalidatePath(`/admin/${invitationId}`);
-  return done(`${added} tamu ditambahkan.`);
+  const note = skipped ? ` ${skipped} dilewati karena namanya sudah ada.` : "";
+  return added ? done(`${added} tamu ditambahkan.${note}`) : fail(`Tidak ada tamu baru.${note}`);
 }
 
 export async function deleteGuest(invitationId: string, guestId: string) {

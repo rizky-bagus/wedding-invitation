@@ -33,7 +33,8 @@ export type InvitationData = {
   headingFont: string;
   bodyFont: string;
 };
-export type GuestData = { id: string; name: string; rsvp: string; pax: number } | null;
+/** id null = nama dari ?to= yang belum ada di daftar tamu; tercatat otomatis saat RSVP. */
+export type GuestData = { id: string | null; name: string; rsvp: string; pax: number } | null;
 export type WishData = { id: string; name: string; message: string; when: string };
 
 /** Muncul halus saat masuk viewport. */
@@ -114,30 +115,29 @@ function RsvpForm({ invitationId, guest }: { invitationId: string; guest: GuestD
   return (
     <form action={action} className="inv-form">
       {guest ? (
-        <p className="inv-form-name">
-          Dari: <strong>{guest.name}</strong>
-        </p>
+        <>
+          <p className="inv-form-name">
+            Dari: <strong>{guest.name}</strong>
+          </p>
+          <input type="hidden" name="name" value={guest.name} />
+        </>
       ) : (
         <input name="name" placeholder="Nama Anda" required maxLength={80} />
       )}
-      {guest && (
-        <>
-          <div className="inv-radio">
-            <label>
-              <input type="radio" name="attendance" value="yes" defaultChecked={guest.rsvp === "yes"} required />
-              <span>Hadir</span>
-            </label>
-            <label>
-              <input type="radio" name="attendance" value="no" defaultChecked={guest.rsvp === "no"} />
-              <span>Tidak hadir</span>
-            </label>
-          </div>
-          <label className="inv-pax">
-            Jumlah tamu
-            <input type="number" name="pax" min={1} max={10} defaultValue={guest.pax || 1} />
-          </label>
-        </>
-      )}
+      <div className="inv-radio">
+        <label>
+          <input type="radio" name="attendance" value="yes" defaultChecked={guest?.rsvp === "yes"} />
+          <span>Hadir</span>
+        </label>
+        <label>
+          <input type="radio" name="attendance" value="no" defaultChecked={guest?.rsvp === "no"} />
+          <span>Tidak hadir</span>
+        </label>
+      </div>
+      <label className="inv-pax">
+        Jumlah tamu
+        <input type="number" name="pax" min={1} max={10} defaultValue={guest?.pax || 1} />
+      </label>
       <textarea name="message" placeholder="Tulis ucapan & doa" rows={4} maxLength={500} />
       <button type="submit" disabled={pending}>
         {pending ? "Mengirim..." : "Kirim"}
@@ -193,7 +193,7 @@ export default function Invitation({
   const open = () => {
     setOpened(true);
     window.scrollTo({ top: 0 });
-    if (guest) void markOpened(guest.id);
+    if (guest?.id) void markOpened(guest.id);
     audio.current?.play().then(() => setPlaying(true)).catch(() => {});
   };
   const toggleMusic = () => {
@@ -396,8 +396,8 @@ export default function Invitation({
           {/* ---------- RSVP & ucapan ---------- */}
           <section className="inv-section inv-rsvp">
             <Reveal>
-              <p className="inv-eyebrow">{guest ? "RSVP & Ucapan" : "Ucapan & Doa"}</p>
-              <h2>{guest ? "Konfirmasi Kehadiran" : "Kirim Doa Restu"}</h2>
+              <p className="inv-eyebrow">RSVP &amp; Ucapan</p>
+              <h2>Konfirmasi Kehadiran</h2>
               <Divider />
               <RsvpForm invitationId={inv.id} guest={guest} />
               {wishes.length > 0 && (

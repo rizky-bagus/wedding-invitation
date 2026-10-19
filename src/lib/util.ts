@@ -43,6 +43,35 @@ export function slugify(input: string): string {
     .slice(0, 60);
 }
 
+/** Slug yang bentrok dengan rute aplikasi sendiri. */
+export const RESERVED_SLUGS = ["admin", "api", "files", "u", "_next", "favicon", "robots", "sitemap"];
+
+/** Slug bawaan: "<istri>-with-<suami>", mis. "ani-with-budi". */
+export function defaultSlug(groomName: string, brideName: string): string {
+  const bride = slugify(brideName);
+  const groom = slugify(groomName);
+  return bride && groom ? `${bride}-with-${groom}` : bride || groom;
+}
+
+/** Path undangan umum: "/ani-with-budi". */
+export function invitationPath(slug: string): string {
+  return `/${slug}`;
+}
+
+/** Path undangan personal: "/ani-with-budi?to=Tamu+Undangan". */
+export function guestPath(slug: string, guestName: string): string {
+  return `/${slug}?${new URLSearchParams({ to: guestName })}`;
+}
+
+/** Rapikan nama tamu dari query ?to= (spasi ganda, panjang, karakter kontrol). */
+export function cleanGuestName(raw: string | undefined): string {
+  return (raw ?? "")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
 /** "2026-12-12T09:00" (waktu WIB) -> Date */
 export function parseJakartaInput(value: string): Date {
   return new Date(`${value}:00${TZ_OFFSET}`);
