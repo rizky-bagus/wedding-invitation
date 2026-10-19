@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   name: string;
@@ -30,6 +30,16 @@ export default function UploadField({ name, label, kind, defaultValue = "", mult
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const picker = useRef<HTMLInputElement>(null);
+
+  // Hasil upload / tombol Kosongkan mengubah nilai lewat state: beri tahu pratinjau.
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    window.dispatchEvent(new Event("inv-form-change"));
+  }, [value]);
 
   const onPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);

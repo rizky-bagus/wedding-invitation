@@ -1,12 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PALETTES } from "@/lib/util";
 
 type Colors = { primary: string; bg: string; text: string };
 
 export default function PaletteField({ defaults }: { defaults: Colors }) {
   const [c, setC] = useState<Colors>(defaults);
+
+  // Perubahan lewat state tidak memicu event input bawaan; beri tahu pratinjau secara eksplisit.
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    window.dispatchEvent(new Event("inv-form-change"));
+  }, [c]);
+
   const active = PALETTES.find((p) => p.primary === c.primary && p.bg === c.bg && p.text === c.text)?.name;
 
   return (

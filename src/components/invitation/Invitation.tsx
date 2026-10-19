@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
+import { previewOverrides } from "@/lib/preview";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
 import "./invitation.css";
 
@@ -161,7 +162,7 @@ function calendarUrl(inv: InvitationData): string {
 }
 
 export default function Invitation({
-  inv,
+  inv: invProp,
   guest,
   wishes,
 }: {
@@ -169,6 +170,21 @@ export default function Invitation({
   guest: GuestData;
   wishes: WishData[];
 }) {
+  // Di dalam iframe pratinjau dashboard, data bisa ditimpa oleh isi form yang belum disimpan.
+  const [override, setOverride] = useState<Partial<InvitationData>>({});
+  const inv = { ...invProp, ...override };
+  useEffect(() => {
+    if (window.parent === window) return;
+    const origin = window.location.origin;
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== origin || e.source !== window.parent || e.data?.type !== "inv-preview") return;
+      setOverride(previewOverrides(e.data.fields));
+    };
+    window.addEventListener("message", onMessage);
+    window.parent.postMessage({ type: "inv-preview-ready" }, origin);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+
   const [opened, setOpened] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);

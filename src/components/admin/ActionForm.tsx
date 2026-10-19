@@ -10,15 +10,17 @@ export default function ActionForm({
   children,
   submit = "Simpan",
   className,
+  id,
 }: {
   action: Action;
   children: React.ReactNode;
   submit?: string;
   className?: string;
+  id?: string;
 }) {
   const [result, formAction, pending] = useActionState(action, null);
   return (
-    <form action={formAction} className={className}>
+    <form id={id} action={formAction} className={className}>
       {children}
       <div className="row">
         <button type="submit" className="btn" disabled={pending}>

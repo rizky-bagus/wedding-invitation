@@ -128,7 +128,7 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
         )}
       </div>
 
-      <ActionForm action={updateInvitation.bind(null, inv.id)} submit="Simpan perubahan" className="card">
+      <ActionForm id="invitation-form" action={updateInvitation.bind(null, inv.id)} submit="Simpan perubahan" className="card">
         <h2>Detail acara</h2>
         <div className="grid2">
           <label>
@@ -259,7 +259,7 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
       </div>
         </div>
         <aside className="manage-aside">
-          <PreviewFrame path={`/u/${inv.slug}`} />
+          <PreviewFrame path={`/u/${inv.slug}`} formId="invitation-form" />
         </aside>
       </div>
     </>
