@@ -11,6 +11,8 @@ import {
 import ActionForm from "@/components/admin/ActionForm";
 import ShareButtons from "@/components/admin/ShareButtons";
 import UploadField from "@/components/admin/UploadField";
+import PaletteField from "@/components/admin/PaletteField";
+import PreviewFrame from "@/components/admin/PreviewFrame";
 import { BODY_FONTS, HEADING_FONTS, TEMPLATES, parseGallery, toJakartaInput } from "@/lib/util";
 
 export default async function ManageInvitation({ params }: { params: Promise<{ id: string }> }) {
@@ -26,13 +28,13 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
 
   const couple = `${inv.groomName} & ${inv.brideName}`;
   const yes = inv.guests.filter((g) => g.rsvp === "yes");
-  const stats = [
-    ["Tamu", inv.guests.length],
-    ["Hadir", yes.length],
-    ["Total orang hadir", yes.reduce((n, g) => n + g.pax, 0)],
-    ["Tidak hadir", inv.guests.filter((g) => g.rsvp === "no").length],
-    ["Belum konfirmasi", inv.guests.filter((g) => g.rsvp === "pending").length],
-    ["Sudah dibuka", inv.guests.filter((g) => g.openedAt).length],
+  const stats: [string, number, string][] = [
+    ["Tamu", inv.guests.length, ""],
+    ["Hadir", yes.length, "ok"],
+    ["Total orang hadir", yes.reduce((n, g) => n + g.pax, 0), "ok"],
+    ["Tidak hadir", inv.guests.filter((g) => g.rsvp === "no").length, "no"],
+    ["Belum konfirmasi", inv.guests.filter((g) => g.rsvp === "pending").length, "wait"],
+    ["Sudah dibuka", inv.guests.filter((g) => g.openedAt).length, ""],
   ];
 
   return (
@@ -40,17 +42,22 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
       <p>
         <Link href="/admin">&larr; Semua undangan</Link>
       </p>
-      <h1>{couple}</h1>
-      <p className="hint">
-        Link umum: <code>/u/{inv.slug}</code> ·{" "}
-        <a href={`/u/${inv.slug}`} target="_blank" rel="noreferrer">
-          Lihat undangan
-        </a>
-      </p>
+      <div className="page-head">
+        <h1>{couple}</h1>
+        <p className="hint">
+          <span className="chip">{TEMPLATES.find((t) => t.id === inv.template)?.name ?? inv.template}</span> Link umum:{" "}
+          <code>/u/{inv.slug}</code> ·{" "}
+          <a href={`/u/${inv.slug}`} target="_blank" rel="noreferrer">
+            Lihat undangan
+          </a>
+        </p>
+      </div>
 
+      <div className="manage">
+        <div className="manage-main">
       <div className="stats">
-        {stats.map(([label, value]) => (
-          <div key={label} className="stat">
+        {stats.map(([label, value, tone]) => (
+          <div key={label} className={`stat ${tone}`}>
             <strong>{value}</strong>
             <span>{label}</span>
           </div>
@@ -84,8 +91,13 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
                   return (
                     <tr key={g.id}>
                       <td>
-                        {g.name}
-                        {g.openedAt && <div className="hint">dibuka</div>}
+                        <span className="who">
+                          <span className="avatar">{g.name.charAt(0).toUpperCase()}</span>
+                          <span>
+                            {g.name}
+                            {g.openedAt && <small className="hint"> · sudah dibuka</small>}
+                          </span>
+                        </span>
                       </td>
                       <td>
                         <a href={path} target="_blank" rel="noreferrer">
@@ -199,19 +211,7 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
           ))}
         </div>
         <div className="grid2" style={{ marginTop: "0.75rem" }}>
-          <label>
-            Warna utama
-            <input type="color" name="primaryColor" defaultValue={inv.primaryColor} />
-          </label>
-          <label>
-            Warna latar
-            <input type="color" name="bgColor" defaultValue={inv.bgColor} />
-          </label>
-          <label>
-            Warna teks
-            <input type="color" name="textColor" defaultValue={inv.textColor} />
-          </label>
-          <span />
+          <PaletteField defaults={{ primary: inv.primaryColor, bg: inv.bgColor, text: inv.textColor }} />
           <label>
             Font judul
             <select name="headingFont" defaultValue={inv.headingFont}>
@@ -256,6 +256,11 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
             Hapus undangan ini beserta semua tamunya
           </button>
         </form>
+      </div>
+        </div>
+        <aside className="manage-aside">
+          <PreviewFrame path={`/u/${inv.slug}`} />
+        </aside>
       </div>
     </>
   );

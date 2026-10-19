@@ -12,6 +12,16 @@ export const TEMPLATES = [
   { id: "modern", name: "Modern", desc: "Minimalis, garis tegas, banyak ruang kosong." },
 ] as const;
 
+/** Preset warna siap pakai: [nama, utama, latar, teks]. */
+export const PALETTES = [
+  { name: "Emas Klasik", primary: "#b08968", bg: "#fffaf3", text: "#3b2f2f" },
+  { name: "Sage Green", primary: "#6b8f71", bg: "#f4f8f2", text: "#26332a" },
+  { name: "Dusty Rose", primary: "#c76b7e", bg: "#fff5f6", text: "#4a2c33" },
+  { name: "Navy & Emas", primary: "#d4af5f", bg: "#101b33", text: "#f3ead2" },
+  { name: "Terracotta", primary: "#c4623a", bg: "#fbf1ea", text: "#3d2418" },
+  { name: "Monokrom", primary: "#111111", bg: "#ffffff", text: "#111111" },
+] as const;
+
 export const HEADING_FONTS = [
   "Playfair Display",
   "Cormorant Garamond",

@@ -2,17 +2,23 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { createInvitation } from "@/app/actions/admin";
 import ActionForm from "@/components/admin/ActionForm";
-import { formatDate } from "@/lib/util";
+import { TEMPLATES, formatDate } from "@/lib/util";
 
 export default async function AdminHome() {
   const invitations = await db.invitation.findMany({
     orderBy: { createdAt: "desc" },
-    include: { _count: { select: { guests: true } } },
+    include: { guests: { select: { rsvp: true, pax: true } } },
   });
 
   return (
     <>
-      <h1>Undangan</h1>
+      <section className="hero">
+        <div>
+          <p className="eyebrow">Undangan digital</p>
+          <h1>Rancang undangan yang tak terlupakan</h1>
+          <p>Satu undangan, ratusan tamu, masing-masing dengan link pribadinya sendiri.</p>
+        </div>
+      </section>
 
       <div className="card">
         <h2>Buat undangan baru</h2>
@@ -36,26 +42,34 @@ export default async function AdminHome() {
         </ActionForm>
       </div>
 
+      <h2 className="section-title">Undangan Anda</h2>
       {invitations.length === 0 ? (
-        <p className="hint">Belum ada undangan.</p>
+        <div className="empty">Belum ada undangan. Buat yang pertama di atas.</div>
       ) : (
-        invitations.map((inv) => (
-          <div key={inv.id} className="card">
-            <div className="row" style={{ justifyContent: "space-between", marginTop: 0 }}>
-              <div>
-                <strong>
-                  {inv.groomName} &amp; {inv.brideName}
-                </strong>
-                <div className="hint">
-                  {formatDate(inv.eventDate)} · {inv._count.guests} tamu · <code>/u/{inv.slug}</code>
+        <div className="inv-cards">
+          {invitations.map((inv) => {
+            const yes = inv.guests.filter((g) => g.rsvp === "yes");
+            return (
+              <Link key={inv.id} href={`/admin/${inv.id}`} className="inv-card">
+                <div className="inv-card-band" style={{ backgroundColor: inv.primaryColor }}>
+                  <i className="dot" style={{ background: inv.bgColor }} />
+                  <i className="dot" style={{ background: inv.textColor }} />
+                  <span className="chip light">{TEMPLATES.find((t) => t.id === inv.template)?.name ?? inv.template}</span>
+                  <strong>
+                    {inv.groomName} &amp; {inv.brideName}
+                  </strong>
                 </div>
-              </div>
-              <Link className="btn small" href={`/admin/${inv.id}`}>
-                Kelola
+                <div className="inv-card-body">
+                  <span>{formatDate(inv.eventDate)}</span>
+                  <span className="meta">
+                    {inv.guests.length} tamu · {yes.length} hadir · <code>/u/{inv.slug}</code>
+                  </span>
+                  <span className="go">Kelola &rarr;</span>
+                </div>
               </Link>
-            </div>
-          </div>
-        ))
+            );
+          })}
+        </div>
       )}
     </>
   );

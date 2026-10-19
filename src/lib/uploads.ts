@@ -1,7 +1,10 @@
 import path from "node:path";
 
 /** Folder penyimpanan file upload. Di produksi arahkan ke volume persisten. */
-export const UPLOAD_DIR = path.resolve(process.env.UPLOAD_DIR || path.join(process.cwd(), "uploads"));
+// Folder dipilih saat runtime, bukan bagian dari bundel: beri tahu Turbopack agar tidak men-trace seluruh proyek.
+export const UPLOAD_DIR = path.resolve(
+  /*turbopackIgnore: true*/ process.env.UPLOAD_DIR || path.join(/*turbopackIgnore: true*/ process.cwd(), "uploads"),
+);
 
 export const KINDS = {
   image: {

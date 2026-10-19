@@ -25,6 +25,6 @@ export async function POST(req: Request) {
 
   const name = `${randomUUID()}.${ext}`;
   await mkdir(UPLOAD_DIR, { recursive: true });
-  await writeFile(path.join(UPLOAD_DIR, name), Buffer.from(await file.arrayBuffer()));
+  await writeFile(path.join(/*turbopackIgnore: true*/ UPLOAD_DIR, name), Buffer.from(await file.arrayBuffer()));
   return Response.json({ url: `/files/${name}` });
 }

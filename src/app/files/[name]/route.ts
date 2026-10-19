@@ -8,7 +8,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ name: st
   // Hanya nama hasil upload (uuid.ext); mencegah path traversal.
   if (!STORED_NAME.test(name) || !(extOf(name) in ALL_TYPES)) return new Response("Not found", { status: 404 });
 
-  const full = path.join(UPLOAD_DIR, name);
+  const full = path.join(/*turbopackIgnore: true*/ UPLOAD_DIR, name);
   const info = await stat(full).catch(() => null);
   if (!info?.isFile()) return new Response("Not found", { status: 404 });
 

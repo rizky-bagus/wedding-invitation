@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
+import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
 import "./invitation.css";
 
 export type InvitationData = {
@@ -34,6 +35,32 @@ export type InvitationData = {
 export type GuestData = { id: string; name: string; rsvp: string; pax: number } | null;
 export type WishData = { id: string; name: string; message: string; when: string };
 
+/** Muncul halus saat masuk viewport. */
+function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSeen(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.12 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={`inv-reveal ${seen ? "is-in" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </div>
+  );
+}
+
 function Countdown({ target }: { target: string }) {
   const [left, setLeft] = useState<number | null>(null);
   useEffect(() => {
@@ -63,6 +90,21 @@ function Countdown({ target }: { target: string }) {
   );
 }
 
+function Portrait({ src, name }: { src: string; name: string }) {
+  return (
+    <div className="inv-frame">
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt={name} />
+      ) : (
+        <div className="inv-mono" aria-hidden="true">
+          {name.charAt(0).toUpperCase()}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RsvpForm({ invitationId, guest }: { invitationId: string; guest: GuestData }) {
   const [state, action, pending] = useActionState<RsvpState | null, FormData>(
     submitRsvp.bind(null, invitationId, guest?.id ?? null),
@@ -81,10 +123,12 @@ function RsvpForm({ invitationId, guest }: { invitationId: string; guest: GuestD
         <>
           <div className="inv-radio">
             <label>
-              <input type="radio" name="attendance" value="yes" defaultChecked={guest.rsvp === "yes"} required /> Hadir
+              <input type="radio" name="attendance" value="yes" defaultChecked={guest.rsvp === "yes"} required />
+              <span>Hadir</span>
             </label>
             <label>
-              <input type="radio" name="attendance" value="no" defaultChecked={guest.rsvp === "no"} /> Tidak hadir
+              <input type="radio" name="attendance" value="no" defaultChecked={guest.rsvp === "no"} />
+              <span>Tidak hadir</span>
             </label>
           </div>
           <label className="inv-pax">
@@ -102,6 +146,20 @@ function RsvpForm({ invitationId, guest }: { invitationId: string; guest: GuestD
   );
 }
 
+function calendarUrl(inv: InvitationData): string {
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+  const start = new Date(inv.eventISO);
+  const end = new Date(start.getTime() + 3 * 3600 * 1000);
+  const p = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `Pernikahan ${inv.groomName} & ${inv.brideName}`,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    details: inv.openingText,
+    location: [inv.venueName, inv.venueAddress].filter(Boolean).join(", "),
+  });
+  return `https://calendar.google.com/calendar/render?${p}`;
+}
+
 export default function Invitation({
   inv,
   guest,
@@ -113,15 +171,14 @@ export default function Invitation({
 }) {
   const [opened, setOpened] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [lightbox, setLightbox] = useState<string | null>(null);
   const audio = useRef<HTMLAudioElement>(null);
 
   const open = () => {
     setOpened(true);
     window.scrollTo({ top: 0 });
     if (guest) void markOpened(guest.id);
-    if (audio.current) {
-      audio.current.play().then(() => setPlaying(true)).catch(() => {});
-    }
+    audio.current?.play().then(() => setPlaying(true)).catch(() => {});
   };
   const toggleMusic = () => {
     const a = audio.current;
@@ -145,117 +202,228 @@ export default function Invitation({
     .map((f) => `family=${encodeURIComponent(f).replace(/%20/g, "+")}:wght@400;700`)
     .join("&");
 
+  const tpl = inv.template;
+  const initials = `${inv.groomName.charAt(0)} & ${inv.brideName.charAt(0)}`.toUpperCase();
+  const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    [inv.venueName, inv.venueAddress].filter(Boolean).join(" "),
+  )}`;
+  const coverBg = inv.coverPhoto ? `url("${inv.coverPhoto.replace(/["\\\n]/g, encodeURIComponent)}")` : undefined;
+
   return (
-    <div className="inv" data-template={inv.template} data-opened={opened} style={style}>
+    <div className="inv" data-template={tpl} data-opened={opened} style={style}>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${fontQuery}&display=swap`} />
       {inv.musicUrl && <audio ref={audio} src={inv.musicUrl} loop preload="none" />}
 
-      <section
-        className="inv-cover"
-        style={inv.coverPhoto ? { backgroundImage: `url("${inv.coverPhoto.replace(/["\\\n]/g, encodeURIComponent)}")` } : undefined}
-      >
+      {/* ---------- Cover ---------- */}
+      <section className="inv-cover">
+        <div className="inv-cover-bg" style={coverBg ? { backgroundImage: coverBg } : undefined} />
+        {tpl === "floral" && (
+          <>
+            <Flower className="inv-flower-a" />
+            <Flower className="inv-flower-b" />
+            <Petals />
+          </>
+        )}
+        {tpl === "modern" && <div className="inv-bigmono" aria-hidden="true">{initials}</div>}
+
         <div className="inv-cover-inner">
-          <p className="inv-eyebrow">{inv.title}</p>
-          <h1>
-            {inv.groomName} <span>&amp;</span> {inv.brideName}
-          </h1>
-          <p>{inv.dateText}</p>
-          {guest ? (
-            <div className="inv-to">
-              <small>Kepada Yth. Bapak/Ibu/Saudara/i</small>
-              <strong>{guest.name}</strong>
-            </div>
-          ) : (
-            <div className="inv-to">
-              <small>Anda diundang ke acara kami</small>
-            </div>
+          {tpl === "elegant" && (
+            <>
+              <Corner className="c1" />
+              <Corner className="c2" />
+              <Corner className="c3" />
+              <Corner className="c4" />
+            </>
           )}
+          <p className="inv-eyebrow">{inv.title}</p>
+          <div className="inv-monogram" aria-hidden="true">
+            {initials}
+          </div>
+          <h1>
+            <span className="n">{inv.groomName}</span>
+            <span className="amp">&amp;</span>
+            <span className="n">{inv.brideName}</span>
+          </h1>
+          <p className="inv-cover-date">{inv.dateText}</p>
+          <div className="inv-to">
+            {guest ? (
+              <>
+                <small>Kepada Yth. Bapak/Ibu/Saudara/i</small>
+                <strong>{guest.name}</strong>
+              </>
+            ) : (
+              <small>Anda diundang ke acara kami</small>
+            )}
+          </div>
           {!opened && (
             <button className="inv-open" onClick={open}>
               Buka Undangan
             </button>
           )}
         </div>
+        {!opened && <div className="inv-scrollhint" aria-hidden="true" />}
       </section>
+
+      {tpl === "modern" && (
+        <div className="inv-marquee" aria-hidden="true">
+          <div>
+            {Array.from({ length: 8 }, (_, i) => (
+              <span key={i}>Save the date · {inv.dateText} ·&nbsp;</span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {opened && (
         <main className="inv-main">
           {inv.musicUrl && (
-            <button className="inv-music" onClick={toggleMusic} aria-label="Putar atau jeda musik">
-              {playing ? "❚❚" : "♪"}
+            <button className="inv-music" data-playing={playing} onClick={toggleMusic} aria-label="Putar atau jeda musik">
+              <IconNote />
             </button>
           )}
 
+          {/* ---------- Pembuka ---------- */}
           <section className="inv-section inv-opening">
-            <p className="inv-eyebrow">Save the Date</p>
-            <p>{inv.openingText}</p>
+            <Reveal>
+              <p className="inv-eyebrow">Save the Date</p>
+              <Divider />
+              <p className="inv-quote">{inv.openingText}</p>
+            </Reveal>
           </section>
 
+          {/* ---------- Mempelai ---------- */}
           <section className="inv-section inv-couple">
-            <div>
-              {inv.groomPhoto && <img src={inv.groomPhoto} alt={inv.groomName} />}
+            <Reveal className="inv-person">
+              <Portrait src={inv.groomPhoto} name={inv.groomName} />
               <h2>{inv.groomName}</h2>
               {inv.groomParents && <p>{inv.groomParents}</p>}
-            </div>
-            <div className="inv-amp">&amp;</div>
-            <div>
-              {inv.bridePhoto && <img src={inv.bridePhoto} alt={inv.brideName} />}
+            </Reveal>
+            <Reveal className="inv-amp" delay={120}>
+              <span>&amp;</span>
+            </Reveal>
+            <Reveal className="inv-person" delay={240}>
+              <Portrait src={inv.bridePhoto} name={inv.brideName} />
               <h2>{inv.brideName}</h2>
               {inv.brideParents && <p>{inv.brideParents}</p>}
-            </div>
+            </Reveal>
           </section>
 
+          {/* ---------- Acara ---------- */}
           <section className="inv-section inv-event">
-            <p className="inv-eyebrow">Hari Bahagia</p>
-            <h2>{inv.dateText}</h2>
-            <p>{inv.timeText}</p>
-            {inv.venueName && <p className="inv-venue">{inv.venueName}</p>}
-            {inv.venueAddress && <p>{inv.venueAddress}</p>}
-            <Countdown target={inv.eventISO} />
-            {inv.mapEmbedUrl && (
-              <iframe
-                className="inv-map"
-                src={inv.mapEmbedUrl}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Peta lokasi acara"
-              />
-            )}
+            <Reveal>
+              <p className="inv-eyebrow">Hari Bahagia</p>
+              <h2>Waktu &amp; Tempat</h2>
+              <Divider />
+              <div className="inv-tiles">
+                <div className="inv-tile">
+                  <IconCalendar />
+                  <small>Tanggal</small>
+                  <strong>{inv.dateText}</strong>
+                </div>
+                <div className="inv-tile">
+                  <IconClock />
+                  <small>Pukul</small>
+                  <strong>{inv.timeText}</strong>
+                </div>
+                {(inv.venueName || inv.venueAddress) && (
+                  <div className="inv-tile">
+                    <IconPin />
+                    <small>Lokasi</small>
+                    <strong>{inv.venueName || inv.venueAddress}</strong>
+                    {inv.venueName && inv.venueAddress && <span>{inv.venueAddress}</span>}
+                  </div>
+                )}
+              </div>
+              <Countdown target={inv.eventISO} />
+              <div className="inv-actions">
+                <a className="inv-btn" href={calendarUrl(inv)} target="_blank" rel="noreferrer">
+                  Simpan ke Kalender
+                </a>
+                {(inv.venueName || inv.venueAddress) && (
+                  <a className="inv-btn ghost" href={mapsLink} target="_blank" rel="noreferrer">
+                    Buka di Google Maps
+                  </a>
+                )}
+              </div>
+              {inv.mapEmbedUrl && (
+                <iframe
+                  className="inv-map"
+                  src={inv.mapEmbedUrl}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Peta lokasi acara"
+                />
+              )}
+            </Reveal>
           </section>
 
+          {/* ---------- Galeri ---------- */}
           {inv.gallery.length > 0 && (
             <section className="inv-section inv-gallery">
-              <p className="inv-eyebrow">Galeri</p>
-              <div className="inv-grid">
-                {inv.gallery.map((src) => (
-                  <img key={src} src={src} alt="" loading="lazy" />
-                ))}
-              </div>
+              <Reveal>
+                <p className="inv-eyebrow">Galeri</p>
+                <h2>Momen Kami</h2>
+                <Divider />
+                <div className="inv-grid">
+                  {inv.gallery.map((src) => (
+                    <button key={src} type="button" onClick={() => setLightbox(src)} aria-label="Perbesar foto">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt="" loading="lazy" />
+                    </button>
+                  ))}
+                </div>
+              </Reveal>
             </section>
           )}
 
+          {/* ---------- RSVP & ucapan ---------- */}
           <section className="inv-section inv-rsvp">
-            <p className="inv-eyebrow">{guest ? "RSVP & Ucapan" : "Ucapan & Doa"}</p>
-            <RsvpForm invitationId={inv.id} guest={guest} />
-            <ul className="inv-wishes">
-              {wishes.map((w) => (
-                <li key={w.id}>
-                  <strong>{w.name}</strong>
-                  <small>{w.when}</small>
-                  <p>{w.message}</p>
-                </li>
-              ))}
-            </ul>
+            <Reveal>
+              <p className="inv-eyebrow">{guest ? "RSVP & Ucapan" : "Ucapan & Doa"}</p>
+              <h2>{guest ? "Konfirmasi Kehadiran" : "Kirim Doa Restu"}</h2>
+              <Divider />
+              <RsvpForm invitationId={inv.id} guest={guest} />
+              {wishes.length > 0 && (
+                <ul className="inv-wishes">
+                  {wishes.map((w) => (
+                    <li key={w.id}>
+                      <span className="inv-avatar" aria-hidden="true">
+                        {w.name.charAt(0).toUpperCase()}
+                      </span>
+                      <div>
+                        <strong>{w.name}</strong>
+                        <small>{w.when}</small>
+                        <p>{w.message}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Reveal>
           </section>
 
+          {/* ---------- Penutup ---------- */}
           <footer className="inv-section inv-footer">
-            <p>{inv.closingText}</p>
-            <h2>
-              {inv.groomName} &amp; {inv.brideName}
-            </h2>
+            <Reveal>
+              <Divider />
+              <p>{inv.closingText}</p>
+              <h2>
+                {inv.groomName} <span>&amp;</span> {inv.brideName}
+              </h2>
+            </Reveal>
           </footer>
         </main>
+      )}
+
+      {lightbox && (
+        <div className="inv-lightbox" role="dialog" aria-label="Foto galeri" onClick={() => setLightbox(null)}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={lightbox} alt="" />
+          <button type="button" aria-label="Tutup">
+            ×
+          </button>
+        </div>
       )}
     </div>
   );
