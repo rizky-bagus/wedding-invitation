@@ -26,6 +26,13 @@ model Invitation {
   bridePhoto  String   @default("")
   gallery     String   @default("[]") // JSON array of URL
   musicUrl    String   @default("")
+  schedule     String  @default("[]") // JSON: [{time, title, note}]
+  dressCode    String  @default("")
+  dressColors  String  @default("[]") // JSON: ["#aabbcc", ...]
+  giftAccounts String  @default("[]") // JSON: [{bank, number, holder}]
+  giftNote     String  @default("")
+  contactPhone String  @default("")   // nomor WhatsApp untuk konfirmasi
+  notes        String  @default("")   // catatan, mis. "Tanpa anak"
   template    String   @default("elegant")
   primaryColor String  @default("#b08968")
   bgColor     String   @default("#fffaf3")

@@ -531,6 +531,22 @@
   border-radius: 50%;
 }
 
+/* ---------- Editor baris ---------- */
+.rows-field {
+  display: grid;
+  gap: 0.5rem;
+}
+.rows-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--a-muted);
+}
+.rows-row {
+  display: grid;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 /* ---------- Pratinjau ---------- */
 .preview {
   background: var(--a-card);

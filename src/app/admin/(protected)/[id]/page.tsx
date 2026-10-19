@@ -13,7 +13,11 @@ import ShareButtons from "@/components/admin/ShareButtons";
 import UploadField from "@/components/admin/UploadField";
 import PaletteField from "@/components/admin/PaletteField";
 import PreviewFrame from "@/components/admin/PreviewFrame";
+import RowsField from "@/components/admin/RowsField";
 import {
+  cleanAccounts,
+  cleanColors,
+  cleanSchedule,
   BODY_FONTS,
   HEADING_FONTS,
   TEMPLATES,
@@ -186,6 +190,58 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
           <label className="span2">
             Kalimat penutup
             <textarea name="closingText" rows={3} defaultValue={inv.closingText} />
+          </label>
+        </div>
+
+        <h2 style={{ marginTop: "1.5rem" }}>Rangkaian acara & info tambahan</h2>
+        <div className="grid2">
+          <RowsField
+            name="schedule"
+            label="Susunan acara (timeline)"
+            hint="Contoh: 08:00 Akad Nikah, 11:00 Resepsi, 13:00 Foto bersama."
+            columns={[
+              { key: "time", label: "Jam", type: "time", fr: 1 },
+              { key: "title", label: "Acara", placeholder: "Akad Nikah", fr: 2 },
+              { key: "note", label: "Keterangan", placeholder: "Opsional", fr: 2 },
+            ]}
+            defaultValue={cleanSchedule(inv.schedule)}
+            addLabel="Tambah acara"
+          />
+          <label className="span2">
+            Dress code
+            <input name="dressCode" defaultValue={inv.dressCode} placeholder="Elegan, nuansa sage dan krem" />
+          </label>
+          <RowsField
+            name="dressColors"
+            label="Warna dress code (opsional)"
+            columns={[{ key: "value", label: "Warna", type: "color" }]}
+            defaultValue={cleanColors(inv.dressColors)}
+            addLabel="Tambah warna"
+            max={6}
+          />
+          <RowsField
+            name="giftAccounts"
+            label="Rekening hadiah (opsional)"
+            columns={[
+              { key: "bank", label: "Bank", placeholder: "BCA", fr: 1 },
+              { key: "number", label: "No. rekening", placeholder: "1234567890", fr: 2 },
+              { key: "holder", label: "Atas nama", placeholder: "Budi Santoso", fr: 2 },
+            ]}
+            defaultValue={cleanAccounts(inv.giftAccounts)}
+            addLabel="Tambah rekening"
+            max={4}
+          />
+          <label className="span2">
+            Catatan hadiah
+            <textarea name="giftNote" rows={2} defaultValue={inv.giftNote} placeholder="Doa restu Anda sudah cukup. Bila ingin berbagi, silakan..." />
+          </label>
+          <label>
+            WhatsApp untuk konfirmasi
+            <input name="contactPhone" defaultValue={inv.contactPhone} placeholder="081234567890" inputMode="tel" />
+          </label>
+          <label>
+            Catatan untuk tamu
+            <input name="notes" defaultValue={inv.notes} placeholder="Mohon tidak membawa anak-anak" />
           </label>
         </div>
 

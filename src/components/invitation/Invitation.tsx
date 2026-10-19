@@ -3,7 +3,19 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
 import { previewOverrides } from "@/lib/preview";
+import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem } from "@/lib/util";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
+import {
+  DressSilhouette,
+  FloralCorner,
+  IconCopy,
+  IconGift,
+  IconWhatsApp,
+  SuitSilhouette,
+  TornEdge,
+  WaxSeal,
+  iconFor,
+} from "./art";
 import "./invitation.css";
 
 export type InvitationData = {
@@ -26,6 +38,13 @@ export type InvitationData = {
   bridePhoto: string;
   gallery: string[];
   musicUrl: string;
+  schedule: ScheduleItem[];
+  dressCode: string;
+  dressColors: string[];
+  giftAccounts: GiftAccount[];
+  giftNote: string;
+  contactPhone: string;
+  notes: string;
   template: string;
   primaryColor: string;
   bgColor: string;
@@ -88,6 +107,58 @@ function Countdown({ target }: { target: string }) {
           <span>{label}</span>
         </div>
       ))}
+    </div>
+  );
+}
+
+const WEEKDAYS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+const SCRIPT_FONTS = ["Great Vibes", "Dancing Script", "Allura", "Pinyon Script"];
+
+/** Kalender bulan acara dengan tanggal acara ditandai. */
+function Calendar({ iso }: { iso: string }) {
+  const m = calendarMonth(new Date(iso));
+  const cells: (number | null)[] = [
+    ...Array<null>(m.offset).fill(null),
+    ...Array.from({ length: m.days }, (_, i) => i + 1),
+  ];
+  return (
+    <div className="inv-cal">
+      <h3>{m.title}</h3>
+      <div className="inv-cal-grid">
+        {WEEKDAYS.map((d) => (
+          <b key={d}>{d}</b>
+        ))}
+        {cells.map((c, i) =>
+          c === null ? <span key={i} /> : (
+            <span key={i} className={c === m.day ? "on" : undefined}>
+              {c}
+            </span>
+          ),
+        )}
+      </div>
+    </div>
+  );
+}
+
+function GiftCard({ account }: { account: GiftAccount }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(account.number);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      window.prompt("Salin nomor rekening:", account.number);
+    }
+  };
+  return (
+    <div className="inv-gift-card">
+      <small>{account.bank}</small>
+      <strong>{account.number}</strong>
+      {account.holder && <span>a.n. {account.holder}</span>}
+      <button type="button" className="inv-btn ghost" onClick={copy}>
+        <IconCopy /> {copied ? "Tersalin" : "Salin nomor"}
+      </button>
     </div>
   );
 }
@@ -186,15 +257,26 @@ export default function Invitation({
   }, []);
 
   const [opened, setOpened] = useState(false);
+  const [opening, setOpening] = useState(false); // animasi amplop sebelum konten tampil
   const [playing, setPlaying] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const audio = useRef<HTMLAudioElement>(null);
 
-  const open = () => {
+  const tpl = inv.template;
+  const finishOpen = () => {
     setOpened(true);
     window.scrollTo({ top: 0 });
     if (guest?.id) void markOpened(guest.id);
+  };
+  const open = () => {
+    // play() harus dipanggil langsung dari klik agar tidak diblokir browser.
     audio.current?.play().then(() => setPlaying(true)).catch(() => {});
+    if (tpl === "envelope") {
+      setOpening(true);
+      setTimeout(finishOpen, 1500);
+    } else {
+      finishOpen();
+    }
   };
   const toggleMusic = () => {
     const a = audio.current;
@@ -218,22 +300,60 @@ export default function Invitation({
     .map((f) => `family=${encodeURIComponent(f).replace(/%20/g, "+")}:wght@400;700`)
     .join("&");
 
-  const tpl = inv.template;
   const initials = `${inv.groomName.charAt(0)} & ${inv.brideName.charAt(0)}`.toUpperCase();
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     [inv.venueName, inv.venueAddress].filter(Boolean).join(" "),
   )}`;
   const coverBg = inv.coverPhoto ? `url("${inv.coverPhoto.replace(/["\\\n]/g, encodeURIComponent)}")` : undefined;
+  const waLink = inv.contactPhone
+    ? `https://wa.me/${cleanPhone(inv.contactPhone)}?text=${encodeURIComponent(
+        `Halo, saya ${guest?.name ?? "tamu undangan"} ingin mengonfirmasi kehadiran di pernikahan ${inv.groomName} & ${inv.brideName}.`,
+      )}`
+    : null;
+
+  // Dekorasi khusus template botanical: tepi kertas sobek dan rangkaian bunga di sudut.
+  const botanical = tpl === "botanical";
+  const torn = botanical ? <TornEdge /> : null;
+  const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : null);
+
+  const names = (
+    <h1>
+      <span className="n">{inv.groomName}</span>
+      <span className="amp">&amp;</span>
+      <span className="n">{inv.brideName}</span>
+    </h1>
+  );
+  const toBlock = (
+    <div className="inv-to">
+      {guest ? (
+        <>
+          <small>Kepada Yth. Bapak/Ibu/Saudara/i</small>
+          <strong>{guest.name}</strong>
+        </>
+      ) : (
+        <small>Anda diundang ke acara kami</small>
+      )}
+    </div>
+  );
+
+  const hasGift = inv.giftAccounts.length > 0 || inv.giftNote;
+  const hasDress = inv.dressCode || inv.dressColors.length > 0;
 
   return (
-    <div className="inv" data-template={tpl} data-opened={opened} style={style}>
+    <div
+      className="inv"
+      data-template={tpl}
+      data-opened={opened}
+      data-script={SCRIPT_FONTS.includes(inv.headingFont)}
+      style={style}
+    >
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${fontQuery}&display=swap`} />
       {inv.musicUrl && <audio ref={audio} src={inv.musicUrl} loop preload="none" />}
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        <div className="inv-cover-bg" style={coverBg ? { backgroundImage: coverBg } : undefined} />
+        <div className="inv-cover-bg" style={!botanical && coverBg ? { backgroundImage: coverBg } : undefined} />
         {tpl === "floral" && (
           <>
             <Flower className="inv-flower-a" />
@@ -242,6 +362,12 @@ export default function Invitation({
           </>
         )}
         {tpl === "modern" && <div className="inv-bigmono" aria-hidden="true">{initials}</div>}
+        {botanical && (
+          <>
+            <FloralCorner className="tl" />
+            <FloralCorner className="br" />
+          </>
+        )}
 
         <div className="inv-cover-inner">
           {tpl === "elegant" && (
@@ -252,33 +378,44 @@ export default function Invitation({
               <Corner className="c4" />
             </>
           )}
-          <p className="inv-eyebrow">{inv.title}</p>
-          <div className="inv-monogram" aria-hidden="true">
-            {initials}
-          </div>
-          <h1>
-            <span className="n">{inv.groomName}</span>
-            <span className="amp">&amp;</span>
-            <span className="n">{inv.brideName}</span>
-          </h1>
-          <p className="inv-cover-date">{inv.dateText}</p>
-          <div className="inv-to">
-            {guest ? (
-              <>
-                <small>Kepada Yth. Bapak/Ibu/Saudara/i</small>
-                <strong>{guest.name}</strong>
-              </>
-            ) : (
-              <small>Anda diundang ke acara kami</small>
-            )}
-          </div>
+
+          {tpl === "envelope" ? (
+            <div className="env" data-open={opening || opened}>
+              <div className="env-back" />
+              <div className="env-card">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <div className="env-front" />
+              <div className="env-flap" />
+              <WaxSeal initials={initials} className="env-seal" />
+            </div>
+          ) : (
+            <>
+              <p className="inv-eyebrow">{inv.title}</p>
+              {botanical ? (
+                <div className="inv-arch" style={coverBg ? { backgroundImage: coverBg } : undefined}>
+                  {!coverBg && <span>{initials}</span>}
+                </div>
+              ) : (
+                <div className="inv-monogram" aria-hidden="true">
+                  {initials}
+                </div>
+              )}
+              {names}
+              <p className="inv-cover-date">{inv.dateText}</p>
+            </>
+          )}
+
+          {toBlock}
           {!opened && (
-            <button className="inv-open" onClick={open}>
-              Buka Undangan
+            <button className="inv-open" onClick={open} disabled={opening}>
+              {opening ? "Membuka..." : "Buka Undangan"}
             </button>
           )}
         </div>
-        {!opened && <div className="inv-scrollhint" aria-hidden="true" />}
+        {!opened && !opening && <div className="inv-scrollhint" aria-hidden="true" />}
       </section>
 
       {tpl === "modern" && (
@@ -301,8 +438,10 @@ export default function Invitation({
 
           {/* ---------- Pembuka ---------- */}
           <section className="inv-section inv-opening">
+            {torn}
+            {fc("tr")}
             <Reveal>
-              <p className="inv-eyebrow">Save the Date</p>
+              <p className="inv-eyebrow">Undangan</p>
               <Divider />
               <p className="inv-quote">{inv.openingText}</p>
             </Reveal>
@@ -310,6 +449,7 @@ export default function Invitation({
 
           {/* ---------- Mempelai ---------- */}
           <section className="inv-section inv-couple">
+            {torn}
             <Reveal className="inv-person">
               <Portrait src={inv.groomPhoto} name={inv.groomName} />
               <h2>{inv.groomName}</h2>
@@ -325,8 +465,22 @@ export default function Invitation({
             </Reveal>
           </section>
 
+          {/* ---------- Tanggal: kalender + hitung mundur ---------- */}
+          <section className="inv-section inv-date">
+            {torn}
+            <Reveal>
+              <p className="inv-eyebrow">Save the Date</p>
+              <h2>{inv.dateText}</h2>
+              <Divider />
+              <Calendar iso={inv.eventISO} />
+              <Countdown target={inv.eventISO} />
+            </Reveal>
+          </section>
+
           {/* ---------- Acara ---------- */}
           <section className="inv-section inv-event">
+            {torn}
+            {fc("bl")}
             <Reveal>
               <p className="inv-eyebrow">Hari Bahagia</p>
               <h2>Waktu &amp; Tempat</h2>
@@ -351,7 +505,6 @@ export default function Invitation({
                   </div>
                 )}
               </div>
-              <Countdown target={inv.eventISO} />
               <div className="inv-actions">
                 <a className="inv-btn" href={calendarUrl(inv)} target="_blank" rel="noreferrer">
                   Simpan ke Kalender
@@ -374,9 +527,60 @@ export default function Invitation({
             </Reveal>
           </section>
 
+          {/* ---------- Rangkaian acara ---------- */}
+          {inv.schedule.length > 0 && (
+            <section className="inv-section inv-schedule">
+              {torn}
+              <Reveal>
+                <p className="inv-eyebrow">Rangkaian Acara</p>
+                <h2>Susunan Acara</h2>
+                <Divider />
+                <ol className="inv-timeline">
+                  {inv.schedule.map((s, i) => (
+                    <li key={i}>
+                      <span className="t">{s.time}</span>
+                      <span className="dot" aria-hidden="true" />
+                      <div className="c">
+                        <span className="ico">{iconFor(s.title)}</span>
+                        <strong>{s.title}</strong>
+                        {s.note && <small>{s.note}</small>}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </Reveal>
+            </section>
+          )}
+
+          {/* ---------- Dress code ---------- */}
+          {hasDress && (
+            <section className="inv-section inv-dress">
+              {torn}
+              {fc("tr")}
+              <Reveal>
+                <p className="inv-eyebrow">Dress Code</p>
+                <h2>Busana Tamu</h2>
+                <Divider />
+                <div className="inv-sils">
+                  <SuitSilhouette />
+                  <DressSilhouette />
+                </div>
+                {inv.dressCode && <p>{inv.dressCode}</p>}
+                {inv.dressColors.length > 0 && (
+                  <div className="inv-swatches" aria-label="Warna yang disarankan">
+                    {inv.dressColors.map((c) => (
+                      <i key={c} style={{ background: c }} title={c} />
+                    ))}
+                  </div>
+                )}
+              </Reveal>
+            </section>
+          )}
+
           {/* ---------- Galeri ---------- */}
           {inv.gallery.length > 0 && (
             <section className="inv-section inv-gallery">
+              {torn}
               <Reveal>
                 <p className="inv-eyebrow">Galeri</p>
                 <h2>Momen Kami</h2>
@@ -393,12 +597,40 @@ export default function Invitation({
             </section>
           )}
 
+          {/* ---------- Hadiah ---------- */}
+          {hasGift && (
+            <section className="inv-section inv-gift">
+              {torn}
+              <Reveal>
+                <p className="inv-eyebrow">Tanda Kasih</p>
+                <h2>Hadiah</h2>
+                <Divider />
+                <span className="inv-giftico">
+                  <IconGift />
+                </span>
+                {inv.giftNote && <p>{inv.giftNote}</p>}
+                <div className="inv-gift-list">
+                  {inv.giftAccounts.map((a, i) => (
+                    <GiftCard key={i} account={a} />
+                  ))}
+                </div>
+              </Reveal>
+            </section>
+          )}
+
           {/* ---------- RSVP & ucapan ---------- */}
           <section className="inv-section inv-rsvp">
+            {torn}
             <Reveal>
               <p className="inv-eyebrow">RSVP &amp; Ucapan</p>
               <h2>Konfirmasi Kehadiran</h2>
               <Divider />
+              {inv.notes && <p className="inv-note">{inv.notes}</p>}
+              {waLink && (
+                <a className="inv-btn inv-wa" href={waLink} target="_blank" rel="noreferrer">
+                  <IconWhatsApp /> Konfirmasi via WhatsApp
+                </a>
+              )}
               <RsvpForm invitationId={inv.id} guest={guest} />
               {wishes.length > 0 && (
                 <ul className="inv-wishes">
@@ -421,6 +653,8 @@ export default function Invitation({
 
           {/* ---------- Penutup ---------- */}
           <footer className="inv-section inv-footer">
+            {torn}
+            {fc("br")}
             <Reveal>
               <Divider />
               <p>{inv.closingText}</p>

@@ -1,7 +1,17 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
-import { cleanGuestName, formatDate, formatTime, parseGallery, slugify, TIME_ZONE } from "@/lib/util";
+import {
+  cleanAccounts,
+  cleanColors,
+  cleanGuestName,
+  cleanSchedule,
+  formatDate,
+  formatTime,
+  parseGallery,
+  slugify,
+  TIME_ZONE,
+} from "@/lib/util";
 import Invitation from "@/components/invitation/Invitation";
 
 /** Parameter ?to= bisa muncul berkali-kali; ambil yang pertama. */
@@ -68,6 +78,13 @@ export async function InvitationPage({ slug, to }: { slug: string; to?: string }
         bridePhoto: inv.bridePhoto,
         gallery: parseGallery(inv.gallery),
         musicUrl: inv.musicUrl,
+        schedule: cleanSchedule(inv.schedule),
+        dressCode: inv.dressCode,
+        dressColors: cleanColors(inv.dressColors),
+        giftAccounts: cleanAccounts(inv.giftAccounts),
+        giftNote: inv.giftNote,
+        contactPhone: inv.contactPhone,
+        notes: inv.notes,
         template: inv.template,
         primaryColor: inv.primaryColor,
         bgColor: inv.bgColor,

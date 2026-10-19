@@ -3,6 +3,9 @@ import {
   BODY_FONTS,
   HEADING_FONTS,
   TEMPLATES,
+  cleanAccounts,
+  cleanColors,
+  cleanSchedule,
   extractMapSrc,
   formatDate,
   formatTime,
@@ -22,6 +25,9 @@ const TEXT_KEYS = [
   "groomPhoto",
   "bridePhoto",
   "musicUrl",
+  "dressCode",
+  "giftNote",
+  "notes",
 ] as const;
 
 /**
@@ -60,6 +66,15 @@ export function previewOverrides(fields: unknown): Partial<InvitationData> {
   if (heading && HEADING_FONTS.includes(heading)) out.headingFont = heading;
   const body = str("bodyFont");
   if (body && BODY_FONTS.includes(body)) out.bodyFont = body;
+
+  const schedule = str("schedule");
+  if (schedule !== undefined) out.schedule = cleanSchedule(schedule);
+  const dressColors = str("dressColors");
+  if (dressColors !== undefined) out.dressColors = cleanColors(dressColors);
+  const giftAccounts = str("giftAccounts");
+  if (giftAccounts !== undefined) out.giftAccounts = cleanAccounts(giftAccounts);
+  const phone = str("contactPhone");
+  if (phone !== undefined) out.contactPhone = phone.replace(/[^\d+]/g, "").slice(0, 20);
 
   const map = str("mapEmbedUrl");
   if (map !== undefined) out.mapEmbedUrl = extractMapSrc(map);
