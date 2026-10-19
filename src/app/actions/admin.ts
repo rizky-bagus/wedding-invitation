@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { checkPassword, createSession, destroySession, requireAdmin } from "@/lib/auth";
+import { clientIp, loginLimiter, waitText } from "@/lib/ratelimit";
 import {
   BODY_FONTS,
   HEADING_FONTS,
@@ -26,7 +27,14 @@ import {
 const str = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
 
 export async function login(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
-  if (!checkPassword(str(fd, "password"))) return fail("Password salah.");
+  const key = await clientIp();
+  const wait = loginLimiter.blockedFor(key);
+  if (wait) return fail(`Terlalu banyak percobaan. Coba lagi dalam ${waitText(wait)}.`);
+  if (!checkPassword(str(fd, "password"))) {
+    loginLimiter.hit(key);
+    return fail("Password salah.");
+  }
+  loginLimiter.reset(key);
   await createSession();
   redirect("/admin");
 }
@@ -124,16 +132,19 @@ export async function deleteInvitation(id: string) {
 /** Satu tamu per baris. Format: "Nama" atau "Nama | 0812xxxx". */
 export async function addGuests(invitationId: string, _prev: ActionResult, fd: FormData): Promise<ActionResult> {
   await requireAdmin();
-  const lines = str(fd, "guests").split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-  if (!lines.length) return fail("Isi minimal satu nama.");
+  const all = str(fd, "guests").split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  if (!all.length) return fail("Isi minimal satu nama.");
+  const lines = all.slice(0, 500);
+  const cut = all.length - lines.length;
 
   const existing = new Set(
     (await db.guest.findMany({ where: { invitationId }, select: { slug: true } })).map((g) => g.slug),
   );
-  let added = 0;
+  const rows: { invitationId: string; name: string; slug: string; phone: string }[] = [];
   let skipped = 0;
   for (const line of lines) {
-    const [rawName, phone = ""] = line.split("|").map((s) => s.trim());
+    // Pemisah "|" atau tab (tempelan dari Excel/Sheets).
+    const [rawName, rawPhone = ""] = line.split(/\||\t/).map((s) => s.trim());
     const name = cleanGuestName(rawName);
     if (!name) continue;
     // Nama tamu menjadi kunci di link (?to=Nama), jadi harus unik per undangan.
@@ -143,12 +154,14 @@ export async function addGuests(invitationId: string, _prev: ActionResult, fd: F
       continue;
     }
     existing.add(slug);
-    await db.guest.create({ data: { invitationId, name, slug, phone } });
-    added++;
+    rows.push({ invitationId, name, slug, phone: rawPhone.replace(/[^\d+]/g, "").slice(0, 20) });
   }
+  if (rows.length) await db.guest.createMany({ data: rows });
   revalidatePath(`/admin/${invitationId}`);
-  const note = skipped ? ` ${skipped} dilewati karena namanya sudah ada.` : "";
-  return added ? done(`${added} tamu ditambahkan.${note}`) : fail(`Tidak ada tamu baru.${note}`);
+  const note =
+    (skipped ? ` ${skipped} dilewati karena namanya sudah ada.` : "") +
+    (cut > 0 ? ` ${cut} baris di luar batas 500 tidak diproses.` : "");
+  return rows.length ? done(`${rows.length} tamu ditambahkan.${note}`) : fail(`Tidak ada tamu baru.${note}`);
 }
 
 export async function deleteGuest(invitationId: string, guestId: string) {

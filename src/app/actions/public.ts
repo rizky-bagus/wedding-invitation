@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { cleanGuestName, slugify } from "@/lib/util";
+import { clientIp, rsvpLimiter, waitText } from "@/lib/ratelimit";
 
 const str = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
 
@@ -14,6 +15,13 @@ export async function submitRsvp(
   _prev: RsvpState | null,
   fd: FormData,
 ): Promise<RsvpState> {
+  // Kolom jebakan: manusia tidak melihatnya, bot biasanya mengisi semua kolom. Tampak sukses agar bot tidak belajar.
+  if (str(fd, "website")) return { ok: true, message: "Terima kasih, konfirmasi dan ucapan Anda sudah kami terima." };
+
+  const limitKey = `${await clientIp()}:${invitationId}`;
+  const wait = rsvpLimiter.blockedFor(limitKey);
+  if (wait) return { ok: false, message: `Terlalu banyak kiriman. Coba lagi dalam ${waitText(wait)}.` };
+
   const message = str(fd, "message").slice(0, 500);
   const attendance = str(fd, "attendance"); // yes | no | ""
   const pax = Math.min(10, Math.max(1, Number(fd.get("pax")) || 1));
@@ -31,6 +39,7 @@ export async function submitRsvp(
   }
   if (!name) return { ok: false, message: "Nama wajib diisi." };
   if (!hasAttendance && !message) return { ok: false, message: "Pilih kehadiran atau tulis ucapan terlebih dulu." };
+  rsvpLimiter.hit(limitKey); // hanya kiriman yang valid dihitung
 
   if (hasAttendance) {
     // Nama dari ?to= yang belum ada di daftar tercatat otomatis sebagai tamu baru.

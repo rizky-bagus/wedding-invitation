@@ -14,6 +14,7 @@ import UploadField from "@/components/admin/UploadField";
 import PaletteField from "@/components/admin/PaletteField";
 import PreviewFrame from "@/components/admin/PreviewFrame";
 import RowsField from "@/components/admin/RowsField";
+import GuestListField from "@/components/admin/GuestListField";
 import {
   cleanAccounts,
   cleanColors,
@@ -77,12 +78,14 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
       </div>
 
       <div className="card">
-        <h2>Tamu & link personal</h2>
+        <div className="row" style={{ justifyContent: "space-between", marginTop: 0 }}>
+          <h2 style={{ margin: 0 }}>Tamu & link personal</h2>
+          <a className="btn small ghost" href={`/api/admin/export/${inv.id}?type=guests`} download>
+            Unduh daftar tamu (CSV)
+          </a>
+        </div>
         <ActionForm action={addGuests.bind(null, inv.id)} submit="Tambah tamu">
-          <label>
-            Satu tamu per baris, nama harus unik. Nomor WhatsApp opsional, pisahkan dengan |
-            <textarea name="guests" rows={4} placeholder={"Budi Santoso | 081234567890\nKeluarga Pak Andi\nIbu Sari"} />
-          </label>
+          <GuestListField placeholder={"Budi Santoso | 081234567890\nKeluarga Pak Andi\nIbu Sari"} />
         </ActionForm>
 
         {inv.guests.length > 0 && (
@@ -296,7 +299,14 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
       </ActionForm>
 
       <div className="card">
-        <h2>Ucapan ({inv.wishes.length})</h2>
+        <div className="row" style={{ justifyContent: "space-between", marginTop: 0 }}>
+          <h2 style={{ margin: 0 }}>Ucapan ({inv.wishes.length})</h2>
+          {inv.wishes.length > 0 && (
+            <a className="btn small ghost" href={`/api/admin/export/${inv.id}?type=wishes`} download>
+              Unduh ucapan (CSV)
+            </a>
+          )}
+        </div>
         {inv.wishes.length === 0 && <p className="hint">Belum ada ucapan.</p>}
         {inv.wishes.map((w) => (
           <div key={w.id} className="row" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>

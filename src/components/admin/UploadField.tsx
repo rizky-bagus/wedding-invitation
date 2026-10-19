@@ -15,20 +15,21 @@ type Props = {
 
 const ACCEPT = { image: ".jpg,.jpeg,.png,.webp,.gif", audio: ".mp3,.m4a,.ogg,.wav" };
 
-async function upload(file: File, kind: string): Promise<string> {
+async function upload(file: File, kind: string): Promise<{ url: string; note?: string }> {
   const body = new FormData();
   body.set("file", file);
   body.set("kind", kind);
   const res = await fetch("/api/admin/upload", { method: "POST", body });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json.error || "Upload gagal.");
-  return json.url as string;
+  return { url: json.url as string, note: json.note as string | undefined };
 }
 
 export default function UploadField({ name, label, kind, defaultValue = "", multiple, wide, placeholder }: Props) {
   const [value, setValue] = useState(defaultValue);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const picker = useRef<HTMLInputElement>(null);
 
   // Hasil upload / tombol Kosongkan mengubah nilai lewat state: beri tahu pratinjau.
@@ -47,10 +48,17 @@ export default function UploadField({ name, label, kind, defaultValue = "", mult
     if (!files.length) return;
     setBusy(true);
     setError("");
+    setInfo("");
     try {
       const urls: string[] = [];
-      for (const f of files) urls.push(await upload(f, kind));
+      let lastNote: string | undefined;
+      for (const f of files) {
+        const res = await upload(f, kind);
+        urls.push(res.url);
+        lastNote = res.note;
+      }
       setValue((prev) => (multiple ? [prev.trim(), ...urls].filter(Boolean).join("\n") : urls[0]));
+      if (lastNote) setInfo(files.length > 1 ? `${files.length} foto dioptimalkan` : lastNote);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload gagal.");
     } finally {
@@ -79,7 +87,8 @@ export default function UploadField({ name, label, kind, defaultValue = "", mult
           </button>
         )}
         <input ref={picker} type="file" accept={ACCEPT[kind]} multiple={multiple} hidden onChange={onPick} />
-        {error && <span className="msg" style={{ color: "#b3382c" }}>{error}</span>}
+        {error && <span className="msg err">{error}</span>}
+        {info && !error && <span className="msg">{info}</span>}
       </div>
       {kind === "image" && first && (
         // eslint-disable-next-line @next/next/no-img-element

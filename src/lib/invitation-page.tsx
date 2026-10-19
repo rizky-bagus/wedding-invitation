@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
+import { publicOrigin } from "@/lib/origin";
 import {
   cleanAccounts,
   cleanColors,
@@ -32,11 +33,19 @@ async function load(slug: string, to?: string) {
 }
 
 export async function invitationMetadata(slug: string, to?: string): Promise<Metadata> {
-  const { inv } = await load(slug, to);
+  const { inv, name } = await load(slug, to);
+  const couple = `${inv.groomName} & ${inv.brideName}`;
+  // Judul dan deskripsi inilah yang tampil di pratinjau link WhatsApp.
+  const title = name ? `Undangan untuk ${name} · ${couple}` : `${couple} · ${inv.title}`;
+  const where = inv.venueName ? ` di ${inv.venueName}` : "";
+  const description = `Dengan hormat kami mengundang Anda ke pernikahan ${couple} pada ${formatDate(inv.eventDate)}${where}.`;
   return {
-    title: `${inv.groomName} & ${inv.brideName} - ${inv.title}`,
-    description: `Kami mengundang Anda ke pernikahan ${inv.groomName} & ${inv.brideName}, ${formatDate(inv.eventDate)}.`,
+    metadataBase: new URL(await publicOrigin()),
+    title,
+    description,
     robots: { index: false, follow: false }, // link undangan bersifat pribadi
+    openGraph: { title, description, type: "website", locale: "id_ID", siteName: couple },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

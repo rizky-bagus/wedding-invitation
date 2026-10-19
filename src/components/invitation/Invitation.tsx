@@ -185,6 +185,7 @@ function RsvpForm({ invitationId, guest }: { invitationId: string; guest: GuestD
   );
   return (
     <form action={action} className="inv-form">
+      <input type="text" name="website" tabIndex={-1} autoComplete="off" className="inv-hp" aria-hidden="true" />
       {guest ? (
         <>
           <p className="inv-form-name">

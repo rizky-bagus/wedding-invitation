@@ -562,6 +562,14 @@
 .inv-pax {
   margin: 0;
 }
+.inv .inv-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
 .inv-pax input {
   width: 90px;
   margin-left: 0.5rem;
