@@ -1,8 +1,9 @@
 "use client";
 
 import { useActionState } from "react";
+import type { ActionResult } from "@/lib/util";
 
-type Action = (prev: string | null, fd: FormData) => Promise<string | null>;
+type Action = (prev: ActionResult, fd: FormData) => Promise<ActionResult>;
 
 export default function ActionForm({
   action,
@@ -15,7 +16,7 @@ export default function ActionForm({
   submit?: string;
   className?: string;
 }) {
-  const [message, formAction, pending] = useActionState(action, null);
+  const [result, formAction, pending] = useActionState(action, null);
   return (
     <form action={formAction} className={className}>
       {children}
@@ -23,7 +24,11 @@ export default function ActionForm({
         <button type="submit" className="btn" disabled={pending}>
           {pending ? "Memproses..." : submit}
         </button>
-        {message && <span className="msg">{message}</span>}
+        {result && (
+          <span className={result.ok ? "msg" : "msg err"} role={result.ok ? "status" : "alert"}>
+            {result.message}
+          </span>
+        )}
       </div>
     </form>
   );

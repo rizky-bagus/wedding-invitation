@@ -1,3 +1,8 @@
+/** Hasil server action untuk ActionForm: pesan sukses atau error. */
+export type ActionResult = { ok: boolean; message: string } | null;
+export const fail = (message: string): ActionResult => ({ ok: false, message });
+export const done = (message: string): ActionResult => ({ ok: true, message });
+
 export const TIME_ZONE = "Asia/Jakarta";
 const TZ_OFFSET = "+07:00";
 

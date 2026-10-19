@@ -8,16 +8,19 @@ import {
   BODY_FONTS,
   HEADING_FONTS,
   TEMPLATES,
+  done,
   extractMapSrc,
+  fail,
   isHexColor,
   parseJakartaInput,
   slugify,
+  type ActionResult,
 } from "@/lib/util";
 
 const str = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
 
-export async function login(_prev: string | null, fd: FormData): Promise<string | null> {
-  if (!checkPassword(str(fd, "password"))) return "Password salah.";
+export async function login(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
+  if (!checkPassword(str(fd, "password"))) return fail("Password salah.");
   await createSession();
   redirect("/admin");
 }
@@ -27,12 +30,12 @@ export async function logout() {
   redirect("/admin/login");
 }
 
-export async function createInvitation(_prev: string | null, fd: FormData): Promise<string | null> {
+export async function createInvitation(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
   await requireAdmin();
   const groomName = str(fd, "groomName");
   const brideName = str(fd, "brideName");
   const date = str(fd, "eventDate");
-  if (!groomName || !brideName || !date) return "Nama mempelai dan tanggal wajib diisi.";
+  if (!groomName || !brideName || !date) return fail("Nama mempelai dan tanggal wajib diisi.");
 
   const base = slugify(str(fd, "slug") || `${groomName}-${brideName}`) || "undangan";
   let slug = base;
@@ -44,17 +47,17 @@ export async function createInvitation(_prev: string | null, fd: FormData): Prom
   redirect(`/admin/${inv.id}`);
 }
 
-export async function updateInvitation(id: string, _prev: string | null, fd: FormData): Promise<string | null> {
+export async function updateInvitation(id: string, _prev: ActionResult, fd: FormData): Promise<ActionResult> {
   await requireAdmin();
   const groomName = str(fd, "groomName");
   const brideName = str(fd, "brideName");
   const date = str(fd, "eventDate");
-  if (!groomName || !brideName || !date) return "Nama mempelai dan tanggal wajib diisi.";
+  if (!groomName || !brideName || !date) return fail("Nama mempelai dan tanggal wajib diisi.");
 
   const slug = slugify(str(fd, "slug"));
-  if (!slug) return "Slug tidak valid.";
+  if (!slug) return fail("Slug tidak valid.");
   const clash = await db.invitation.findUnique({ where: { slug } });
-  if (clash && clash.id !== id) return "Slug sudah dipakai undangan lain.";
+  if (clash && clash.id !== id) return fail("Slug sudah dipakai undangan lain.");
 
   const template = str(fd, "template");
   const color = (key: string, fallback: string) => (isHexColor(str(fd, key)) ? str(fd, key) : fallback);
@@ -93,7 +96,7 @@ export async function updateInvitation(id: string, _prev: string | null, fd: For
   });
   revalidatePath(`/admin/${id}`);
   revalidatePath(`/u/${slug}`, "layout");
-  return "Tersimpan.";
+  return done("Tersimpan.");
 }
 
 export async function deleteInvitation(id: string) {
@@ -103,10 +106,10 @@ export async function deleteInvitation(id: string) {
 }
 
 /** Satu tamu per baris. Format: "Nama" atau "Nama | 0812xxxx". */
-export async function addGuests(invitationId: string, _prev: string | null, fd: FormData): Promise<string | null> {
+export async function addGuests(invitationId: string, _prev: ActionResult, fd: FormData): Promise<ActionResult> {
   await requireAdmin();
   const lines = str(fd, "guests").split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-  if (!lines.length) return "Isi minimal satu nama.";
+  if (!lines.length) return fail("Isi minimal satu nama.");
 
   const existing = new Set(
     (await db.guest.findMany({ where: { invitationId }, select: { slug: true } })).map((g) => g.slug),
@@ -123,7 +126,7 @@ export async function addGuests(invitationId: string, _prev: string | null, fd: 
     added++;
   }
   revalidatePath(`/admin/${invitationId}`);
-  return `${added} tamu ditambahkan.`;
+  return done(`${added} tamu ditambahkan.`);
 }
 
 export async function deleteGuest(invitationId: string, guestId: string) {

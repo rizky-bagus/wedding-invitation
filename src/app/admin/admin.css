@@ -114,6 +114,9 @@
   color: #2e7d4f;
   font-size: 0.9rem;
 }
+.msg.err {
+  color: #b3382c;
+}
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -194,5 +197,6 @@
 }
 .login {
   max-width: 340px;
-  margin: 18vh auto 0;
+  margin: 0 auto;
+  padding-top: 18vh; /* bukan margin: margin akan bocor ke luar dan memunculkan pita putih */
 }
