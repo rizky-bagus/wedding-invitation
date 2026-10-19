@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env*
+.claude
+uploads
+prisma/*.db
+prisma/*.db-journal
+prisma/schema.postgres.prisma

@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // ganti ke "postgresql" untuk produksi
+  url      = env("DATABASE_URL")
+}
+
+model Invitation {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String   @default("Undangan Pernikahan")
+  groomName   String
+  brideName   String
+  groomParents String  @default("")
+  brideParents String  @default("")
+  eventDate   DateTime
+  venueName   String   @default("")
+  venueAddress String  @default("")
+  mapEmbedUrl String   @default("")
+  openingText String   @default("Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di hari bahagia kami.")
+  closingText String   @default("Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.")
+  coverPhoto  String   @default("")
+  groomPhoto  String   @default("")
+  bridePhoto  String   @default("")
+  gallery     String   @default("[]") // JSON array of URL
+  musicUrl    String   @default("")
+  template    String   @default("elegant")
+  primaryColor String  @default("#b08968")
+  bgColor     String   @default("#fffaf3")
+  textColor   String   @default("#3b2f2f")
+  headingFont String   @default("Playfair Display")
+  bodyFont    String   @default("Lato")
+  createdAt   DateTime @default(now())
+  guests      Guest[]
+  wishes      Wish[]
+}
+
+model Guest {
+  id           String   @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  name         String
+  slug         String
+  phone        String   @default("")
+  rsvp         String   @default("pending") // pending | yes | no
+  pax          Int      @default(1)
+  openedAt     DateTime?
+  createdAt    DateTime @default(now())
+  wishes       Wish[]
+
+  @@unique([invitationId, slug])
+}
+
+model Wish {
+  id           String   @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guestId      String?
+  guest        Guest?   @relation(fields: [guestId], references: [id], onDelete: SetNull)
+  name         String
+  message      String
+  createdAt    DateTime @default(now())
+}
