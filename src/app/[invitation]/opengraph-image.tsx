@@ -5,10 +5,14 @@ import sharp from "sharp";
 import { db } from "@/lib/db";
 import { STORED_NAME, UPLOAD_DIR } from "@/lib/uploads";
 import { formatDate } from "@/lib/util";
+import { Divider, FlourishCorner, FloralCorner, WaxSeal, mix } from "./og-art";
 
 export const alt = "Undangan pernikahan";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+const FONT_DIR = path.join(/*turbopackIgnore: true*/ process.cwd(), "src/assets/fonts");
+const font = (file: string) => readFile(path.join(/*turbopackIgnore: true*/ FONT_DIR, file));
 
 /** Foto cover -> data URL JPEG 1200x630. Satori tidak membaca semua format (mis. WebP), jadi dikonversi. */
 async function coverDataUrl(src: string): Promise<string | null> {
@@ -34,13 +38,37 @@ async function coverDataUrl(src: string): Promise<string | null> {
   }
 }
 
+/** Ukuran nama menyesuaikan panjangnya agar tidak terpotong. */
+function nameSize(text: string, script: boolean): number {
+  const base = script ? 150 : 112;
+  if (text.length <= 16) return base;
+  if (text.length <= 24) return Math.round(base * 0.78);
+  return Math.round(base * 0.6);
+}
+
+const shadow = "0 3px 18px rgba(0,0,0,0.55)";
+const { width: W, height: H } = size;
+
 export default async function Image({ params }: { params: Promise<{ invitation: string }> }) {
   const { invitation } = await params;
   const inv = await db.invitation.findUnique({ where: { slug: invitation } });
 
   const primary = inv?.primaryColor ?? "#b08968";
-  const bg = inv?.bgColor ?? "#fffaf3";
+  const template = inv?.template ?? "elegant";
   const photo = inv?.coverPhoto ? await coverDataUrl(inv.coverPhoto) : null;
+
+  const [serif, serifRegular, script] = await Promise.all([
+    font("playfair-display-latin-700-normal.woff"),
+    font("playfair-display-latin-400-normal.woff"),
+    font("great-vibes-latin-400-normal.woff"),
+  ]);
+
+  // Template yang bernuansa bunga/tulisan tangan memakai font script untuk nama.
+  const scriptNames = template === "floral" || template === "botanical" || template === "envelope";
+  const floral = template === "floral" || template === "botanical";
+  const names = inv ? `${inv.groomName} & ${inv.brideName}` : "Undangan";
+  const initials = inv ? `${inv.groomName.charAt(0)} & ${inv.brideName.charAt(0)}`.toUpperCase() : "";
+  const venue = inv?.venueName ? (inv.venueName.length > 46 ? `${inv.venueName.slice(0, 44)}…` : inv.venueName) : "";
 
   return new ImageResponse(
     (
@@ -50,22 +78,73 @@ export default async function Image({ params }: { params: Promise<{ invitation: 
           height: "100%",
           display: "flex",
           position: "relative",
-          background: `linear-gradient(135deg, ${primary}, ${bg})`,
-          fontFamily: "sans-serif",
+          background: `linear-gradient(135deg, ${mix(primary, "#000000", 0.4)}, ${mix(primary, "#000000", 0.05)})`,
+          fontFamily: "Playfair",
+          color: "#ffffff",
         }}
       >
         {photo && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="" width={size.width} height={size.height} style={{ position: "absolute", inset: 0 }} />
+          <img src={photo} alt="" width={size.width} height={size.height} style={{ position: "absolute", left: 0, top: 0 }} />
         )}
+        {/* Lapisan gelap: menjaga teks putih terbaca di atas foto terang */}
         <div
           style={{
             position: "absolute",
-            inset: 0,
+            left: 0,
+            top: 0,
+            width: "100%",
+            height: "100%",
             display: "flex",
-            background: photo ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.65))" : "transparent",
+            background: photo
+              ? "linear-gradient(180deg, rgba(0,0,0,0.52), rgba(0,0,0,0.78))"
+              : "radial-gradient(70% 70% at 50% 45%, rgba(0,0,0,0), rgba(0,0,0,0.35))",
           }}
         />
+
+        {/* Bingkai ganda */}
+        <div
+          style={{
+            position: "absolute",
+            left: 26,
+            top: 26,
+            right: 26,
+            bottom: 26,
+            display: "flex",
+            border: "2px solid rgba(255,255,255,0.78)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: 38,
+            top: 38,
+            right: 38,
+            bottom: 38,
+            display: "flex",
+            border: "1px solid rgba(255,255,255,0.42)",
+          }}
+        />
+
+        {/* Hiasan sudut */}
+        {/* Posisi memakai left/top eksplisit: Satori tidak menghitung right/bottom untuk elemen SVG. */}
+        {floral ? (
+          <>
+            <FloralCorner primary={primary} style={{ left: 0, top: 0 }} />
+            <FloralCorner primary={primary} style={{ left: W - 330, top: H - 330 }} flipX flipY />
+            <FloralCorner primary={primary} size={210} style={{ left: W - 210, top: 0 }} flipX />
+            <FloralCorner primary={primary} size={210} style={{ left: 0, top: H - 210 }} flipY />
+          </>
+        ) : (
+          <>
+            <FlourishCorner style={{ left: 44, top: 44 }} />
+            <FlourishCorner style={{ left: W - 44 - 150, top: 44 }} flipX />
+            <FlourishCorner style={{ left: 44, top: H - 44 - 150 }} flipY />
+            <FlourishCorner style={{ left: W - 44 - 150, top: H - 44 - 150 }} flipX flipY />
+          </>
+        )}
+
+        {/* Isi */}
         <div
           style={{
             position: "relative",
@@ -75,34 +154,78 @@ export default async function Image({ params }: { params: Promise<{ invitation: 
             justifyContent: "center",
             width: "100%",
             height: "100%",
-            padding: 60,
-            color: "#fff",
+            padding: "0 150px",
             textAlign: "center",
           }}
         >
-          <div style={{ display: "flex", fontSize: 28, letterSpacing: 10, textTransform: "uppercase", opacity: 0.9 }}>
+          {template === "envelope" && inv && (
+            <div style={{ position: "relative", display: "flex", width: 132, height: 132, marginBottom: 14 }}>
+              <WaxSeal primary={primary} />
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  width: 132,
+                  height: 132,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 38,
+                  fontWeight: 700,
+                  color: "rgba(255,255,255,0.92)",
+                }}
+              >
+                {initials}
+              </div>
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              fontSize: 26,
+              letterSpacing: 9,
+              textTransform: "uppercase",
+              textShadow: shadow,
+            }}
+          >
             {inv?.title ?? "Undangan Pernikahan"}
+          </div>
+          <div style={{ display: "flex", marginTop: 14 }}>
+            <Divider />
           </div>
           <div
             style={{
               display: "flex",
-              flexWrap: "wrap",
               justifyContent: "center",
-              marginTop: 28,
-              fontSize: 104,
-              fontWeight: 700,
-              lineHeight: 1.1,
-              textShadow: "0 4px 24px rgba(0,0,0,0.35)",
+              marginTop: 8,
+              fontFamily: scriptNames ? "Script" : "Playfair",
+              fontWeight: scriptNames ? 400 : 700,
+              fontSize: nameSize(names, scriptNames),
+              lineHeight: 1.12,
+              textShadow: shadow,
             }}
           >
-            {inv ? `${inv.groomName} & ${inv.brideName}` : "Undangan"}
+            {names}
           </div>
           {inv && (
-            <div style={{ display: "flex", marginTop: 30, fontSize: 36, opacity: 0.95 }}>{formatDate(inv.eventDate)}</div>
+            <div style={{ display: "flex", marginTop: 20, fontSize: 36, letterSpacing: 2, textShadow: shadow }}>
+              {formatDate(inv.eventDate)}
+            </div>
+          )}
+          {venue && (
+            <div style={{ display: "flex", marginTop: 10, fontSize: 27, opacity: 0.92, textShadow: shadow }}>{venue}</div>
           )}
         </div>
       </div>
     ),
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: "Playfair", data: serif, weight: 700, style: "normal" },
+        { name: "Playfair", data: serifRegular, weight: 400, style: "normal" },
+        { name: "Script", data: script, weight: 400, style: "normal" },
+      ],
+    },
   );
 }
