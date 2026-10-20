@@ -8,6 +8,7 @@ import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Pe
 import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, Vinyl } from "./flora";
 import { Crescent, GoldDivider, GoldMirror, LaceOval, PointedArch } from "./heritage";
 import { DecoCorner, OceanWave, PalmFan, Pampas, RainbowArch, Shell, Starfish, Sunburst } from "./nature";
+import { Constellation, Lantern, MountainEdge, Moon, Pines, Sparkle, StarField } from "./scenery";
 import {
   DressSilhouette,
   FloralCorner,
@@ -328,11 +329,14 @@ export default function Invitation({
   const boho = tpl === "boho";
   const deco = tpl === "deco";
   const pantai = tpl === "pantai";
-  const gold = renda || batik || islami || deco; // template beraksen emas: pemisah dan bingkai berwarna emas
+  const oriental = tpl === "oriental";
+  const galaksi = tpl === "galaksi";
+  const gunung = tpl === "gunung";
+  const gold = renda || batik || islami || deco || oriental; // template beraksen emas: pemisah dan bingkai berwarna emas
   const envelopeLike = tpl === "envelope" || kraft;
   const divider = gold ? <GoldDivider /> : <Divider />;
   const torn = botanical || kraft ? <TornEdge /> : null;
-  const wave = satin ? <SatinWave /> : pantai ? <OceanWave /> : null;
+  const wave = satin ? <SatinWave /> : pantai ? <OceanWave /> : gunung ? <MountainEdge /> : null;
   /** Art Deco: empat sudut berundak di setiap kartu. */
   const frame = deco ? (
     <>
@@ -354,6 +358,12 @@ export default function Invitation({
       <Pampas className={`dc ${pos}`} />
     ) : pantai ? (
       pos === "tl" || pos === "br" ? <Starfish className={`dc ${pos}`} /> : <Shell className={`dc ${pos}`} />
+    ) : oriental ? (
+      pos === "tl" || pos === "tr" ? <Lantern className={`dc ${pos}`} /> : null // lampion menggantung dari atas
+    ) : galaksi ? (
+      pos === "tr" || pos === "bl" ? <Constellation className={`dc ${pos}`} /> : <Sparkle className={`dc ${pos}`} />
+    ) : gunung ? (
+      pos === "bl" || pos === "br" ? <Pines className={`dc ${pos}`} /> : null // pinus tumbuh dari bawah
     ) : null;
   const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : cluster(pos));
   /** Hiasan tambahan hanya untuk template baru (botanical sudah cukup ramai). */
@@ -393,11 +403,17 @@ export default function Invitation({
     >
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${fontQuery}&display=swap`} />
+      {oriental && (
+        // Hanya glyph 囍 yang diminta (&text=) agar unduhan font kecil.
+        // eslint-disable-next-line @next/next/no-page-custom-font
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&text=%E5%9B%8D&display=swap" />
+      )}
+      {galaksi && <StarField />}
       {inv.musicUrl && <audio ref={audio} src={inv.musicUrl} loop preload="none" />}
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && coverBg ? { backgroundImage: coverBg } : undefined} />
+        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && coverBg ? { backgroundImage: coverBg } : undefined} />
         {lavender && (
           <>
             <LineSpray className="cv tl" />
@@ -518,6 +534,38 @@ export default function Invitation({
                 <p className="inv-cover-date">{inv.dateText}</p>
               </div>
             </div>
+          ) : oriental ? (
+            <div className="or">
+              <Lantern className="or-lt l" />
+              <Lantern className="or-lt r" />
+              <div className="or-card">
+                <div className="or-xi" aria-hidden="true">
+                  囍
+                </div>
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+            </div>
+          ) : galaksi ? (
+            <div className="gx">
+              <Moon className="gx-moon" />
+              <p className="inv-eyebrow">{inv.title}</p>
+              {coverBg && <div className="inv-arch sm round" style={{ backgroundImage: coverBg }} />}
+              {names}
+              <Constellation className="gx-const" />
+              <p className="inv-cover-date">{inv.dateText}</p>
+            </div>
+          ) : gunung ? (
+            <div className="mt">
+              <p className="inv-eyebrow">{inv.title}</p>
+              {coverBg && <div className="inv-arch sm" style={{ backgroundImage: coverBg }} />}
+              {names}
+              <p className="inv-cover-date">{inv.dateText}</p>
+              <Pines className="mt-pine l" />
+              <Pines className="mt-pine r" />
+            </div>
           ) : pantai ? (
             <div className="sea">
               <Shell className="sea-shell" />
@@ -575,6 +623,7 @@ export default function Invitation({
           )}
         </div>
         {pantai && <OceanWave className="cv-wave" />}
+        {gunung && <MountainEdge className="cv-wave" />}
         {!opened && !opening && <div className="inv-scrollhint" aria-hidden="true" />}
       </section>
 

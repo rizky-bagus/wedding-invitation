@@ -22,6 +22,9 @@ export const TEMPLATES = [
   { id: "boho", name: "Boho", desc: "Pelangi lengkung, rumput pampas, daun palem kering." },
   { id: "deco", name: "Art Deco", desc: "Sunburst emas, bingkai bertingkat, hitam dan emas." },
   { id: "pantai", name: "Pantai", desc: "Ombak berlapis, kerang, bintang laut, pasir." },
+  { id: "oriental", name: "Oriental", desc: "Merah dan emas, lampion, simbol 囍, motif awan." },
+  { id: "galaksi", name: "Galaksi", desc: "Langit malam berbintang, bulan sabit, rasi bintang." },
+  { id: "gunung", name: "Pegunungan", desc: "Punggung gunung berlapis, pinus, fajar." },
 ] as const;
 
 /** Preset warna siap pakai: [nama, utama, latar, teks]. */
@@ -46,6 +49,9 @@ export const PALETTES = [
   { name: "Boho Clay", primary: "#b0603a", bg: "#f5ece0", text: "#4a3326", accent: "#8a9a78" },
   { name: "Deco Gold", primary: "#17181c", bg: "#f3ead3", text: "#17181c", accent: "#c9a24a" },
   { name: "Ocean Sand", primary: "#0f4c6b", bg: "#f7f1e3", text: "#11323f", accent: "#e08a63" },
+  { name: "Merah Emas", primary: "#9b1c24", bg: "#fbf3e4", text: "#3a1416", accent: "#d6a23c" },
+  { name: "Galaxy Indigo", primary: "#141a4a", bg: "#ece8ff", text: "#ece8ff", accent: "#f0c75e" },
+  { name: "Forest Dawn", primary: "#2f4a3a", bg: "#f6efe4", text: "#22332a", accent: "#e08a4a" },
 ] as const;
 
 export const HEADING_FONTS = [

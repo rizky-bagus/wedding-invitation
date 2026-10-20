@@ -18,6 +18,9 @@ const SPECS: Record<string, Spec> = {
   boho: { bg: "#f5ece0", card: "#f5ece0", accent: "#b0603a", shape: "rainbow" },
   deco: { bg: "#17181c", card: "#f3ead3", accent: "#c9a24a", shape: "deco" },
   pantai: { bg: "#a6dbe2", card: "#f7f1e3", accent: "#e08a63", shape: "sea" },
+  oriental: { bg: "#9b1c24", card: "#fbf3e4", accent: "#d6a23c", shape: "oriental" },
+  galaksi: { bg: "#141a4a", card: "#ffffff", accent: "#f0c75e", shape: "galaxy" },
+  gunung: { bg: "#e9a67e", card: "#f6efe4", accent: "#e08a4a", shape: "mountain" },
 };
 
 /** Tiga garis teks (nama, ampersand, tanggal) dalam warna aksen. */
@@ -162,6 +165,38 @@ export default function TemplateThumb({ id }: { id: string }) {
           <path d="M0 68 C8 62 16 72 24 66 C32 60 40 72 48 66 C54 62 58 66 60 66 V80 H0Z" fill={s.card} />
           <circle cx="12" cy="20" r="3.2" fill={s.accent} />
           <circle cx="50" cy="56" r="3.6" fill={s.accent} />
+        </g>
+      )}
+      {s.shape === "oriental" && (
+        <g>
+          <path d="M16 2 V10 M44 2 V10" stroke="#d6a23c" strokeWidth="0.8" />
+          <ellipse cx="16" cy="15" rx="4.4" ry="5.4" fill="#c23a40" />
+          <ellipse cx="44" cy="15" rx="4.4" ry="5.4" fill="#c23a40" />
+          <rect x="9" y="26" width="42" height="46" fill={s.card} stroke={s.accent} strokeWidth="1.2" />
+          <circle cx="30" cy="26" r="7" fill="#9b1c24" stroke={s.accent} strokeWidth="1.2" />
+          <rect x="27" y="23" width="6" height="6" fill="none" stroke={s.accent} strokeWidth="1.2" />
+          <Lines x={30} y={38} color="#9b1c24" w={22} />
+        </g>
+      )}
+      {s.shape === "galaxy" && (
+        <g>
+          <path d="M44 8 A9 9 0 1 0 44 26 A11 11 0 0 1 44 8Z" fill="#fff3c4" />
+          {[[8, 10], [16, 24], [52, 36], [10, 52], [50, 62], [34, 8], [22, 70]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r={i % 2 ? 0.9 : 1.4} fill="#fff" />
+          ))}
+          <rect x="9" y="32" width="42" height="36" rx="7" fill="#fff" opacity="0.1" stroke="#fff" strokeOpacity="0.4" strokeWidth="0.7" />
+          <Lines x={30} y={38} color={s.accent} w={22} />
+        </g>
+      )}
+      {s.shape === "mountain" && (
+        <g>
+          <rect width="60" height="80" rx="4" fill="#6f86a8" />
+          <rect y="38" width="60" height="42" fill="#e9a67e" />
+          <circle cx="30" cy="52" r="7" fill="#fff1c9" />
+          <rect x="9" y="12" width="42" height="26" rx="6" fill={s.card} />
+          <Lines x={30} y={16} color="#2f4a3a" w={20} />
+          <path d="M0 80 V64 L10 54 L18 62 L30 48 L42 62 L50 52 L60 62 V80Z" fill="#2f4a3a" />
+          <path d="M30 48 L26 54 L30 53 L34 54Z" fill="#fff" />
         </g>
       )}
       {dark && null}
