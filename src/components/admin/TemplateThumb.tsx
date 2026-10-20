@@ -15,6 +15,9 @@ const SPECS: Record<string, Spec> = {
   renda: { bg: "#4a1830", card: "#f1e6da", accent: "#c9a24a", shape: "scallop" },
   batik: { bg: "#5a3a22", card: "#f3e7cf", accent: "#c9a24a", shape: "batik" },
   islami: { bg: "#0f5a4a", card: "#fffaf0", accent: "#c9a24a", shape: "pointed" },
+  boho: { bg: "#f5ece0", card: "#f5ece0", accent: "#b0603a", shape: "rainbow" },
+  deco: { bg: "#17181c", card: "#f3ead3", accent: "#c9a24a", shape: "deco" },
+  pantai: { bg: "#a6dbe2", card: "#f7f1e3", accent: "#e08a63", shape: "sea" },
 };
 
 /** Tiga garis teks (nama, ampersand, tanggal) dalam warna aksen. */
@@ -126,6 +129,39 @@ export default function TemplateThumb({ id }: { id: string }) {
         <g>
           <path d="M10 74 V38 C10 24 24 16 30 6 C36 16 50 24 50 38 V74Z" fill={s.card} stroke={s.accent} strokeWidth="1.4" />
           <Lines x={30} y={36} color="#0f5a4a" w={20} />
+        </g>
+      )}
+      {s.shape === "rainbow" && (
+        <g>
+          <path d="M8 74 V40 A22 22 0 0 1 52 40 V74Z" fill="#b0603a" />
+          <path d="M13 74 V40 A17 17 0 0 1 47 40 V74Z" fill="#dcb09a" />
+          <path d="M18 74 V40 A12 12 0 0 1 42 40 V74Z" fill="#8a9a78" />
+          <path d="M23 74 V40 A7 7 0 0 1 37 40 V74Z" fill={s.card} />
+          <rect x="25" y="46" width="10" height="2.4" rx="1.2" fill="#b0603a" />
+          <rect x="26" y="52" width="8" height="2" rx="1" fill="#b0603a" opacity="0.6" />
+          <path d="M5 74 C4 62 8 56 10 50 M55 74 C56 62 52 56 50 50" stroke="#9a8a6a" strokeWidth="1" fill="none" />
+        </g>
+      )}
+      {s.shape === "deco" && (
+        <g>
+          {Array.from({ length: 9 }, (_, i) => {
+            const a = Math.PI + (Math.PI * (i + 0.5)) / 9;
+            return <path key={i} d={`M30 34 L${Math.round((30 + 24 * Math.cos(a)) * 10) / 10} ${Math.round((34 + 24 * Math.sin(a)) * 10) / 10}`} stroke={s.accent} strokeWidth="2" />;
+          })}
+          <rect x="8" y="36" width="44" height="36" fill={s.card} stroke={s.accent} strokeWidth="1.4" />
+          <rect x="11" y="39" width="38" height="30" fill="none" stroke={s.accent} strokeWidth="0.5" />
+          <Lines x={30} y={44} color="#17181c" w={22} />
+        </g>
+      )}
+      {s.shape === "sea" && (
+        <g>
+          <circle cx="48" cy="12" r="7" fill="#fff4c8" />
+          <rect x="9" y="22" width="42" height="30" rx="8" fill={s.card} />
+          <Lines x={30} y={27} color="#0f4c6b" w={20} />
+          <path d="M0 62 C8 56 16 66 24 60 C32 54 40 66 48 60 C54 56 58 60 60 60 V80 H0Z" fill="#0f4c6b" opacity="0.6" />
+          <path d="M0 68 C8 62 16 72 24 66 C32 60 40 72 48 66 C54 62 58 66 60 66 V80 H0Z" fill={s.card} />
+          <circle cx="12" cy="20" r="3.2" fill={s.accent} />
+          <circle cx="50" cy="56" r="3.6" fill={s.accent} />
         </g>
       )}
       {dark && null}

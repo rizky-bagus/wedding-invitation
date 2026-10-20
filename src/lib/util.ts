@@ -19,6 +19,9 @@ export const TEMPLATES = [
   { id: "renda", name: "Renda", desc: "Vintage: renda oval, pita beludru, cermin emas." },
   { id: "batik", name: "Batik", desc: "Motif kawung dan tumpal, warna sogan dan emas." },
   { id: "islami", name: "Islami", desc: "Lengkung masjid, bintang geometris, Basmalah." },
+  { id: "boho", name: "Boho", desc: "Pelangi lengkung, rumput pampas, daun palem kering." },
+  { id: "deco", name: "Art Deco", desc: "Sunburst emas, bingkai bertingkat, hitam dan emas." },
+  { id: "pantai", name: "Pantai", desc: "Ombak berlapis, kerang, bintang laut, pasir." },
 ] as const;
 
 /** Preset warna siap pakai: [nama, utama, latar, teks]. */
@@ -40,6 +43,9 @@ export const PALETTES = [
   { name: "Plum Velvet", primary: "#4a1830", bg: "#f1e6da", text: "#3a1d2a", accent: "#7a2a45" },
   { name: "Sogan Emas", primary: "#5a3a22", bg: "#f3e7cf", text: "#3b2616", accent: "#b8832f" },
   { name: "Emerald Gold", primary: "#0f5a4a", bg: "#f6f1e3", text: "#12342c", accent: "#c8a24a" },
+  { name: "Boho Clay", primary: "#b0603a", bg: "#f5ece0", text: "#4a3326", accent: "#8a9a78" },
+  { name: "Deco Gold", primary: "#17181c", bg: "#f3ead3", text: "#17181c", accent: "#c9a24a" },
+  { name: "Ocean Sand", primary: "#0f4c6b", bg: "#f7f1e3", text: "#11323f", accent: "#e08a63" },
 ] as const;
 
 export const HEADING_FONTS = [
