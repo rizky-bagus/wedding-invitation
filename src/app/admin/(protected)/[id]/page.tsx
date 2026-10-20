@@ -278,7 +278,14 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
           ))}
         </div>
         <div className="grid2" style={{ marginTop: "0.75rem" }}>
-          <PaletteField defaults={{ primary: inv.primaryColor, bg: inv.bgColor, text: inv.textColor }} />
+          <PaletteField
+            defaults={{
+              primary: inv.primaryColor,
+              bg: inv.bgColor,
+              text: inv.textColor,
+              accent: inv.accentColor || inv.primaryColor,
+            }}
+          />
           <label>
             Font judul
             <select name="headingFont" defaultValue={inv.headingFont}>

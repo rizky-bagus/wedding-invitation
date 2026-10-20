@@ -37,6 +37,7 @@ model Invitation {
   primaryColor String  @default("#b08968")
   bgColor     String   @default("#fffaf3")
   textColor   String   @default("#3b2f2f")
+  accentColor String   @default("")  // warna bunga/hiasan; kosong = ikut warna utama
   headingFont String   @default("Playfair Display")
   bodyFont    String   @default("Lato")
   createdAt   DateTime @default(now())

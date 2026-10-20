@@ -1590,3 +1590,671 @@
 .inv[data-template="panel"] .inv-count-box {
   border-radius: 2px;
 }
+
+/* ================= Seni bersama (satin, kraft, lavender) ================= */
+.inv-art {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+.inv .dc {
+  z-index: 0;
+  width: 170px;
+  height: auto;
+}
+.inv .dc.tl {
+  top: -12px;
+  left: -16px;
+}
+.inv .dc.tr {
+  top: -12px;
+  right: -16px;
+  transform: scaleX(-1);
+}
+.inv .dc.bl {
+  bottom: -10px;
+  left: -16px;
+}
+.inv .dc.br {
+  bottom: -10px;
+  right: -16px;
+  transform: scaleX(-1);
+}
+/* Calla lily bertumbuh dari bawah; di sudut atas dibalik agar tetap menjuntai ke dalam */
+.inv[data-template="satin"] .dc.tl {
+  transform: rotate(180deg) scaleX(-1);
+  top: -44px;
+}
+.inv[data-template="satin"] .dc.tr {
+  transform: rotate(180deg);
+  top: -44px;
+}
+.inv[data-template="satin"] .dc {
+  width: 118px;
+}
+.inv .bow {
+  position: relative;
+  display: block;
+  width: 150px;
+  height: auto;
+  margin: -2rem auto 0.4rem;
+}
+.inv-vinyl {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.4));
+}
+.inv[data-template="satin"] .inv-music,
+.inv[data-template="kraft"] .inv-music {
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+/* Tanggal acara berbentuk hati di kalender */
+.inv[data-template="satin"] .inv-cal-grid span.on,
+.inv[data-template="kraft"] .inv-cal-grid span.on,
+.inv[data-template="lavender"] .inv-cal-grid span.on {
+  position: relative;
+  z-index: 1;
+  background: none;
+  box-shadow: none;
+  color: #fff;
+}
+.inv[data-template="satin"] .inv-cal-grid span.on::before,
+.inv[data-template="kraft"] .inv-cal-grid span.on::before,
+.inv[data-template="lavender"] .inv-cal-grid span.on::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  z-index: -1;
+  background: var(--accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.inv[data-template="satin"] .inv-section > .inv-reveal,
+.inv[data-template="kraft"] .inv-section > .inv-reveal,
+.inv[data-template="lavender"] .inv-section > .inv-reveal {
+  position: relative;
+  z-index: 1;
+}
+
+/* ================= Tema: satin ================= */
+.inv[data-template="satin"] {
+  --radius: 14px;
+  --wave: var(--bg);
+  --cream: color-mix(in srgb, var(--bg) 90%, #fff);
+  background: radial-gradient(90% 40% at 50% 0%, color-mix(in srgb, var(--primary) 70%, #fff 10%), transparent),
+    color-mix(in srgb, var(--primary) 86%, #000);
+  color: var(--text);
+}
+.inv[data-template="satin"] .inv-cover {
+  color: #f7eee3;
+}
+.inv[data-template="satin"] .inv-cover-bg {
+  background: radial-gradient(60% 45% at 50% 40%, color-mix(in srgb, var(--primary) 60%, #fff 8%), transparent),
+    color-mix(in srgb, var(--primary) 82%, #000);
+  animation: none;
+}
+.inv[data-template="satin"] .inv-cover::before {
+  display: none;
+}
+.inv[data-template="satin"] .inv-cover .inv-eyebrow {
+  color: color-mix(in srgb, var(--accent) 35%, #fff);
+}
+.plaque {
+  position: relative;
+  width: min(330px, 84vw);
+  margin: 2.8rem auto 1.6rem;
+  aspect-ratio: 3 / 4;
+  color: var(--text);
+}
+.plaque > .inv-plaque {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.plaque-body {
+  position: absolute;
+  inset: 15% 13%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+}
+.inv[data-template="satin"] .plaque-body .inv-eyebrow {
+  color: var(--accent);
+  font-size: 0.64rem;
+  letter-spacing: 0.22em;
+}
+.plaque-body h1 {
+  font-size: clamp(1.9rem, 8vw, 2.5rem);
+  margin: 0.4rem 0;
+  color: var(--accent);
+}
+.plaque-body h1 .amp {
+  color: var(--text);
+  font-size: 0.5em;
+}
+.plaque-body .inv-cover-date {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+}
+.inv-arch.sm {
+  width: 96px;
+  margin: 0.5rem auto;
+  box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--accent);
+}
+.plaque-seal {
+  position: absolute;
+  left: 50%;
+  top: -34px;
+  width: 70px;
+  height: 70px;
+  margin-left: -35px;
+  z-index: 4;
+  color: color-mix(in srgb, var(--accent) 78%, #000);
+  filter: drop-shadow(0 3px 5px rgb(0 0 0 / 0.4));
+  animation: none !important;
+}
+.inv .plaque .pl {
+  position: absolute;
+  z-index: 3;
+  width: 150px;
+}
+.inv .plaque .pl.tl {
+  left: -52px;
+  top: -34px;
+  transform: rotate(-12deg);
+}
+.inv .plaque .pl.br {
+  right: -52px;
+  bottom: -30px;
+  transform: scaleX(-1) rotate(-8deg);
+}
+.inv[data-template="satin"] .inv-to {
+  background: color-mix(in srgb, #fff 10%, transparent);
+  border-color: color-mix(in srgb, #fff 30%, transparent);
+  color: #f7eee3;
+}
+.inv[data-template="satin"] .inv-open {
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #000));
+}
+.inv[data-template="satin"] .inv-scrollhint,
+.inv[data-template="satin"] .inv-scrollhint::after {
+  border-color: #f7eee3;
+}
+.inv[data-template="satin"] .inv-scrollhint::after {
+  background: #f7eee3;
+}
+.inv[data-template="satin"] .inv-main {
+  max-width: 560px;
+  padding: 0 0.7rem;
+}
+.inv[data-template="satin"] .inv-section {
+  position: relative;
+  margin-top: 66px;
+  background: var(--bg);
+  border-radius: 0 0 26px 26px;
+  box-shadow: 0 24px 40px rgb(0 0 0 / 0.28);
+}
+.inv[data-template="satin"] .inv-section h2 {
+  color: var(--accent);
+}
+.inv[data-template="satin"] .inv-section:first-of-type {
+  margin-top: 40px;
+}
+.inv-wave {
+  position: absolute;
+  left: 0;
+  top: -58px;
+  width: 100%;
+  height: 120px;
+  z-index: 0;
+  pointer-events: none;
+}
+.inv[data-template="satin"] .inv-footer {
+  --wave: color-mix(in srgb, var(--primary) 78%, #000);
+  background: color-mix(in srgb, var(--primary) 78%, #000);
+  color: #f7eee3;
+  box-shadow: none;
+}
+.inv[data-template="satin"] .inv-footer h2 {
+  color: color-mix(in srgb, var(--accent) 30%, #fff);
+}
+.inv[data-template="satin"] .inv-footer .inv-divider {
+  color: color-mix(in srgb, var(--accent) 30%, #fff);
+}
+.inv[data-template="satin"] .inv-tile,
+.inv[data-template="satin"] .inv-cal,
+.inv[data-template="satin"] .inv-gift-card,
+.inv[data-template="satin"] .inv-wishes li {
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg));
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.inv[data-template="satin"] .inv-frame {
+  border-radius: 999px 999px 10px 10px;
+  width: 170px;
+  height: 220px;
+  border-width: 0;
+  outline: 0;
+  box-shadow: 0 0 0 5px var(--bg), 0 0 0 6.5px var(--accent);
+}
+.inv[data-template="satin"] .inv-btn,
+.inv[data-template="satin"] .inv-form button {
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, #000));
+  border-color: transparent;
+}
+.inv[data-template="satin"] .inv-btn.ghost {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+/* ================= Tema: kraft ================= */
+.inv[data-template="kraft"] {
+  --radius: 4px;
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --noise-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-color: var(--primary);
+  background-image: var(--noise);
+}
+.inv[data-template="kraft"] .inv-cover {
+  color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-cover-bg {
+  background: radial-gradient(70% 50% at 50% 35%, color-mix(in srgb, var(--primary) 82%, #fff), transparent), var(--primary);
+  background-image: var(--noise), radial-gradient(70% 50% at 50% 35%, color-mix(in srgb, var(--primary) 82%, #fff), transparent);
+  animation: none;
+}
+.inv[data-template="kraft"] .inv-cover::before {
+  display: none;
+}
+.inv[data-template="kraft"] .inv-cover .inv-eyebrow {
+  color: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+.inv[data-template="kraft"] .inv-to {
+  background: color-mix(in srgb, var(--bg) 14%, transparent);
+  border-color: color-mix(in srgb, var(--bg) 40%, transparent);
+  color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-open {
+  background: var(--accent);
+}
+.inv[data-template="kraft"] .inv-scrollhint,
+.inv[data-template="kraft"] .inv-scrollhint::after {
+  border-color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-scrollhint::after {
+  background: var(--bg);
+}
+.polaroid {
+  position: relative;
+  width: 150px;
+  margin: 0 auto -0.6rem;
+  padding: 8px 8px 30px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.3);
+  transform: rotate(-3deg);
+}
+.polaroid i {
+  display: block;
+  aspect-ratio: 1;
+  background: center / cover;
+}
+.polaroid::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 70px;
+  height: 22px;
+  margin-left: -35px;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  transform: rotate(4deg);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+}
+.env .env-fl {
+  position: absolute;
+  z-index: 6;
+  width: 150px;
+  animation: none !important;
+}
+.env .env-fl.l {
+  left: -54px;
+  bottom: -38px;
+}
+.env .env-fl.r {
+  right: -54px;
+  bottom: -38px;
+  transform: scaleX(-1);
+}
+.inv[data-template="kraft"] .env-card {
+  background: color-mix(in srgb, var(--bg) 94%, #fff);
+}
+.inv[data-template="kraft"] .env-card h1 {
+  color: var(--accent);
+}
+.inv[data-template="kraft"] .env-seal {
+  color: color-mix(in srgb, var(--accent) 80%, #000);
+}
+.inv[data-template="kraft"] .inv-main {
+  max-width: 580px;
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(odd) {
+  --sec: var(--bg);
+  background-color: var(--bg);
+  background-image: var(--noise-light);
+  color: var(--text);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-amp {
+  color: color-mix(in srgb, var(--bg) 80%, transparent);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) {
+  --sec: var(--primary);
+  background-color: var(--primary);
+  background-image: var(--noise);
+  color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-main > footer {
+  --sec: var(--bg);
+  background-color: var(--bg);
+  background-image: var(--noise-light);
+  color: var(--text);
+}
+.inv[data-template="kraft"] .inv-section {
+  position: relative;
+  margin-top: 0;
+}
+.inv[data-template="kraft"] .inv-torn {
+  top: -16px;
+  height: 18px;
+  color: var(--sec, var(--bg));
+}
+.inv[data-template="kraft"] .inv-section h2 {
+  color: var(--accent);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) h2 {
+  color: var(--bg);
+}
+/* isi bagian hijau (genap): teks terang */
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) :is(.inv-eyebrow, .inv-divider) {
+  color: color-mix(in srgb, var(--bg) 85%, transparent);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) :is(.inv-tile, .inv-cal, .inv-gift-card, .inv-note) {
+  background: color-mix(in srgb, var(--bg) 10%, transparent);
+  border-color: color-mix(in srgb, var(--bg) 40%, transparent);
+  box-shadow: none;
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-tile svg,
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-timeline .ico svg,
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-timeline .t {
+  color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-timeline::before {
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-timeline .dot {
+  background: var(--primary);
+  border-color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-count-box {
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  color: var(--primary);
+  box-shadow: none;
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-btn.ghost {
+  color: var(--bg);
+  border-color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-form input[type="text"],
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-form input:not([type]),
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-form input[type="number"],
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-form textarea {
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  color: var(--text);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-radio span {
+  border-color: color-mix(in srgb, var(--bg) 55%, transparent);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-radio input:checked + span {
+  background: var(--bg);
+  color: var(--primary);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-wishes li {
+  background: color-mix(in srgb, var(--bg) 10%, transparent);
+  border-color: color-mix(in srgb, var(--bg) 35%, transparent);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-avatar {
+  background: var(--bg);
+  color: var(--primary);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) .inv-form button {
+  background: var(--bg);
+  color: var(--primary);
+  border-color: var(--bg);
+}
+.inv[data-template="kraft"] .inv-main > section:nth-of-type(even) :is(.inv-ok, .inv-err) {
+  color: var(--bg);
+}
+/* foto ala polaroid dengan selotip */
+.inv[data-template="kraft"] .inv-frame {
+  position: relative;
+  overflow: visible;
+  width: 180px;
+  height: 226px;
+  padding: 10px 10px 36px;
+  border: 0;
+  outline: 0;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.25);
+  transform: rotate(-3deg);
+}
+.inv[data-template="kraft"] .inv-person:nth-child(3) .inv-frame {
+  transform: rotate(3deg);
+}
+.inv[data-template="kraft"] .inv-frame::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 72px;
+  height: 22px;
+  margin-left: -36px;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  transform: rotate(-4deg);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+}
+.inv[data-template="kraft"] .inv-frame img,
+.inv[data-template="kraft"] .inv-frame .inv-mono {
+  height: 100%;
+  border-radius: 1px;
+}
+.inv[data-template="kraft"] .inv-grid button {
+  position: relative;
+  padding: 6px 6px 18px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.2);
+  transform: rotate(-1.6deg);
+}
+.inv[data-template="kraft"] .inv-grid button:nth-child(even) {
+  transform: rotate(1.8deg);
+}
+.inv[data-template="kraft"] .inv-btn,
+.inv[data-template="kraft"] .inv-form button {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.inv[data-template="kraft"] .inv-btn.ghost {
+  background: transparent;
+  color: var(--accent);
+}
+
+/* ================= Tema: lavender ================= */
+.inv[data-template="lavender"] {
+  --radius: 2px;
+  --ls: var(--primary);
+}
+.inv[data-template="lavender"] .inv-cover-bg {
+  background: radial-gradient(60% 40% at 50% 30%, color-mix(in srgb, var(--accent) 22%, transparent), transparent), var(--bg);
+  animation: none;
+}
+.inv[data-template="lavender"] .inv-cover::before {
+  display: none;
+}
+.inv .cv {
+  z-index: 0;
+  width: min(210px, 50vw);
+  height: auto;
+  top: 0;
+}
+.inv .cv.tl {
+  left: 0;
+}
+.inv .cv.tr {
+  right: 0;
+  transform: scaleX(-1);
+}
+.lav-mono {
+  display: grid;
+  justify-items: center;
+  margin: 0.8rem 0 0.4rem;
+  font-family: var(--font-heading);
+  font-size: 4.6rem;
+  line-height: 0.95;
+  color: var(--primary);
+}
+.lav-mono i {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 1px;
+  margin: 0.5rem 0;
+  background: var(--primary);
+}
+.lav-mono i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  transform: translate(-50%, -50%);
+  background: var(--accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z'/%3E%3C/svg%3E") center / contain no-repeat;
+  outline: 6px solid var(--bg);
+}
+.inv[data-template="lavender"] .inv-cover-inner {
+  padding-top: 4.6rem;
+}
+.inv[data-template="lavender"] .inv-cover h1 {
+  font-size: clamp(2rem, 8vw, 2.8rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.inv[data-template="lavender"] .inv-cover h1 .amp {
+  font-size: 0.45em;
+}
+.inv[data-template="lavender"] .inv-open {
+  background: var(--primary);
+}
+.inv[data-template="lavender"] .inv-main {
+  max-width: 560px;
+}
+.inv[data-template="lavender"] .inv-section {
+  position: relative;
+  padding: 0 1.4rem 3.4rem;
+  overflow: hidden;
+}
+.inv[data-template="lavender"] .inv-opening,
+.inv[data-template="lavender"] .inv-couple,
+.inv[data-template="lavender"] .inv-footer {
+  padding-top: 3.4rem;
+}
+.inv[data-template="lavender"] .inv-section > .inv-reveal > .inv-eyebrow,
+.inv[data-template="lavender"] .inv-section > .inv-reveal > .inv-divider {
+  display: none;
+}
+.inv[data-template="lavender"] .inv-opening .inv-eyebrow,
+.inv[data-template="lavender"] .inv-footer .inv-divider {
+  display: block;
+}
+.inv[data-template="lavender"] .inv-section > .inv-reveal > h2 {
+  margin: 0 -1.4rem 1.6rem;
+  padding: 1.05rem 1.4rem;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: left;
+}
+.inv[data-template="lavender"] .inv-footer h2 {
+  background: none;
+  margin: 0;
+  padding: 0;
+  color: var(--primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.inv[data-template="lavender"] .dc {
+  width: 130px;
+}
+.inv[data-template="lavender"] .dc.tl,
+.inv[data-template="lavender"] .dc.tr {
+  top: 0;
+}
+/* Bagian bertajuk pita ungu: hiasan garis dipasang di bawah pita, di tepi kartu. */
+.inv[data-template="lavender"] .inv-section:not(.inv-opening):not(.inv-couple) .dc.tl,
+.inv[data-template="lavender"] .inv-section:not(.inv-opening):not(.inv-couple) .dc.tr {
+  top: 3.6rem;
+  width: 96px;
+  opacity: 0.5;
+}
+.inv[data-template="lavender"] .inv-frame {
+  border-radius: 999px 999px 4px 4px;
+  width: 170px;
+  height: 220px;
+  border-width: 0;
+  outline: 0;
+  box-shadow: 0 0 0 5px var(--bg), 0 0 0 6px var(--primary);
+}
+.inv[data-template="lavender"] .inv-tile,
+.inv[data-template="lavender"] .inv-cal,
+.inv[data-template="lavender"] .inv-gift-card {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+}
+.inv[data-template="lavender"] .inv-count-box {
+  background: none;
+  color: var(--primary);
+  box-shadow: none;
+  border: 1px solid color-mix(in srgb, var(--primary) 50%, transparent);
+  border-radius: 2px;
+}
+.inv[data-template="lavender"] .inv-date .inv-count {
+  margin: 1.6rem -1.4rem -3.4rem;
+  padding: 1.5rem 1rem 2.2rem;
+  background: var(--primary);
+}
+.inv[data-template="lavender"] .inv-date .inv-count-box {
+  color: #fff;
+  border-color: color-mix(in srgb, #fff 55%, transparent);
+}
+.inv[data-template="lavender"] .inv-btn,
+.inv[data-template="lavender"] .inv-form button {
+  background: var(--primary);
+  border-color: var(--primary);
+  border-radius: 2px;
+}
+.inv[data-template="lavender"] .inv-btn.ghost {
+  background: transparent;
+  color: var(--primary);
+}

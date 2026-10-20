@@ -38,12 +38,14 @@ async function coverDataUrl(src: string): Promise<string | null> {
   }
 }
 
-/** Ukuran nama menyesuaikan panjangnya agar tidak terpotong. */
+/**
+ * Ukuran nama menyesuaikan lebar yang tersedia (900 px) agar selalu satu baris.
+ * Huruf kapital font script lebar, jadi perkiraan lebar per karakter dibuat longgar.
+ */
 function nameSize(text: string, script: boolean): number {
-  const base = script ? 150 : 112;
-  if (text.length <= 16) return base;
-  if (text.length <= 24) return Math.round(base * 0.78);
-  return Math.round(base * 0.6);
+  const base = script ? 140 : 108;
+  const perChar = script ? 0.66 : 0.58;
+  return Math.max(52, Math.min(base, Math.floor(900 / (Math.max(text.length, 1) * perChar))));
 }
 
 const shadow = "0 3px 18px rgba(0,0,0,0.55)";
@@ -64,8 +66,8 @@ export default async function Image({ params }: { params: Promise<{ invitation: 
   ]);
 
   // Template yang bernuansa bunga/tulisan tangan memakai font script untuk nama.
-  const scriptNames = template === "floral" || template === "botanical" || template === "envelope";
-  const floral = template === "floral" || template === "botanical";
+  const floral = ["floral", "botanical", "satin", "kraft"].includes(template);
+  const scriptNames = floral || template === "envelope";
   const names = inv ? `${inv.groomName} & ${inv.brideName}` : "Undangan";
   const initials = inv ? `${inv.groomName.charAt(0)} & ${inv.brideName.charAt(0)}`.toUpperCase() : "";
   const venue = inv?.venueName ? (inv.venueName.length > 46 ? `${inv.venueName.slice(0, 44)}…` : inv.venueName) : "";
@@ -198,6 +200,7 @@ export default async function Image({ params }: { params: Promise<{ invitation: 
             style={{
               display: "flex",
               justifyContent: "center",
+              whiteSpace: "nowrap",
               marginTop: 8,
               fontFamily: scriptNames ? "Script" : "Playfair",
               fontWeight: scriptNames ? 400 : 700,

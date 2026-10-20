@@ -1,4 +1,5 @@
 /** Seni SVG orisinal untuk template baru. Semua dibuat dari bentuk dasar, tanpa aset pihak ketiga. */
+import { IconCake } from "./flora";
 
 const f = (n: number) => Math.round(n * 100) / 100;
 
@@ -210,6 +211,7 @@ export function iconFor(title: string) {
   if (/akad|ijab|nikah|pemberkatan|ceremony|upacara|janji/.test(t)) return <IconRings />;
   if (/resepsi|makan|jamuan|santap|dinner|lunch|reception|prasmanan/.test(t)) return <IconPlate />;
   if (/foto|photo|dokumentasi/.test(t)) return <IconCamera />;
+  if (/kue|cake|pesta|party|syukuran/.test(t)) return <IconCake />;
   if (/toast|sambutan|salam|sungkem/.test(t)) return <IconGlass />;
   return <IconHeart />;
 }

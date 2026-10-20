@@ -26,9 +26,12 @@ otomatis ditambahkan saat mereka mengonfirmasi kehadiran. Slug `admin`, `api`, `
 
 ## Template
 
-Enam template: `elegant`, `floral`, `modern`, `envelope` (amplop bersegel lilin), `botanical`
-(bingkai lengkung, bunga, tepi kertas sobek), dan `panel` (panel warna pekat). Semua ilustrasi SVG
-dibuat sendiri di `src/components/invitation/art.tsx` dan `ornaments.tsx`, tanpa aset pihak ketiga.
+Sembilan template: `elegant`, `floral`, `modern`, `envelope` (amplop bersegel lilin), `botanical`
+(bingkai lengkung, bunga, tepi kertas sobek), `panel` (panel warna pekat), `satin` (kain satin
+bergelombang, plakat berlekuk, calla lily), `kraft` (kertas kraft sobek, dahlia, polaroid bertape),
+dan `lavender` (gambar garis lavender dan daisy, pita judul). Semua ilustrasi SVG dibuat sendiri di
+`src/components/invitation/` (`art.tsx`, `ornaments.tsx`, `flora.tsx`), tanpa aset pihak ketiga.
+Tiap undangan punya empat warna: utama, latar, teks, dan aksen (untuk bunga, pita, dan hiasan).
 Bagian undangan: kalender, hitung mundur, rangkaian acara (timeline), dress code, hadiah (salin
 rekening), konfirmasi lewat WhatsApp, RSVP, dan ucapan. Semuanya diatur dari dashboard.
 

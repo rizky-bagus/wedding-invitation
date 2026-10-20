@@ -5,6 +5,7 @@ import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
 import { previewOverrides } from "@/lib/preview";
 import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem } from "@/lib/util";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
+import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, Vinyl } from "./flora";
 import {
   DressSilhouette,
   FloralCorner,
@@ -49,6 +50,7 @@ export type InvitationData = {
   primaryColor: string;
   bgColor: string;
   textColor: string;
+  accentColor: string;
   headingFont: string;
   bodyFont: string;
 };
@@ -272,7 +274,7 @@ export default function Invitation({
   const open = () => {
     // play() harus dipanggil langsung dari klik agar tidak diblokir browser.
     audio.current?.play().then(() => setPlaying(true)).catch(() => {});
-    if (tpl === "envelope") {
+    if (tpl === "envelope" || tpl === "kraft") {
       setOpening(true);
       setTimeout(finishOpen, 1500);
     } else {
@@ -293,6 +295,7 @@ export default function Invitation({
     "--primary": inv.primaryColor,
     "--bg": inv.bgColor,
     "--text": inv.textColor,
+    "--accent": inv.accentColor || inv.primaryColor,
     "--font-heading": `"${inv.headingFont}", serif`,
     "--font-body": `"${inv.bodyFont}", sans-serif`,
   } as React.CSSProperties;
@@ -312,10 +315,27 @@ export default function Invitation({
       )}`
     : null;
 
-  // Dekorasi khusus template botanical: tepi kertas sobek dan rangkaian bunga di sudut.
+  // Dekorasi per template: tepi kertas sobek, gelombang kain satin, dan rangkaian bunga di sudut.
   const botanical = tpl === "botanical";
-  const torn = botanical ? <TornEdge /> : null;
-  const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : null);
+  const satin = tpl === "satin";
+  const kraft = tpl === "kraft";
+  const lavender = tpl === "lavender";
+  const envelopeLike = tpl === "envelope" || kraft;
+  const torn = botanical || kraft ? <TornEdge /> : null;
+  const wave = satin ? <SatinWave /> : null;
+  /** Bunga khas template baru: calla lily (satin), dahlia (kraft), garis lavender (lavender). */
+  const cluster = (pos: string) =>
+    satin ? (
+      <LilyCluster className={`dc ${pos}`} />
+    ) : kraft ? (
+      <DahliaCluster className={`dc ${pos}`} />
+    ) : lavender ? (
+      <LineSpray className={`dc ${pos}`} />
+    ) : null;
+  const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : cluster(pos));
+  /** Hiasan tambahan hanya untuk template baru (botanical sudah cukup ramai). */
+  const fcx = (pos: string) => (botanical ? null : cluster(pos));
+  const bow = satin || kraft ? <Bow className="bow" /> : null;
 
   const names = (
     <h1>
@@ -354,7 +374,13 @@ export default function Invitation({
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        <div className="inv-cover-bg" style={!botanical && coverBg ? { backgroundImage: coverBg } : undefined} />
+        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && coverBg ? { backgroundImage: coverBg } : undefined} />
+        {lavender && (
+          <>
+            <LineSpray className="cv tl" />
+            <LineSpray className="cv tr" />
+          </>
+        )}
         {tpl === "floral" && (
           <>
             <Flower className="inv-flower-a" />
@@ -380,7 +406,12 @@ export default function Invitation({
             </>
           )}
 
-          {tpl === "envelope" ? (
+          {kraft && coverBg && (
+            <div className="polaroid">
+              <i style={{ backgroundImage: coverBg }} />
+            </div>
+          )}
+          {envelopeLike ? (
             <div className="env" data-open={opening || opened}>
               <div className="env-back" />
               <div className="env-card">
@@ -391,7 +422,37 @@ export default function Invitation({
               <div className="env-front" />
               <div className="env-flap" />
               <WaxSeal initials={initials} className="env-seal" />
+              {kraft && (
+                <>
+                  <DahliaCluster className="env-fl l" />
+                  <DahliaCluster className="env-fl r" />
+                </>
+              )}
             </div>
+          ) : satin ? (
+            <div className="plaque">
+              <ScallopPlaque />
+              <div className="plaque-body">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <WaxSeal initials={initials} className="plaque-seal" />
+              <LilyCluster className="pl tl" />
+              <LilyCluster className="pl br" />
+            </div>
+          ) : lavender ? (
+            <>
+              <p className="inv-eyebrow">{inv.title}</p>
+              <div className="lav-mono" aria-hidden="true">
+                <span>{inv.groomName.charAt(0).toUpperCase()}</span>
+                <i />
+                <span>{inv.brideName.charAt(0).toUpperCase()}</span>
+              </div>
+              {names}
+              <p className="inv-cover-date">{inv.dateText}</p>
+            </>
           ) : (
             <>
               <p className="inv-eyebrow">{inv.title}</p>
@@ -433,13 +494,13 @@ export default function Invitation({
         <main className="inv-main">
           {inv.musicUrl && (
             <button className="inv-music" data-playing={playing} onClick={toggleMusic} aria-label="Putar atau jeda musik">
-              <IconNote />
+              {satin || kraft ? <Vinyl /> : <IconNote />}
             </button>
           )}
 
           {/* ---------- Pembuka ---------- */}
           <section className="inv-section inv-opening">
-            {torn}
+            {torn}{wave}
             {fc("tr")}
             <Reveal>
               <p className="inv-eyebrow">Undangan</p>
@@ -450,7 +511,8 @@ export default function Invitation({
 
           {/* ---------- Mempelai ---------- */}
           <section className="inv-section inv-couple">
-            {torn}
+            {fcx("tl")}
+            {torn}{wave}
             <Reveal className="inv-person">
               <Portrait src={inv.groomPhoto} name={inv.groomName} />
               <h2>{inv.groomName}</h2>
@@ -468,7 +530,8 @@ export default function Invitation({
 
           {/* ---------- Tanggal: kalender + hitung mundur ---------- */}
           <section className="inv-section inv-date">
-            {torn}
+            {fcx("tr")}
+            {torn}{wave}
             <Reveal>
               <p className="inv-eyebrow">Save the Date</p>
               <h2>{inv.dateText}</h2>
@@ -480,7 +543,7 @@ export default function Invitation({
 
           {/* ---------- Acara ---------- */}
           <section className="inv-section inv-event">
-            {torn}
+            {torn}{wave}
             {fc("bl")}
             <Reveal>
               <p className="inv-eyebrow">Hari Bahagia</p>
@@ -531,7 +594,7 @@ export default function Invitation({
           {/* ---------- Rangkaian acara ---------- */}
           {inv.schedule.length > 0 && (
             <section className="inv-section inv-schedule">
-              {torn}
+              {torn}{wave}
               <Reveal>
                 <p className="inv-eyebrow">Rangkaian Acara</p>
                 <h2>Susunan Acara</h2>
@@ -556,7 +619,7 @@ export default function Invitation({
           {/* ---------- Dress code ---------- */}
           {hasDress && (
             <section className="inv-section inv-dress">
-              {torn}
+              {torn}{wave}
               {fc("tr")}
               <Reveal>
                 <p className="inv-eyebrow">Dress Code</p>
@@ -581,7 +644,7 @@ export default function Invitation({
           {/* ---------- Galeri ---------- */}
           {inv.gallery.length > 0 && (
             <section className="inv-section inv-gallery">
-              {torn}
+              {torn}{wave}
               <Reveal>
                 <p className="inv-eyebrow">Galeri</p>
                 <h2>Momen Kami</h2>
@@ -601,8 +664,10 @@ export default function Invitation({
           {/* ---------- Hadiah ---------- */}
           {hasGift && (
             <section className="inv-section inv-gift">
-              {torn}
+              {fcx("tr")}
+              {torn}{wave}
               <Reveal>
+                {bow}
                 <p className="inv-eyebrow">Tanda Kasih</p>
                 <h2>Hadiah</h2>
                 <Divider />
@@ -621,7 +686,8 @@ export default function Invitation({
 
           {/* ---------- RSVP & ucapan ---------- */}
           <section className="inv-section inv-rsvp">
-            {torn}
+            {fcx("tl")}
+            {torn}{wave}
             <Reveal>
               <p className="inv-eyebrow">RSVP &amp; Ucapan</p>
               <h2>Konfirmasi Kehadiran</h2>
@@ -654,7 +720,7 @@ export default function Invitation({
 
           {/* ---------- Penutup ---------- */}
           <footer className="inv-section inv-footer">
-            {torn}
+            {torn}{wave}
             {fc("br")}
             <Reveal>
               <Divider />

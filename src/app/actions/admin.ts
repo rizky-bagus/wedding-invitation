@@ -114,6 +114,7 @@ export async function updateInvitation(id: string, _prev: ActionResult, fd: Form
       primaryColor: color("primaryColor", "#b08968"),
       bgColor: color("bgColor", "#fffaf3"),
       textColor: color("textColor", "#3b2f2f"),
+      accentColor: color("accentColor", ""),
       headingFont: HEADING_FONTS.includes(str(fd, "headingFont")) ? str(fd, "headingFont") : HEADING_FONTS[0],
       bodyFont: BODY_FONTS.includes(str(fd, "bodyFont")) ? str(fd, "bodyFont") : BODY_FONTS[0],
     },

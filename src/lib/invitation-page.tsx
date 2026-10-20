@@ -98,6 +98,7 @@ export async function InvitationPage({ slug, to }: { slug: string; to?: string }
         primaryColor: inv.primaryColor,
         bgColor: inv.bgColor,
         textColor: inv.textColor,
+        accentColor: inv.accentColor || inv.primaryColor,
         headingFont: inv.headingFont,
         bodyFont: inv.bodyFont,
       }}

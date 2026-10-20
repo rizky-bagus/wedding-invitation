@@ -234,10 +234,14 @@
 
 /* ---------- Form ---------- */
 .grid2,
-.grid3 {
+.grid3,
+.grid4 {
   display: grid;
   gap: 0.8rem;
   grid-template-columns: 1fr;
+}
+.grid4 {
+  grid-template-columns: 1fr 1fr;
 }
 @media (min-width: 640px) {
   .grid2 {
@@ -245,6 +249,9 @@
   }
   .grid3 {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .grid4 {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 .admin label {

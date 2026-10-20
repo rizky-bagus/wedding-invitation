@@ -13,21 +13,27 @@ export const TEMPLATES = [
   { id: "envelope", name: "Envelope", desc: "Dibuka dari amplop bersegel lilin, kartu foto bertumpuk." },
   { id: "botanical", name: "Botanical", desc: "Bingkai lengkung, bunga dan daun, tepi kertas sobek." },
   { id: "panel", name: "Panel", desc: "Panel warna pekat bergantian, ikon garis tipis, rapi." },
+  { id: "satin", name: "Satin", desc: "Kain satin bergelombang, plakat berlekuk, calla lily dan mawar." },
+  { id: "kraft", name: "Kraft", desc: "Kertas kraft sobek, dahlia, amplop berbunga, piringan hitam." },
+  { id: "lavender", name: "Lavender", desc: "Gambar garis lavender dan daisy, hati di kalender." },
 ] as const;
 
 /** Preset warna siap pakai: [nama, utama, latar, teks]. */
 export const PALETTES = [
-  { name: "Emas Klasik", primary: "#b08968", bg: "#fffaf3", text: "#3b2f2f" },
-  { name: "Sage Green", primary: "#6b8f71", bg: "#f4f8f2", text: "#26332a" },
-  { name: "Dusty Rose", primary: "#c76b7e", bg: "#fff5f6", text: "#4a2c33" },
-  { name: "Navy & Emas", primary: "#d4af5f", bg: "#101b33", text: "#f3ead2" },
-  { name: "Terracotta", primary: "#c4623a", bg: "#fbf1ea", text: "#3d2418" },
-  { name: "Monokrom", primary: "#111111", bg: "#ffffff", text: "#111111" },
-  { name: "Navy Klasik", primary: "#3b4a6b", bg: "#f7f3ec", text: "#2a3148" },
-  { name: "Olive Sage", primary: "#7d8a68", bg: "#f6f1e7", text: "#2f3626" },
-  { name: "Blush Garden", primary: "#d98f9b", bg: "#fff7f4", text: "#4a2f33" },
-  { name: "Lilac", primary: "#8c7aa8", bg: "#f7f3fa", text: "#3a3150" },
-  { name: "Cornflower", primary: "#3f62b5", bg: "#fbf8f1", text: "#1f2b4d" },
+  { name: "Emas Klasik", primary: "#b08968", bg: "#fffaf3", text: "#3b2f2f", accent: "#9c6b4a" },
+  { name: "Sage Green", primary: "#6b8f71", bg: "#f4f8f2", text: "#26332a", accent: "#c98f8a" },
+  { name: "Dusty Rose", primary: "#c76b7e", bg: "#fff5f6", text: "#4a2c33", accent: "#a84a5c" },
+  { name: "Navy & Emas", primary: "#d4af5f", bg: "#101b33", text: "#f3ead2", accent: "#e9c46a" },
+  { name: "Terracotta", primary: "#c4623a", bg: "#fbf1ea", text: "#3d2418", accent: "#9a3f22" },
+  { name: "Monokrom", primary: "#111111", bg: "#ffffff", text: "#111111", accent: "#555555" },
+  { name: "Navy Klasik", primary: "#3b4a6b", bg: "#f7f3ec", text: "#2a3148", accent: "#8aa0c8" },
+  { name: "Olive Sage", primary: "#7d8a68", bg: "#f6f1e7", text: "#2f3626", accent: "#8c2f3d" },
+  { name: "Blush Garden", primary: "#d98f9b", bg: "#fff7f4", text: "#4a2f33", accent: "#b8566a" },
+  { name: "Lilac", primary: "#8c7aa8", bg: "#f7f3fa", text: "#3a3150", accent: "#6d4c93" },
+  { name: "Cornflower", primary: "#3f62b5", bg: "#fbf8f1", text: "#1f2b4d", accent: "#7fa0e0" },
+  { name: "Burgundy Satin", primary: "#5b1423", bg: "#f6eee4", text: "#3b1c22", accent: "#8f2236" },
+  { name: "Kraft Wine", primary: "#6f7f4d", bg: "#f7f2e8", text: "#3a2b24", accent: "#8c1c2f" },
+  { name: "Lavender Line", primary: "#5a2a6e", bg: "#faf6fb", text: "#3a2a45", accent: "#9a7bbd" },
 ] as const;
 
 export const HEADING_FONTS = [

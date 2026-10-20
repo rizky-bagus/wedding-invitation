@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { PALETTES } from "@/lib/util";
 
-type Colors = { primary: string; bg: string; text: string };
+type Colors = { primary: string; bg: string; text: string; accent: string };
 
 export default function PaletteField({ defaults }: { defaults: Colors }) {
   const [c, setC] = useState<Colors>(defaults);
@@ -18,12 +18,12 @@ export default function PaletteField({ defaults }: { defaults: Colors }) {
     window.dispatchEvent(new Event("inv-form-change"));
   }, [c]);
 
-  const active = PALETTES.find((p) => p.primary === c.primary && p.bg === c.bg && p.text === c.text)?.name;
+  const active = PALETTES.find((p) => p.primary === c.primary && p.bg === c.bg && p.text === c.text && p.accent === c.accent)?.name;
 
   return (
     <div className="span2">
       <p className="hint" style={{ margin: "0 0 0.5rem" }}>
-        Pilih preset, lalu sesuaikan warna bila perlu.
+        Pilih preset, lalu sesuaikan warna bila perlu. Warna aksen dipakai untuk bunga, pita, dan hiasan.
       </p>
       <div className="palettes">
         {PALETTES.map((p) => (
@@ -31,18 +31,19 @@ export default function PaletteField({ defaults }: { defaults: Colors }) {
             key={p.name}
             type="button"
             className={`palette ${active === p.name ? "on" : ""}`}
-            onClick={() => setC({ primary: p.primary, bg: p.bg, text: p.text })}
+            onClick={() => setC({ primary: p.primary, bg: p.bg, text: p.text, accent: p.accent })}
             aria-pressed={active === p.name}
           >
             <span className="swatch" style={{ background: p.bg }}>
               <i style={{ background: p.primary }} />
+              <i style={{ background: p.accent }} />
               <i style={{ background: p.text }} />
             </span>
             {p.name}
           </button>
         ))}
       </div>
-      <div className="grid3" style={{ marginTop: "0.75rem" }}>
+      <div className="grid4" style={{ marginTop: "0.75rem" }}>
         <label>
           Warna utama
           <input type="color" name="primaryColor" value={c.primary} onChange={(e) => setC({ ...c, primary: e.target.value })} />
@@ -54,6 +55,10 @@ export default function PaletteField({ defaults }: { defaults: Colors }) {
         <label>
           Warna teks
           <input type="color" name="textColor" value={c.text} onChange={(e) => setC({ ...c, text: e.target.value })} />
+        </label>
+        <label>
+          Warna aksen
+          <input type="color" name="accentColor" value={c.accent} onChange={(e) => setC({ ...c, accent: e.target.value })} />
         </label>
       </div>
     </div>

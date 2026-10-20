@@ -57,6 +57,7 @@ export function previewOverrides(fields: unknown): Partial<InvitationData> {
     ["primaryColor", "primaryColor"],
     ["bgColor", "bgColor"],
     ["textColor", "textColor"],
+    ["accentColor", "accentColor"],
   ] as const) {
     const v = str(field);
     if (v && isHexColor(v)) out[key] = v;
