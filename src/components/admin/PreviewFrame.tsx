@@ -9,9 +9,25 @@ export const FORM_CHANGE_EVENT = "inv-form-change";
  * Pratinjau undangan dalam bingkai HP. Isi form dikirim ke iframe lewat postMessage,
  * jadi perubahan langsung terlihat tanpa menyimpan.
  */
+const PHONE_WIDTH = 390; // lebar layar HP yang disimulasikan (px)
+const SCREEN_HEIGHT = 540; // tinggi layar pratinjau di dashboard (px); harus sama dengan .phone-screen di admin.css
+
 export default function PreviewFrame({ path, formId }: { path: string; formId: string }) {
   const frame = useRef<HTMLIFrameElement>(null);
+  const screen = useRef<HTMLDivElement>(null);
   const [version, setVersion] = useState(0);
+  const [scale, setScale] = useState(0.72);
+
+  // Skala mengikuti lebar kolom pratinjau yang sebenarnya.
+  useEffect(() => {
+    const el = screen.current;
+    if (!el) return;
+    const update = () => el.clientWidth > 0 && setScale(el.clientWidth / PHONE_WIDTH);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const send = useCallback(() => {
     const form = document.getElementById(formId) as HTMLFormElement | null;
@@ -65,7 +81,16 @@ export default function PreviewFrame({ path, formId }: { path: string; formId: s
         </span>
       </div>
       <div className="phone">
-        <iframe ref={frame} key={version} src={path} title="Pratinjau undangan" />
+        {/* Undangan dirender selebar HP asli (390 px) lalu diskalakan: tata letaknya sama dengan di HP, bukan versi sempit. */}
+        <div className="phone-screen" ref={screen}>
+          <iframe
+            ref={frame}
+            key={version}
+            src={path}
+            title="Pratinjau undangan"
+            style={{ width: PHONE_WIDTH, height: SCREEN_HEIGHT / scale, transform: `scale(${scale})` }}
+          />
+        </div>
       </div>
       <p className="hint">Perubahan tampil di sini langsung. Klik Simpan perubahan agar tamu juga melihatnya.</p>
     </div>

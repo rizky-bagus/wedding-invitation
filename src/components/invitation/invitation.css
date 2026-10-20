@@ -414,6 +414,7 @@
 }
 .inv-count-box {
   flex: 1;
+  min-width: 0;
   max-width: 96px;
   padding: 0.9rem 0.3rem;
   border-radius: var(--radius);
@@ -687,6 +688,35 @@
   animation: inv-spin 4s linear infinite;
 }
 
+/* ================= Layar sempit (HP kecil, pratinjau) ================= */
+@media (max-width: 360px) {
+  .inv-section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .inv-cal {
+    padding: 1rem 0.55rem;
+  }
+  .inv-cal-grid {
+    gap: 2px;
+    font-size: 0.78rem;
+  }
+  .inv-cal-grid b {
+    letter-spacing: 0.02em;
+    font-size: 0.56rem;
+  }
+  .inv-count {
+    gap: 0.35rem;
+  }
+  .inv-count-box span {
+    letter-spacing: 0.06em;
+    font-size: 0.6rem;
+  }
+  .inv-tile strong {
+    font-size: 1rem;
+  }
+}
+
 /* ================= Bagian baru (semua template) ================= */
 .inv {
   --leaf: color-mix(in srgb, var(--primary) 16%, #5a8a52);
@@ -726,7 +756,7 @@
 }
 .inv-cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr)); /* minmax(0, ...) agar kolom tidak melebar mengikuti teks */
   gap: 4px;
   font-size: 0.85rem;
 }
@@ -2487,6 +2517,7 @@
   width: min(330px, 88vw);
   aspect-ratio: 300 / 350;
   margin: 1.8rem auto 0;
+  container-type: inline-size; /* ukuran isi cermin mengikuti lebar cermin (satuan cqw) */
 }
 .mirror > .inv-mirror {
   position: absolute;
@@ -2507,19 +2538,29 @@
   font-size: 0.6rem;
   color: var(--accent);
 }
+/* Dua baris dua kolom: lebar blok selalu lebih sempit dari kaca oval, berapa pun lebar layar. */
 .mirror-in .inv-count {
-  margin: 0.7rem 0 0;
-  gap: 0.3rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2cqw;
+  width: 50cqw;
+  margin: 2.4cqw 0 0;
 }
 .mirror-in .inv-count-box {
-  padding: 0.55rem 0.1rem;
-  max-width: 68px;
+  max-width: none;
+  padding: 1.7cqw 0.1rem;
+  border-radius: 6px;
 }
 .mirror-in .inv-count-box strong {
-  font-size: 1.45rem;
+  font-size: max(0.95rem, 6.4cqw);
+  line-height: 1.05;
 }
 .mirror-in .inv-count-box span {
-  font-size: 0.55rem;
+  font-size: max(0.48rem, 2.4cqw);
+  letter-spacing: 0.08em;
+}
+.mirror-in small {
+  font-size: max(0.5rem, 2.7cqw);
 }
 
 /* ================= Tema: batik ================= */
