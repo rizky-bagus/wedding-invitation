@@ -474,29 +474,43 @@
 .tpl {
   display: grid;
   gap: 0.6rem;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 .tpl label {
+  position: relative;
   border: 2px solid var(--a-line);
   border-radius: 12px;
-  padding: 0.7rem;
+  padding: 0.6rem 0.7rem;
   cursor: pointer;
-  grid-template-columns: auto 1fr;
-  align-items: start;
+  grid-template-columns: 52px 1fr;
+  gap: 0.2rem 0.7rem;
+  align-items: center;
   color: var(--a-text);
   transition: border-color 0.15s, background 0.15s;
+}
+.tpl label > input {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: auto;
+}
+.tpl-thumb {
+  grid-row: 1;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+}
+.tpl label > span {
+  display: grid;
+  gap: 0.1rem;
 }
 .tpl label:has(input:checked) {
   border-color: var(--a-accent-2);
   background: #fbf3ec;
 }
-.tpl input {
-  width: auto;
-  margin-top: 0.25rem;
-}
 .tpl small {
-  grid-column: 2;
   color: var(--a-muted);
+  font-size: 0.76rem;
+  line-height: 1.35;
 }
 .palettes {
   display: flex;

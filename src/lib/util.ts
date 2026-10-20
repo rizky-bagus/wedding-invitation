@@ -16,6 +16,9 @@ export const TEMPLATES = [
   { id: "satin", name: "Satin", desc: "Kain satin bergelombang, plakat berlekuk, calla lily dan mawar." },
   { id: "kraft", name: "Kraft", desc: "Kertas kraft sobek, dahlia, amplop berbunga, piringan hitam." },
   { id: "lavender", name: "Lavender", desc: "Gambar garis lavender dan daisy, hati di kalender." },
+  { id: "renda", name: "Renda", desc: "Vintage: renda oval, pita beludru, cermin emas." },
+  { id: "batik", name: "Batik", desc: "Motif kawung dan tumpal, warna sogan dan emas." },
+  { id: "islami", name: "Islami", desc: "Lengkung masjid, bintang geometris, Basmalah." },
 ] as const;
 
 /** Preset warna siap pakai: [nama, utama, latar, teks]. */
@@ -34,6 +37,9 @@ export const PALETTES = [
   { name: "Burgundy Satin", primary: "#5b1423", bg: "#f6eee4", text: "#3b1c22", accent: "#8f2236" },
   { name: "Kraft Wine", primary: "#6f7f4d", bg: "#f7f2e8", text: "#3a2b24", accent: "#8c1c2f" },
   { name: "Lavender Line", primary: "#5a2a6e", bg: "#faf6fb", text: "#3a2a45", accent: "#9a7bbd" },
+  { name: "Plum Velvet", primary: "#4a1830", bg: "#f1e6da", text: "#3a1d2a", accent: "#7a2a45" },
+  { name: "Sogan Emas", primary: "#5a3a22", bg: "#f3e7cf", text: "#3b2616", accent: "#b8832f" },
+  { name: "Emerald Gold", primary: "#0f5a4a", bg: "#f6f1e3", text: "#12342c", accent: "#c8a24a" },
 ] as const;
 
 export const HEADING_FONTS = [
@@ -44,6 +50,10 @@ export const HEADING_FONTS = [
   "Allura",
   "Pinyon Script",
   "Cinzel",
+  "Marcellus",
+  "Italiana",
+  "Parisienne",
+  "Lora",
   "Montserrat",
 ];
 
@@ -93,7 +103,7 @@ export function cleanColors(input: unknown): string[] {
     .slice(0, 6);
 }
 
-export const BODY_FONTS = ["Lato", "Poppins", "Nunito", "Merriweather", "Montserrat"];
+export const BODY_FONTS = ["Lato", "Poppins", "Nunito", "Merriweather", "Montserrat", "Raleway", "Josefin Sans"];
 
 export function slugify(input: string): string {
   return input

@@ -2258,3 +2258,425 @@
   background: transparent;
   color: var(--primary);
 }
+
+/* ================= Bersama: renda, batik, islami ================= */
+.inv[data-template="renda"],
+.inv[data-template="batik"],
+.inv[data-template="islami"] {
+  --gold: #c9a24a;
+  --radius: 3px;
+  --pad: color-mix(in srgb, var(--primary) 84%, #000);
+  background-color: var(--pad);
+  color: var(--text);
+}
+.inv .inv-golddiv {
+  display: block;
+  width: 180px;
+  height: 22px;
+  margin: 0.9rem auto 1.3rem;
+}
+.inv .inv-basmalah {
+  margin: 0 0 0.5rem;
+  font-family: Amiri, "Traditional Arabic", serif;
+  font-size: 1.7rem;
+  line-height: 1.7;
+  color: var(--gold);
+  text-align: center;
+}
+.inv[data-template="renda"] .inv-cover,
+.inv[data-template="batik"] .inv-cover,
+.inv[data-template="islami"] .inv-cover {
+  color: color-mix(in srgb, var(--bg) 92%, #fff);
+}
+.inv[data-template="renda"] .inv-cover::before,
+.inv[data-template="batik"] .inv-cover::before,
+.inv[data-template="islami"] .inv-cover::before {
+  display: none;
+}
+.inv[data-template="renda"] .inv-cover-bg,
+.inv[data-template="batik"] .inv-cover-bg,
+.inv[data-template="islami"] .inv-cover-bg {
+  animation: none;
+  /* tanpa warna dasar: latar halaman (gelap) yang tampak, hanya diberi cahaya emas lembut */
+  background: radial-gradient(55% 40% at 50% 38%, color-mix(in srgb, var(--gold) 20%, transparent), transparent);
+}
+.inv[data-template="renda"] .inv-to,
+.inv[data-template="batik"] .inv-to,
+.inv[data-template="islami"] .inv-to {
+  background: color-mix(in srgb, #fff 8%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+  color: color-mix(in srgb, var(--bg) 92%, #fff);
+}
+.inv[data-template="renda"] .inv-open,
+.inv[data-template="batik"] .inv-open,
+.inv[data-template="islami"] .inv-open {
+  background: linear-gradient(135deg, #e3c46f, var(--gold) 50%, #9a7424);
+  color: #2a1a08;
+}
+.inv[data-template="renda"] .inv-scrollhint,
+.inv[data-template="batik"] .inv-scrollhint,
+.inv[data-template="islami"] .inv-scrollhint,
+.inv[data-template="renda"] .inv-scrollhint::after,
+.inv[data-template="batik"] .inv-scrollhint::after,
+.inv[data-template="islami"] .inv-scrollhint::after {
+  border-color: var(--gold);
+}
+.inv[data-template="renda"] .inv-scrollhint::after,
+.inv[data-template="batik"] .inv-scrollhint::after,
+.inv[data-template="islami"] .inv-scrollhint::after {
+  background: var(--gold);
+}
+.inv[data-template="renda"] .inv-main,
+.inv[data-template="batik"] .inv-main,
+.inv[data-template="islami"] .inv-main {
+  max-width: 560px;
+  padding: 0 0.7rem 2rem;
+}
+.inv[data-template="renda"] .inv-section,
+.inv[data-template="batik"] .inv-section,
+.inv[data-template="islami"] .inv-section {
+  position: relative;
+  margin-top: 28px;
+  background: var(--bg);
+  box-shadow: 0 20px 36px rgb(0 0 0 / 0.35);
+}
+.inv[data-template="renda"] .inv-section h2,
+.inv[data-template="batik"] .inv-section h2,
+.inv[data-template="islami"] .inv-section h2 {
+  color: var(--accent);
+}
+.inv[data-template="renda"] .inv-section .inv-eyebrow,
+.inv[data-template="batik"] .inv-section .inv-eyebrow,
+.inv[data-template="islami"] .inv-section .inv-eyebrow {
+  color: color-mix(in srgb, var(--gold) 60%, var(--accent));
+}
+.inv[data-template="renda"] .inv-footer,
+.inv[data-template="batik"] .inv-footer,
+.inv[data-template="islami"] .inv-footer {
+  background: transparent;
+  color: color-mix(in srgb, var(--bg) 92%, #fff);
+  box-shadow: none;
+}
+.inv[data-template="renda"] .inv-footer h2,
+.inv[data-template="batik"] .inv-footer h2,
+.inv[data-template="islami"] .inv-footer h2 {
+  color: var(--gold);
+}
+.inv[data-template="renda"] .inv-tile,
+.inv[data-template="batik"] .inv-tile,
+.inv[data-template="islami"] .inv-tile,
+.inv[data-template="renda"] .inv-cal,
+.inv[data-template="batik"] .inv-cal,
+.inv[data-template="islami"] .inv-cal,
+.inv[data-template="renda"] .inv-gift-card,
+.inv[data-template="batik"] .inv-gift-card,
+.inv[data-template="islami"] .inv-gift-card,
+.inv[data-template="renda"] .inv-wishes li,
+.inv[data-template="batik"] .inv-wishes li,
+.inv[data-template="islami"] .inv-wishes li {
+  background: color-mix(in srgb, var(--gold) 9%, var(--bg));
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+}
+.inv[data-template="renda"] .inv-count-box,
+.inv[data-template="batik"] .inv-count-box,
+.inv[data-template="islami"] .inv-count-box {
+  background: linear-gradient(160deg, var(--primary), color-mix(in srgb, var(--primary) 60%, #000));
+  box-shadow: 0 0 0 1px var(--gold), 0 8px 18px rgb(0 0 0 / 0.25);
+}
+.inv[data-template="renda"] .inv-btn,
+.inv[data-template="batik"] .inv-btn,
+.inv[data-template="islami"] .inv-btn,
+.inv[data-template="renda"] .inv-form button,
+.inv[data-template="batik"] .inv-form button,
+.inv[data-template="islami"] .inv-form button {
+  background: var(--primary);
+  border-color: var(--gold);
+  color: #f6ead0;
+}
+.inv[data-template="renda"] .inv-btn.ghost,
+.inv[data-template="batik"] .inv-btn.ghost,
+.inv[data-template="islami"] .inv-btn.ghost {
+  background: transparent;
+  color: var(--primary);
+}
+.inv[data-template="renda"] .inv-frame,
+.inv[data-template="batik"] .inv-frame,
+.inv[data-template="islami"] .inv-frame {
+  border-width: 0;
+  outline: 0;
+  box-shadow: 0 0 0 4px var(--bg), 0 0 0 5.5px var(--gold);
+}
+
+/* ================= Tema: renda ================= */
+.inv[data-template="renda"] {
+  --hole: var(--pad);
+  background-image: radial-gradient(80% 36% at 50% 0%, color-mix(in srgb, var(--accent) 45%, transparent), transparent),
+    radial-gradient(60% 30% at 50% 100%, color-mix(in srgb, var(--accent) 30%, transparent), transparent);
+}
+.inv[data-template="renda"] .inv-cover-bg {
+  background: radial-gradient(55% 40% at 50% 38%, color-mix(in srgb, var(--accent) 40%, transparent), transparent);
+}
+.lace {
+  position: relative;
+  width: min(330px, 84vw);
+  aspect-ratio: 3 / 4;
+  margin: 2.4rem auto 1.6rem;
+  color: var(--text);
+}
+.lace > .inv-lace {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.lace-body {
+  position: absolute;
+  inset: 17% 15%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+}
+.inv[data-template="renda"] .lace-body .inv-eyebrow {
+  color: var(--accent);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+}
+.lace-body h1 {
+  font-size: clamp(1.8rem, 7.6vw, 2.4rem);
+  margin: 0.4rem 0;
+  color: var(--accent);
+}
+.lace-body h1 .amp {
+  color: var(--text);
+  font-size: 0.5em;
+}
+.lace-body .inv-cover-date {
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+}
+.inv-arch.sm.oval {
+  width: 84px;
+  aspect-ratio: 4 / 5;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--gold);
+}
+.inv .lace-bow {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  width: 96px;
+  height: auto;
+  margin-left: -48px;
+}
+.inv .lace-bow.t {
+  top: -28px;
+}
+.inv .lace-bow.b {
+  bottom: -32px;
+}
+.inv[data-template="renda"] .inv-section {
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 7px var(--bg), inset 0 0 0 8px var(--gold), 0 20px 36px rgb(0 0 0 / 0.35);
+}
+.inv[data-template="renda"] .inv-section .bow {
+  width: 110px;
+  margin-top: -2.6rem;
+}
+.mirror {
+  position: relative;
+  width: min(330px, 88vw);
+  aspect-ratio: 300 / 350;
+  margin: 1.8rem auto 0;
+}
+.mirror > .inv-mirror {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.mirror-in {
+  position: absolute;
+  inset: 22% 10%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+}
+.mirror-in small {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.6rem;
+  color: var(--accent);
+}
+.mirror-in .inv-count {
+  margin: 0.7rem 0 0;
+  gap: 0.3rem;
+}
+.mirror-in .inv-count-box {
+  padding: 0.55rem 0.1rem;
+  max-width: 68px;
+}
+.mirror-in .inv-count-box strong {
+  font-size: 1.45rem;
+}
+.mirror-in .inv-count-box span {
+  font-size: 0.55rem;
+}
+
+/* ================= Tema: batik ================= */
+.inv[data-template="batik"] {
+  --kawung: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.1'%3E%3Cellipse cx='12' cy='6' rx='3.6' ry='5.4'/%3E%3Cellipse cx='12' cy='18' rx='3.6' ry='5.4'/%3E%3Cellipse cx='6' cy='12' rx='5.4' ry='3.6'/%3E%3Cellipse cx='18' cy='12' rx='5.4' ry='3.6'/%3E%3C/g%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3C/svg%3E");
+  --tumpal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='16' viewBox='0 0 28 16'%3E%3Cpath d='M0 0H28L14 16Z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-opacity='.16' stroke-width='1.2'%3E%3Cellipse cx='24' cy='12' rx='7.2' ry='10.8'/%3E%3Cellipse cx='24' cy='36' rx='7.2' ry='10.8'/%3E%3Cellipse cx='12' cy='24' rx='10.8' ry='7.2'/%3E%3Cellipse cx='36' cy='24' rx='10.8' ry='7.2'/%3E%3C/g%3E%3C/svg%3E");
+}
+.bk {
+  width: min(340px, 88vw);
+  margin: 1.8rem auto 1.4rem;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45), 0 0 0 1px var(--gold);
+}
+.bk-band {
+  height: 36px;
+  background: var(--accent);
+  -webkit-mask: var(--tumpal) repeat-x bottom / 28px 16px, linear-gradient(#000, #000) top / 100% 20px no-repeat;
+  mask: var(--tumpal) repeat-x bottom / 28px 16px, linear-gradient(#000, #000) top / 100% 20px no-repeat;
+}
+.bk-band:last-child {
+  transform: scaleY(-1);
+}
+.bk-body {
+  display: grid;
+  justify-items: center;
+  padding: 1.4rem 1.4rem 1.2rem;
+  text-align: center;
+}
+.inv[data-template="batik"] .bk-body .inv-eyebrow {
+  color: var(--accent);
+  font-size: 0.66rem;
+}
+.bk-medal {
+  width: 84px;
+  height: 84px;
+  margin: 1rem 0 0.9rem;
+  border-radius: 50%;
+  background: var(--accent);
+  -webkit-mask: var(--kawung) center / 22px;
+  mask: var(--kawung) center / 22px;
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+.bk-body h1 {
+  font-size: clamp(1.9rem, 8vw, 2.5rem);
+  color: var(--primary);
+}
+.bk-body h1 .amp {
+  color: var(--accent);
+  font-size: 0.5em;
+}
+.bk-body .inv-cover-date {
+  letter-spacing: 0.1em;
+  font-size: 0.82rem;
+}
+.inv[data-template="batik"] .inv-section::before,
+.inv[data-template="batik"] .inv-footer::before {
+  content: "";
+  display: block;
+  height: 36px;
+  margin: -4rem -1.4rem 2.2rem;
+  background: var(--accent);
+  -webkit-mask: var(--tumpal) repeat-x bottom / 28px 16px, linear-gradient(#000, #000) top / 100% 20px no-repeat;
+  mask: var(--tumpal) repeat-x bottom / 28px 16px, linear-gradient(#000, #000) top / 100% 20px no-repeat;
+}
+.inv[data-template="batik"] .inv-footer::before {
+  background: var(--gold);
+}
+.inv[data-template="batik"] .inv-section {
+  overflow: hidden;
+}
+.inv[data-template="batik"] .inv-frame {
+  border-radius: 999px 999px 8px 8px;
+  width: 170px;
+  height: 220px;
+}
+
+/* ================= Tema: islami ================= */
+.inv[data-template="islami"] {
+  --star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.2' d='M20 2 25 13 37 8 31 19 38 20 31 21 37 32 25 27 20 38 15 27 3 32 9 21 2 20 9 19 3 8 15 13Z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 40 40'%3E%3Cpath fill='none' stroke='%23c9a24a' stroke-opacity='.16' stroke-width='.9' d='M20 2 25 13 37 8 31 19 38 20 31 21 37 32 25 27 20 38 15 27 3 32 9 21 2 20 9 19 3 8 15 13Z'/%3E%3C/svg%3E");
+}
+.mihrab {
+  position: relative;
+  width: min(320px, 84vw);
+  aspect-ratio: 300 / 410;
+  margin: 3rem auto 1.4rem;
+}
+.mihrab > .inv-arch-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.inv .mihrab-cres {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: -40px;
+  width: 54px;
+  height: 54px;
+  margin-left: -27px;
+}
+.mihrab-body {
+  position: absolute;
+  inset: 20% 14% 7%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  color: var(--text);
+}
+.mihrab-body .inv-basmalah {
+  font-size: 1.15rem;
+}
+.inv[data-template="islami"] .mihrab-body .inv-eyebrow {
+  color: var(--accent);
+  font-size: 0.6rem;
+}
+.mihrab-body h1 {
+  font-size: clamp(1.8rem, 7.4vw, 2.3rem);
+  margin: 0.3rem 0;
+  color: var(--primary);
+}
+.mihrab-body h1 .amp {
+  color: var(--accent);
+  font-size: 0.5em;
+}
+.mihrab-body .inv-cover-date {
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+}
+.inv[data-template="islami"] .inv-section::before,
+.inv[data-template="islami"] .inv-footer::before {
+  content: "";
+  display: block;
+  height: 34px;
+  margin: -4rem -1.4rem 2rem;
+  background: var(--gold);
+  -webkit-mask: var(--star) repeat-x center / 34px 34px;
+  mask: var(--star) repeat-x center / 34px 34px;
+}
+.inv[data-template="islami"] .inv-section {
+  overflow: hidden;
+  border-radius: 0 0 8px 8px;
+}
+.inv[data-template="islami"] .inv-section::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  pointer-events: none;
+}
+.inv[data-template="islami"] .inv-frame {
+  border-radius: 999px 999px 8px 8px;
+  width: 170px;
+  height: 220px;
+}

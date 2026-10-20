@@ -15,6 +15,7 @@ import PaletteField from "@/components/admin/PaletteField";
 import PreviewFrame from "@/components/admin/PreviewFrame";
 import RowsField from "@/components/admin/RowsField";
 import GuestListField from "@/components/admin/GuestListField";
+import TemplateThumb from "@/components/admin/TemplateThumb";
 import {
   cleanAccounts,
   cleanColors,
@@ -270,10 +271,11 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
           {TEMPLATES.map((t) => (
             <label key={t.id}>
               <input type="radio" name="template" value={t.id} defaultChecked={inv.template === t.id} />
+              <TemplateThumb id={t.id} />
               <span>
                 <strong>{t.name}</strong>
+                <small>{t.desc}</small>
               </span>
-              <small>{t.desc}</small>
             </label>
           ))}
         </div>

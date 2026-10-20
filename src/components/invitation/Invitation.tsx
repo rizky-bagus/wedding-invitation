@@ -6,6 +6,7 @@ import { previewOverrides } from "@/lib/preview";
 import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem } from "@/lib/util";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
 import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, Vinyl } from "./flora";
+import { Crescent, GoldDivider, GoldMirror, LaceOval, PointedArch } from "./heritage";
 import {
   DressSilhouette,
   FloralCorner,
@@ -114,7 +115,7 @@ function Countdown({ target }: { target: string }) {
 }
 
 const WEEKDAYS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
-const SCRIPT_FONTS = ["Great Vibes", "Dancing Script", "Allura", "Pinyon Script"];
+const SCRIPT_FONTS = ["Great Vibes", "Dancing Script", "Allura", "Pinyon Script", "Parisienne"];
 
 /** Kalender bulan acara dengan tanggal acara ditandai. */
 function Calendar({ iso }: { iso: string }) {
@@ -300,7 +301,7 @@ export default function Invitation({
     "--font-body": `"${inv.bodyFont}", sans-serif`,
   } as React.CSSProperties;
 
-  const fontQuery = [inv.headingFont, inv.bodyFont]
+  const fontQuery = [inv.headingFont, inv.bodyFont, ...(tpl === "islami" ? ["Amiri"] : [])]
     .map((f) => `family=${encodeURIComponent(f).replace(/%20/g, "+")}:wght@400;700`)
     .join("&");
 
@@ -320,7 +321,12 @@ export default function Invitation({
   const satin = tpl === "satin";
   const kraft = tpl === "kraft";
   const lavender = tpl === "lavender";
+  const renda = tpl === "renda";
+  const batik = tpl === "batik";
+  const islami = tpl === "islami";
+  const gold = renda || batik || islami; // template beraksen emas: pemisah dan bingkai berwarna emas
   const envelopeLike = tpl === "envelope" || kraft;
+  const divider = gold ? <GoldDivider /> : <Divider />;
   const torn = botanical || kraft ? <TornEdge /> : null;
   const wave = satin ? <SatinWave /> : null;
   /** Bunga khas template baru: calla lily (satin), dahlia (kraft), garis lavender (lavender). */
@@ -335,7 +341,7 @@ export default function Invitation({
   const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : cluster(pos));
   /** Hiasan tambahan hanya untuk template baru (botanical sudah cukup ramai). */
   const fcx = (pos: string) => (botanical ? null : cluster(pos));
-  const bow = satin || kraft ? <Bow className="bow" /> : null;
+  const bow = satin || kraft || renda ? <Bow className="bow" /> : null;
 
   const names = (
     <h1>
@@ -374,7 +380,7 @@ export default function Invitation({
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && coverBg ? { backgroundImage: coverBg } : undefined} />
+        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && coverBg ? { backgroundImage: coverBg } : undefined} />
         {lavender && (
           <>
             <LineSpray className="cv tl" />
@@ -442,6 +448,44 @@ export default function Invitation({
               <LilyCluster className="pl tl" />
               <LilyCluster className="pl br" />
             </div>
+          ) : renda ? (
+            <div className="lace">
+              <LaceOval />
+              <div className="lace-body">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm oval" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <Bow className="lace-bow t" />
+              <Bow className="lace-bow b" />
+            </div>
+          ) : islami ? (
+            <div className="mihrab">
+              <PointedArch />
+              <Crescent className="mihrab-cres" />
+              <div className="mihrab-body">
+                <p className="inv-basmalah" lang="ar" dir="rtl">
+                  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                </p>
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+            </div>
+          ) : batik ? (
+            <div className="bk">
+              <div className="bk-band" />
+              <div className="bk-body">
+                <p className="inv-eyebrow">{inv.title}</p>
+                <div className="bk-medal" aria-hidden="true" />
+                {coverBg && <div className="inv-arch sm" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <div className="bk-band" />
+            </div>
           ) : lavender ? (
             <>
               <p className="inv-eyebrow">{inv.title}</p>
@@ -494,7 +538,7 @@ export default function Invitation({
         <main className="inv-main">
           {inv.musicUrl && (
             <button className="inv-music" data-playing={playing} onClick={toggleMusic} aria-label="Putar atau jeda musik">
-              {satin || kraft ? <Vinyl /> : <IconNote />}
+              {satin || kraft || renda ? <Vinyl /> : <IconNote />}
             </button>
           )}
 
@@ -503,8 +547,13 @@ export default function Invitation({
             {torn}{wave}
             {fc("tr")}
             <Reveal>
+              {islami && (
+                <p className="inv-basmalah" lang="ar" dir="rtl">
+                  بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                </p>
+              )}
               <p className="inv-eyebrow">Undangan</p>
-              <Divider />
+              {divider}
               <p className="inv-quote">{inv.openingText}</p>
             </Reveal>
           </section>
@@ -535,9 +584,19 @@ export default function Invitation({
             <Reveal>
               <p className="inv-eyebrow">Save the Date</p>
               <h2>{inv.dateText}</h2>
-              <Divider />
+              {divider}
               <Calendar iso={inv.eventISO} />
-              <Countdown target={inv.eventISO} />
+              {renda ? (
+                <div className="mirror">
+                  <GoldMirror />
+                  <div className="mirror-in">
+                    <small>Menuju hari bahagia</small>
+                    <Countdown target={inv.eventISO} />
+                  </div>
+                </div>
+              ) : (
+                <Countdown target={inv.eventISO} />
+              )}
             </Reveal>
           </section>
 
@@ -548,7 +607,7 @@ export default function Invitation({
             <Reveal>
               <p className="inv-eyebrow">Hari Bahagia</p>
               <h2>Waktu &amp; Tempat</h2>
-              <Divider />
+              {divider}
               <div className="inv-tiles">
                 <div className="inv-tile">
                   <IconCalendar />
@@ -598,7 +657,7 @@ export default function Invitation({
               <Reveal>
                 <p className="inv-eyebrow">Rangkaian Acara</p>
                 <h2>Susunan Acara</h2>
-                <Divider />
+                {divider}
                 <ol className="inv-timeline">
                   {inv.schedule.map((s, i) => (
                     <li key={i}>
@@ -624,7 +683,7 @@ export default function Invitation({
               <Reveal>
                 <p className="inv-eyebrow">Dress Code</p>
                 <h2>Busana Tamu</h2>
-                <Divider />
+                {divider}
                 <div className="inv-sils">
                   <SuitSilhouette />
                   <DressSilhouette />
@@ -648,7 +707,7 @@ export default function Invitation({
               <Reveal>
                 <p className="inv-eyebrow">Galeri</p>
                 <h2>Momen Kami</h2>
-                <Divider />
+                {divider}
                 <div className="inv-grid">
                   {inv.gallery.map((src) => (
                     <button key={src} type="button" onClick={() => setLightbox(src)} aria-label="Perbesar foto">
@@ -670,7 +729,7 @@ export default function Invitation({
                 {bow}
                 <p className="inv-eyebrow">Tanda Kasih</p>
                 <h2>Hadiah</h2>
-                <Divider />
+                {divider}
                 <span className="inv-giftico">
                   <IconGift />
                 </span>
@@ -691,7 +750,7 @@ export default function Invitation({
             <Reveal>
               <p className="inv-eyebrow">RSVP &amp; Ucapan</p>
               <h2>Konfirmasi Kehadiran</h2>
-              <Divider />
+              {divider}
               {inv.notes && <p className="inv-note">{inv.notes}</p>}
               {waLink && (
                 <a className="inv-btn inv-wa" href={waLink} target="_blank" rel="noreferrer">
@@ -723,7 +782,7 @@ export default function Invitation({
             {torn}{wave}
             {fc("br")}
             <Reveal>
-              <Divider />
+              {divider}
               <p>{inv.closingText}</p>
               <h2>
                 {inv.groomName} <span>&amp;</span> {inv.brideName}
