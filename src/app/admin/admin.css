@@ -664,3 +664,122 @@
   width: 100%;
   text-align: center;
 }
+
+/* ---------- Tamu: pencarian, antrean WhatsApp, rekap, check-in ---------- */
+.guest-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.guest-tools input[type="search"] {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+.guest-tools select {
+  flex: 0 1 190px;
+}
+.bulk {
+  margin: 0.8rem 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--a-line);
+  border-radius: 12px;
+  background: #fbf7f2;
+}
+.bulk summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.bulk textarea {
+  width: 100%;
+}
+.flags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.pill.sent {
+  background: #e3ebfa;
+  color: #2c4f9b;
+}
+.pill.opened {
+  background: #f3e6c9;
+  color: #7a5710;
+}
+.recap-bar {
+  display: flex;
+  height: 14px;
+  overflow: hidden;
+  margin: 0.8rem 0;
+  border-radius: 99px;
+  background: #ece5dc;
+}
+.recap-bar i {
+  display: block;
+  height: 100%;
+}
+.recap-bar .yes,
+.dot.yes {
+  background: #43a06c;
+}
+.recap-bar .no,
+.dot.no {
+  background: #d1554a;
+}
+.recap-bar .wait,
+.dot.wait {
+  background: #e0a94a;
+}
+.dot {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.15rem;
+  border-radius: 50%;
+}
+.checkin {
+  max-width: 640px;
+}
+.checkin-banner {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  font-size: 1.05rem;
+}
+.checkin-banner.ok {
+  background: #d8f0e0;
+  color: #1d6b3c;
+}
+.checkin-banner.warn {
+  background: #fbefcf;
+  color: #7a5710;
+}
+.checkin-banner.err {
+  background: #f7d9d5;
+  color: #9b2c20;
+}
+.scan-video {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  margin-top: 0.8rem;
+  border-radius: 12px;
+  background: #000;
+  object-fit: cover;
+}
+.checkin-list {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+}
+.checkin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--a-line);
+}

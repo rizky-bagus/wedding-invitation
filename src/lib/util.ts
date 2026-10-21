@@ -1,3 +1,5 @@
+import { DATE_LOCALE, type Lang } from "@/lib/i18n";
+
 /** Hasil server action untuk ActionForm: pesan sukses atau error. */
 export type ActionResult = { ok: boolean; message: string } | null;
 export const fail = (message: string): ActionResult => ({ ok: false, message });
@@ -28,6 +30,11 @@ export const TEMPLATES = [
   { id: "sakura", name: "Sakura", desc: "Jepang: ranting sakura, kelopak berguguran, ombak seigaiha." },
   { id: "retro", name: "Retro 70-an", desc: "Matahari bergaris, pita gelombang, bunga daisy, bayangan tebal." },
   { id: "hutan", name: "Hutan", desc: "Hutan malam: pakis, jamur berbintik, kunang-kunang." },
+  { id: "washi", name: "Washi", desc: "Jepang minimalis: kertas washi, stempel hanko, lingkaran enso, ranting plum." },
+  { id: "poster", name: "Foto Penuh", desc: "Foto cover layar penuh, teks besar di atasnya, bagian bernomor." },
+  { id: "tropis", name: "Tropis", desc: "Monstera, daun pisang, hibiscus, hijau segar dan merah muda." },
+  { id: "koran", name: "Koran Vintage", desc: "Kertas tua bergaya koran, kepala surat, perangko dan cap pos." },
+  { id: "rustic", name: "Rustic", desc: "Papan kayu, lampu gantung hangat, bunga liar, jahitan kain goni." },
 ] as const;
 
 /** Preset warna siap pakai: [nama, utama, latar, teks]. */
@@ -58,6 +65,11 @@ export const PALETTES = [
   { name: "Sakura Pink", primary: "#b84a6a", bg: "#fdf4f4", text: "#4a2a33", accent: "#e58fa5" },
   { name: "Sunset 70s", primary: "#c4572b", bg: "#f6e7c8", text: "#4a2a17", accent: "#e0a526" },
   { name: "Moss Mushroom", primary: "#2f5a3a", bg: "#f2f0de", text: "#1f3126", accent: "#c8553d" },
+  { name: "Washi Ink", primary: "#2b2b2b", bg: "#f5f0e6", text: "#2b2b2b", accent: "#b3261e" },
+  { name: "Photo Noir", primary: "#c9a86a", bg: "#16161a", text: "#f1ede6", accent: "#c9a86a" },
+  { name: "Tropical Punch", primary: "#1f6b4a", bg: "#f6f3e4", text: "#173a2b", accent: "#f06a8a" },
+  { name: "Gazette Sepia", primary: "#3b2f23", bg: "#efe3c8", text: "#2f241a", accent: "#a33b2a" },
+  { name: "Rustic Oak", primary: "#7a5230", bg: "#f3e8d6", text: "#3a2a1a", accent: "#c98a3a" },
 ] as const;
 
 export const HEADING_FONTS = [
@@ -181,8 +193,8 @@ export function toJakartaInput(date: Date): string {
   return parts.replace(" ", "T");
 }
 
-export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("id-ID", {
+export function formatDate(date: Date, lang: Lang = "id"): string {
+  return new Intl.DateTimeFormat(DATE_LOCALE[lang], {
     timeZone: TIME_ZONE,
     weekday: "long",
     day: "numeric",
@@ -191,9 +203,9 @@ export function formatDate(date: Date): string {
   }).format(date);
 }
 
-export function formatTime(date: Date): string {
+export function formatTime(date: Date, lang: Lang = "id"): string {
   return (
-    new Intl.DateTimeFormat("id-ID", {
+    new Intl.DateTimeFormat(DATE_LOCALE[lang], {
       timeZone: TIME_ZONE,
       hour: "2-digit",
       minute: "2-digit",
@@ -220,7 +232,7 @@ export function parseGallery(json: string): string[] {
 }
 
 /** Bulan acara untuk kartu kalender: header, hari pertama (0 = Senin), jumlah hari, tanggal acara. */
-export function calendarMonth(date: Date): { title: string; offset: number; days: number; day: number } {
+export function calendarMonth(date: Date, lang: Lang = "id"): { title: string; offset: number; days: number; day: number } {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit" })
     .format(date)
     .split("-")
@@ -228,7 +240,7 @@ export function calendarMonth(date: Date): { title: string; offset: number; days
   const [year, month, day] = parts;
   const first = new Date(Date.UTC(year, month - 1, 1));
   return {
-    title: new Intl.DateTimeFormat("id-ID", { timeZone: "UTC", month: "long", year: "numeric" }).format(first),
+    title: new Intl.DateTimeFormat(DATE_LOCALE[lang], { timeZone: "UTC", month: "long", year: "numeric" }).format(first),
     offset: (first.getUTCDay() + 6) % 7,
     days: new Date(Date.UTC(year, month, 0)).getUTCDate(),
     day,
@@ -239,6 +251,14 @@ export function cleanPhone(phone: string): string {
   const digits = phone.replace(/\D/g, "");
   if (digits.startsWith("0")) return "62" + digits.slice(1);
   return digits;
+}
+
+/** Pesan undangan WhatsApp bawaan. Penanda: {nama}, {pasangan}, {link}. */
+export const DEFAULT_INVITE_TEMPLATE =
+  "Kepada Yth. {nama},\n\nDengan penuh kebahagiaan, kami mengundang Anda ke pernikahan {pasangan}.\nDetail undangan dapat dibuka di sini:\n{link}\n\nTerima kasih.";
+
+export function inviteMessage(template: string, v: { nama: string; pasangan: string; link: string }): string {
+  return template.replace(/\{(nama|pasangan|link)\}/g, (_, k: "nama" | "pasangan" | "link") => v[k]);
 }
 
 export function isHexColor(v: string): boolean {

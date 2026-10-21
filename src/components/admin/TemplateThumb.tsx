@@ -24,6 +24,11 @@ const SPECS: Record<string, Spec> = {
   sakura: { bg: "#f9dfe4", card: "#fdf4f4", accent: "#e58fa5", shape: "sakura" },
   retro: { bg: "#e9b872", card: "#f6e7c8", accent: "#c4572b", shape: "retro" },
   hutan: { bg: "#17301f", card: "#f2f0de", accent: "#c8553d", shape: "forest" },
+  washi: { bg: "#f5f0e6", card: "#fbf8f1", accent: "#b3261e", shape: "washi" },
+  poster: { bg: "#16161a", card: "#16161a", accent: "#c9a86a", shape: "poster" },
+  tropis: { bg: "#bfe3c8", card: "#f6f3e4", accent: "#f06a8a", shape: "tropical" },
+  koran: { bg: "#d9c79e", card: "#efe3c8", accent: "#a33b2a", shape: "gazette" },
+  rustic: { bg: "#8a6a47", card: "#f3e8d6", accent: "#c98a3a", shape: "rustic" },
 };
 
 /** Tiga garis teks (nama, ampersand, tanggal) dalam warna aksen. */
@@ -236,6 +241,59 @@ export default function TemplateThumb({ id }: { id: string }) {
           <path d="M12 72 C12 64 24 64 24 72Z" fill={s.accent} />
           <rect x="16" y="72" width="4" height="5" fill="#f3e9d2" />
           <circle cx="16" cy="68" r="1" fill="#fff" />
+        </g>
+      )}
+      {s.shape === "washi" && (
+        <g>
+          <path d="M30 8 V72" stroke="#2b2b2b" strokeWidth="0.6" opacity="0.5" />
+          <circle cx="30" cy="30" r="14" fill="none" stroke="#2b2b2b" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="70 20" opacity="0.8" />
+          <Lines x={30} y={26} color="#2b2b2b" w={16} />
+          <rect x="38" y="54" width="12" height="12" rx="2" fill={s.accent} />
+          <path d="M6 70 C20 64 34 52 54 44" stroke="#2b2b2b" strokeWidth="1" fill="none" opacity="0.6" />
+          <circle cx="14" cy="66" r="2" fill={s.accent} />
+        </g>
+      )}
+      {s.shape === "poster" && (
+        <g>
+          <rect width="60" height="80" rx="4" fill="#4a4a52" />
+          <rect y="30" width="60" height="50" rx="4" fill="#16161a" opacity="0.75" />
+          <rect x="8" y="46" width="30" height="4" rx="2" fill="#f1ede6" />
+          <rect x="8" y="53" width="22" height="4" rx="2" fill="#f1ede6" />
+          <rect x="8" y="64" width="16" height="1.6" rx="0.8" fill={s.accent} />
+          <text x="48" y="14" fontSize="9" fill={s.accent} fontFamily="serif">01</text>
+        </g>
+      )}
+      {s.shape === "tropical" && (
+        <g>
+          <path d="M0 30 C6 14 22 4 40 8 C30 14 20 22 18 38 C10 36 4 34 0 30Z" fill="#1f6b4a" />
+          <path d="M60 70 C56 62 46 58 36 62 C42 68 46 74 46 80 L60 80Z" fill="#1f6b4a" />
+          <rect x="10" y="24" width="40" height="38" rx="6" fill={s.card} />
+          <Lines x={30} y={30} color="#1f6b4a" w={20} />
+          <circle cx="50" cy="20" r="6" fill={s.accent} />
+          <circle cx="50" cy="20" r="2" fill="#f4c542" />
+        </g>
+      )}
+      {s.shape === "gazette" && (
+        <g>
+          <rect x="7" y="8" width="46" height="64" fill={s.card} stroke="#3b2f23" strokeWidth="0.8" />
+          <rect x="11" y="13" width="38" height="5" fill="#3b2f23" />
+          <path d="M11 21 H49 M11 23 H49" stroke="#3b2f23" strokeWidth="0.6" />
+          <Lines x={30} y={30} color="#3b2f23" w={24} />
+          <rect x="36" y="52" width="12" height="14" fill={s.accent} opacity="0.85" />
+          <circle cx="20" cy="58" r="6" fill="none" stroke="#3b2f23" strokeWidth="0.8" opacity="0.6" />
+        </g>
+      )}
+      {s.shape === "rustic" && (
+        <g>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <rect key={i} y={i * 16} width="60" height="15" fill={i % 2 ? "#7a5a3a" : "#8a6a47"} />
+          ))}
+          <path d="M0 8 C10 20 20 20 30 8 S50 20 60 8" stroke="#3a2a1a" strokeWidth="0.8" fill="none" />
+          {[8, 18, 30, 42, 52].map((x, i) => (
+            <circle key={i} cx={x} cy={i % 2 ? 17 : 15} r="2.2" fill="#ffe29a" />
+          ))}
+          <rect x="10" y="26" width="40" height="42" rx="3" fill={s.card} stroke="#7a5230" strokeWidth="0.8" strokeDasharray="2 1.6" />
+          <Lines x={30} y={34} color="#7a5230" w={20} />
         </g>
       )}
       {dark && null}

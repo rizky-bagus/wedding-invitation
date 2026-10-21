@@ -1,21 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import {
-  addGuests,
-  deleteGuest,
-  deleteInvitation,
-  deleteWish,
-  updateInvitation,
-} from "@/app/actions/admin";
+import { addGuests, deleteInvitation, deleteWish, updateInvitation } from "@/app/actions/admin";
 import ActionForm from "@/components/admin/ActionForm";
-import ShareButtons from "@/components/admin/ShareButtons";
+import GuestTable from "@/components/admin/GuestTable";
 import UploadField from "@/components/admin/UploadField";
 import PaletteField from "@/components/admin/PaletteField";
 import PreviewFrame from "@/components/admin/PreviewFrame";
 import RowsField from "@/components/admin/RowsField";
 import GuestListField from "@/components/admin/GuestListField";
 import TemplateThumb from "@/components/admin/TemplateThumb";
+import { LANGS } from "@/lib/i18n";
 import {
   cleanAccounts,
   cleanColors,
@@ -42,14 +37,21 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
 
   const couple = `${inv.groomName} & ${inv.brideName}`;
   const yes = inv.guests.filter((g) => g.rsvp === "yes");
+  const no = inv.guests.filter((g) => g.rsvp === "no");
+  const pending = inv.guests.filter((g) => g.rsvp === "pending");
+  const people = yes.reduce((n, g) => n + g.pax, 0);
+  const checkedIn = inv.guests.filter((g) => g.checkedInAt);
   const stats: [string, number, string][] = [
     ["Tamu", inv.guests.length, ""],
     ["Hadir", yes.length, "ok"],
-    ["Total orang hadir", yes.reduce((n, g) => n + g.pax, 0), "ok"],
-    ["Tidak hadir", inv.guests.filter((g) => g.rsvp === "no").length, "no"],
-    ["Belum konfirmasi", inv.guests.filter((g) => g.rsvp === "pending").length, "wait"],
+    ["Total orang hadir", people, "ok"],
+    ["Tidak hadir", no.length, "no"],
+    ["Belum konfirmasi", pending.length, "wait"],
+    ["Sudah dikirim", inv.guests.filter((g) => g.sentAt).length, ""],
     ["Sudah dibuka", inv.guests.filter((g) => g.openedAt).length, ""],
+    ["Sudah check-in", checkedIn.length, "ok"],
   ];
+  const pct = (n: number) => (inv.guests.length ? Math.round((n / inv.guests.length) * 100) : 0);
 
   return (
     <>
@@ -78,6 +80,27 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
         ))}
       </div>
 
+      {inv.guests.length > 0 && (
+        <div className="card">
+          <div className="row" style={{ justifyContent: "space-between", marginTop: 0 }}>
+            <h2 style={{ margin: 0 }}>Rekap RSVP</h2>
+            <Link className="btn small" href={`/admin/${inv.id}/checkin`}>
+              Buka halaman check-in
+            </Link>
+          </div>
+          <div className="recap-bar" role="img" aria-label={`Hadir ${yes.length}, tidak hadir ${no.length}, belum konfirmasi ${pending.length}`}>
+            <i className="yes" style={{ width: `${pct(yes.length)}%` }} />
+            <i className="no" style={{ width: `${pct(no.length)}%` }} />
+            <i className="wait" style={{ width: `${pct(pending.length)}%` }} />
+          </div>
+          <p className="hint">
+            <b className="dot yes" /> Hadir {yes.length} tamu ({people} orang) · <b className="dot no" /> Tidak hadir {no.length} ·{" "}
+            <b className="dot wait" /> Belum konfirmasi {pending.length} ({pct(pending.length)}%). Sudah check-in {checkedIn.length} dari{" "}
+            {inv.guests.length} tamu.
+          </p>
+        </div>
+      )}
+
       <div className="card">
         <div className="row" style={{ justifyContent: "space-between", marginTop: 0 }}>
           <h2 style={{ margin: 0 }}>Tamu & link personal</h2>
@@ -90,57 +113,21 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
         </ActionForm>
 
         {inv.guests.length > 0 && (
-          <div className="table-wrap" style={{ marginTop: "1rem" }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Nama</th>
-                  <th>Link</th>
-                  <th>RSVP</th>
-                  <th>Bagikan</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {inv.guests.map((g) => {
-                  const path = guestPath(inv.slug, g.name);
-                  return (
-                    <tr key={g.id}>
-                      <td>
-                        <span className="who">
-                          <span className="avatar">{g.name.charAt(0).toUpperCase()}</span>
-                          <span>
-                            {g.name}
-                            {g.openedAt && <small className="hint"> · sudah dibuka</small>}
-                          </span>
-                        </span>
-                      </td>
-                      <td>
-                        <a href={path} target="_blank" rel="noreferrer">
-                          <code>{path}</code>
-                        </a>
-                      </td>
-                      <td>
-                        <span className={`pill ${g.rsvp}`}>
-                          {g.rsvp === "yes" ? `Hadir (${g.pax})` : g.rsvp === "no" ? "Tidak hadir" : "Belum"}
-                        </span>
-                      </td>
-                      <td>
-                        <ShareButtons path={path} guestName={g.name} phone={g.phone} couple={couple} />
-                      </td>
-                      <td>
-                        <form action={deleteGuest.bind(null, inv.id, g.id)}>
-                          <button className="btn small danger" type="submit">
-                            Hapus
-                          </button>
-                        </form>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <GuestTable
+            invId={inv.id}
+            slug={inv.slug}
+            couple={couple}
+            guests={inv.guests.map((g) => ({
+              id: g.id,
+              name: g.name,
+              phone: g.phone,
+              rsvp: g.rsvp,
+              pax: g.pax,
+              opened: !!g.openedAt,
+              sent: !!g.sentAt,
+              checkedIn: !!g.checkedInAt,
+            }))}
+          />
         )}
       </div>
 
@@ -166,6 +153,16 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
           <label>
             Judul undangan
             <input name="title" defaultValue={inv.title} />
+          </label>
+          <label>
+            Bahasa undangan
+            <select name="lang" defaultValue={inv.lang}>
+              {LANGS.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
             Slug URL (bagian setelah domain)
@@ -254,6 +251,7 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
         <div className="grid2">
           <UploadField name="coverPhoto" label="Foto cover" kind="image" defaultValue={inv.coverPhoto} />
           <UploadField name="musicUrl" label="Musik latar" kind="audio" defaultValue={inv.musicUrl} />
+          <UploadField name="giftQr" label="Gambar QR hadiah (QRIS, opsional)" kind="image" defaultValue={inv.giftQr} />
           <UploadField name="groomPhoto" label="Foto mempelai pria" kind="image" defaultValue={inv.groomPhoto} />
           <UploadField name="bridePhoto" label="Foto mempelai wanita" kind="image" defaultValue={inv.bridePhoto} />
           <UploadField

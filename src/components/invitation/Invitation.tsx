@@ -4,6 +4,9 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
 import { previewOverrides } from "@/lib/preview";
 import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem } from "@/lib/util";
+import { localizedText, normLang, tr, type Lang } from "@/lib/i18n";
+import GuestTicket from "./GuestTicket";
+import { BananaLeaf, Enso, Hanko, Hibiscus, InkBranch, Monstera, PostStamp, Postmark, StringLights, Wildflowers } from "./motifs2";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
 import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, Vinyl } from "./flora";
 import { Crescent, GoldDivider, GoldMirror, LaceOval, PointedArch } from "./heritage";
@@ -48,6 +51,8 @@ export type InvitationData = {
   dressColors: string[];
   giftAccounts: GiftAccount[];
   giftNote: string;
+  giftQr: string;
+  lang: string;
   contactPhone: string;
   notes: string;
   template: string;
@@ -88,7 +93,9 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   );
 }
 
-function Countdown({ target }: { target: string }) {
+type T = ReturnType<typeof tr>;
+
+function Countdown({ target, t }: { target: string; t: T }) {
   const [left, setLeft] = useState<number | null>(null);
   useEffect(() => {
     const end = new Date(target).getTime();
@@ -100,10 +107,10 @@ function Countdown({ target }: { target: string }) {
 
   const ms = left ?? 0;
   const units = [
-    ["Hari", Math.floor(ms / 86400000)],
-    ["Jam", Math.floor(ms / 3600000) % 24],
-    ["Menit", Math.floor(ms / 60000) % 60],
-    ["Detik", Math.floor(ms / 1000) % 60],
+    [t.days, Math.floor(ms / 86400000)],
+    [t.hours, Math.floor(ms / 3600000) % 24],
+    [t.minutes, Math.floor(ms / 60000) % 60],
+    [t.seconds, Math.floor(ms / 1000) % 60],
   ] as const;
   return (
     <div className="inv-count">
@@ -117,12 +124,11 @@ function Countdown({ target }: { target: string }) {
   );
 }
 
-const WEEKDAYS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
 const SCRIPT_FONTS = ["Great Vibes", "Dancing Script", "Allura", "Pinyon Script", "Parisienne"];
 
 /** Kalender bulan acara dengan tanggal acara ditandai. */
-function Calendar({ iso }: { iso: string }) {
-  const m = calendarMonth(new Date(iso));
+function Calendar({ iso, lang, t }: { iso: string; lang: Lang; t: T }) {
+  const m = calendarMonth(new Date(iso), lang);
   const cells: (number | null)[] = [
     ...Array<null>(m.offset).fill(null),
     ...Array.from({ length: m.days }, (_, i) => i + 1),
@@ -131,7 +137,7 @@ function Calendar({ iso }: { iso: string }) {
     <div className="inv-cal">
       <h3>{m.title}</h3>
       <div className="inv-cal-grid">
-        {WEEKDAYS.map((d) => (
+        {t.weekdays.map((d) => (
           <b key={d}>{d}</b>
         ))}
         {cells.map((c, i) =>
@@ -146,7 +152,7 @@ function Calendar({ iso }: { iso: string }) {
   );
 }
 
-function GiftCard({ account }: { account: GiftAccount }) {
+function GiftCard({ account, t }: { account: GiftAccount; t: T }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     try {
@@ -154,16 +160,16 @@ function GiftCard({ account }: { account: GiftAccount }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     } catch {
-      window.prompt("Salin nomor rekening:", account.number);
+      window.prompt(t.copyPrompt, account.number);
     }
   };
   return (
     <div className="inv-gift-card">
       <small>{account.bank}</small>
       <strong>{account.number}</strong>
-      {account.holder && <span>a.n. {account.holder}</span>}
+      {account.holder && <span>{t.accountName} {account.holder}</span>}
       <button type="button" className="inv-btn ghost" onClick={copy}>
-        <IconCopy /> {copied ? "Tersalin" : "Salin nomor"}
+        <IconCopy /> {copied ? t.copied : t.copyNumber}
       </button>
     </div>
   );
@@ -184,9 +190,9 @@ function Portrait({ src, name }: { src: string; name: string }) {
   );
 }
 
-function RsvpForm({ invitationId, guest }: { invitationId: string; guest: GuestData }) {
+function RsvpForm({ invitationId, guest, lang, t }: { invitationId: string; guest: GuestData; lang: Lang; t: T }) {
   const [state, action, pending] = useActionState<RsvpState | null, FormData>(
-    submitRsvp.bind(null, invitationId, guest?.id ?? null),
+    submitRsvp.bind(null, invitationId, guest?.id ?? null, lang),
     null,
   );
   return (
@@ -195,43 +201,43 @@ function RsvpForm({ invitationId, guest }: { invitationId: string; guest: GuestD
       {guest ? (
         <>
           <p className="inv-form-name">
-            Dari: <strong>{guest.name}</strong>
+            {t.from} <strong>{guest.name}</strong>
           </p>
           <input type="hidden" name="name" value={guest.name} />
         </>
       ) : (
-        <input name="name" placeholder="Nama Anda" required maxLength={80} />
+        <input name="name" placeholder={t.yourName} required maxLength={80} />
       )}
       <div className="inv-radio">
         <label>
           <input type="radio" name="attendance" value="yes" defaultChecked={guest?.rsvp === "yes"} />
-          <span>Hadir</span>
+          <span>{t.attend}</span>
         </label>
         <label>
           <input type="radio" name="attendance" value="no" defaultChecked={guest?.rsvp === "no"} />
-          <span>Tidak hadir</span>
+          <span>{t.decline}</span>
         </label>
       </div>
       <label className="inv-pax">
-        Jumlah tamu
+        {t.pax}
         <input type="number" name="pax" min={1} max={10} defaultValue={guest?.pax || 1} />
       </label>
-      <textarea name="message" placeholder="Tulis ucapan & doa" rows={4} maxLength={500} />
+      <textarea name="message" placeholder={t.wishPlaceholder} rows={4} maxLength={500} />
       <button type="submit" disabled={pending}>
-        {pending ? "Mengirim..." : "Kirim"}
+        {pending ? t.sending : t.send}
       </button>
       {state && <p className={state.ok ? "inv-ok" : "inv-err"}>{state.message}</p>}
     </form>
   );
 }
 
-function calendarUrl(inv: InvitationData): string {
+function calendarUrl(inv: InvitationData, t: T): string {
   const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
   const start = new Date(inv.eventISO);
   const end = new Date(start.getTime() + 3 * 3600 * 1000);
   const p = new URLSearchParams({
     action: "TEMPLATE",
-    text: `Pernikahan ${inv.groomName} & ${inv.brideName}`,
+    text: t.calTitle(`${inv.groomName} & ${inv.brideName}`),
     dates: `${fmt(start)}/${fmt(end)}`,
     details: inv.openingText,
     location: [inv.venueName, inv.venueAddress].filter(Boolean).join(", "),
@@ -250,7 +256,16 @@ export default function Invitation({
 }) {
   // Di dalam iframe pratinjau dashboard, data bisa ditimpa oleh isi form yang belum disimpan.
   const [override, setOverride] = useState<Partial<InvitationData>>({});
-  const inv = { ...invProp, ...override };
+  const merged = { ...invProp, ...override };
+  const lang = normLang(merged.lang);
+  const t = tr(lang);
+  // Teks bawaan skema (Indonesia) diganti padanannya jika undangan berbahasa Inggris.
+  const inv = {
+    ...merged,
+    title: localizedText(merged.title, "title", lang),
+    openingText: localizedText(merged.openingText, "opening", lang),
+    closingText: localizedText(merged.closingText, "closing", lang),
+  };
   useEffect(() => {
     if (window.parent === window) return;
     const origin = window.location.origin;
@@ -315,7 +330,7 @@ export default function Invitation({
   const coverBg = inv.coverPhoto ? `url("${inv.coverPhoto.replace(/["\\\n]/g, encodeURIComponent)}")` : undefined;
   const waLink = inv.contactPhone
     ? `https://wa.me/${cleanPhone(inv.contactPhone)}?text=${encodeURIComponent(
-        `Halo, saya ${guest?.name ?? "tamu undangan"} ingin mengonfirmasi kehadiran di pernikahan ${inv.groomName} & ${inv.brideName}.`,
+        t.waText(guest?.name ?? t.waGuest, `${inv.groomName} & ${inv.brideName}`),
       )}`
     : null;
 
@@ -336,6 +351,11 @@ export default function Invitation({
   const sakura = tpl === "sakura";
   const retro = tpl === "retro";
   const hutan = tpl === "hutan";
+  const washi = tpl === "washi";
+  const poster = tpl === "poster";
+  const tropis = tpl === "tropis";
+  const koran = tpl === "koran";
+  const rustic = tpl === "rustic";
   const gold = renda || batik || islami || deco || oriental; // template beraksen emas: pemisah dan bingkai berwarna emas
   const envelopeLike = tpl === "envelope" || kraft;
   const divider = gold ? <GoldDivider /> : <Divider />;
@@ -374,6 +394,12 @@ export default function Invitation({
       pos === "tr" || pos === "bl" ? <Daisy70 className={`dc ${pos}`} /> : null
     ) : hutan ? (
       pos === "tl" || pos === "tr" ? <Fern className={`dc ${pos}`} /> : <Mushrooms className={`dc ${pos}`} /> // pakis menggantung, jamur tumbuh dari bawah
+    ) : washi ? (
+      pos === "tr" ? <InkBranch className={`dc ${pos}`} /> : pos === "bl" ? <Enso className={`dc ${pos}`} /> : null
+    ) : tropis ? (
+      pos === "tl" || pos === "tr" ? <Monstera className={`dc ${pos}`} /> : <Hibiscus className={`dc ${pos}`} />
+    ) : rustic ? (
+      pos === "bl" || pos === "br" ? <Wildflowers className={`dc ${pos}`} /> : null // bunga liar tumbuh dari bawah
     ) : null;
   const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : cluster(pos));
   /** Hiasan tambahan hanya untuk template baru (botanical sudah cukup ramai). */
@@ -391,16 +417,16 @@ export default function Invitation({
     <div className="inv-to">
       {guest ? (
         <>
-          <small>Kepada Yth. Bapak/Ibu/Saudara/i</small>
+          <small>{t.dear}</small>
           <strong>{guest.name}</strong>
         </>
       ) : (
-        <small>Anda diundang ke acara kami</small>
+        <small>{t.invitedPlain}</small>
       )}
     </div>
   );
 
-  const hasGift = inv.giftAccounts.length > 0 || inv.giftNote;
+  const hasGift = inv.giftAccounts.length > 0 || inv.giftNote || inv.giftQr;
   const hasDress = inv.dressCode || inv.dressColors.length > 0;
 
   return (
@@ -424,7 +450,7 @@ export default function Invitation({
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && coverBg ? { backgroundImage: coverBg } : undefined} />
+        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && !washi && !tropis && !koran && !rustic && coverBg ? { backgroundImage: coverBg } : undefined} />
         {lavender && (
           <>
             <LineSpray className="cv tl" />
@@ -613,6 +639,63 @@ export default function Invitation({
               </div>
               <Mushrooms className="fr-mush" />
             </div>
+          ) : washi ? (
+            <div className="ws">
+              <InkBranch className="ws-branch" />
+              <Enso className="ws-enso" />
+              <div className="ws-body">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <Hanko initials={initials} className="ws-hanko" />
+            </div>
+          ) : poster ? (
+            <div className="ps">
+              <p className="inv-eyebrow">{inv.title}</p>
+              {names}
+              <p className="inv-cover-date">{inv.dateText}</p>
+            </div>
+          ) : tropis ? (
+            <div className="tp">
+              <BananaLeaf className="tp-leaf l" />
+              <BananaLeaf className="tp-leaf r" />
+              <Monstera className="tp-mons l" />
+              <Monstera className="tp-mons r" />
+              <div className="tp-card">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm round" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <Hibiscus className="tp-hib" />
+            </div>
+          ) : koran ? (
+            <div className="kr">
+              <div className="kr-mast">
+                <span>{t.edition}</span>
+                <b>{t.gazette}</b>
+                <span>{inv.dateText.match(/\d{4}/)?.[0] ?? ""}</span>
+              </div>
+              <p className="inv-eyebrow">{inv.title}</p>
+              {coverBg && <div className="kr-photo" style={{ backgroundImage: coverBg }} />}
+              {names}
+              <p className="inv-cover-date">{inv.dateText}</p>
+              <PostStamp initials={initials} year={inv.dateText.match(/\d{4}/)?.[0] ?? ""} className="kr-stamp" />
+              <Postmark label={t.edition.toUpperCase()} className="kr-mark" />
+            </div>
+          ) : rustic ? (
+            <div className="ru">
+              <div className="ru-card">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm round" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <Wildflowers className="ru-wf l" />
+              <Wildflowers className="ru-wf r" />
+            </div>
           ) : pantai ? (
             <div className="sea">
               <Shell className="sea-shell" />
@@ -665,12 +748,13 @@ export default function Invitation({
           {toBlock}
           {!opened && (
             <button className="inv-open" onClick={open} disabled={opening}>
-              {opening ? "Membuka..." : "Buka Undangan"}
+              {opening ? t.opening : t.openBtn}
             </button>
           )}
         </div>
         {pantai && <OceanWave className="cv-wave" />}
         {gunung && <MountainEdge className="cv-wave" />}
+        {rustic && <StringLights className="ru-lights" />}
         {sakura && (
           <>
             <PetalFall />
@@ -684,7 +768,7 @@ export default function Invitation({
         <div className="inv-marquee" aria-hidden="true">
           <div>
             {Array.from({ length: 8 }, (_, i) => (
-              <span key={i}>Save the date · {inv.dateText} ·&nbsp;</span>
+              <span key={i}>{t.marquee} · {inv.dateText} ·&nbsp;</span>
             ))}
           </div>
         </div>
@@ -693,7 +777,7 @@ export default function Invitation({
       {opened && (
         <main className="inv-main">
           {inv.musicUrl && (
-            <button className="inv-music" data-playing={playing} onClick={toggleMusic} aria-label="Putar atau jeda musik">
+            <button className="inv-music" data-playing={playing} onClick={toggleMusic} aria-label={t.music}>
               {satin || kraft || renda ? <Vinyl /> : <IconNote />}
             </button>
           )}
@@ -708,7 +792,7 @@ export default function Invitation({
                   بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                 </p>
               )}
-              <p className="inv-eyebrow">Undangan</p>
+              <p className="inv-eyebrow">{t.invite}</p>
               {divider}
               <p className="inv-quote">{inv.openingText}</p>
             </Reveal>
@@ -738,20 +822,20 @@ export default function Invitation({
             {fcx("tr")}
             {torn}{wave}{frame}
             <Reveal>
-              <p className="inv-eyebrow">Save the Date</p>
+              <p className="inv-eyebrow">{t.saveDate}</p>
               <h2>{inv.dateText}</h2>
               {divider}
-              <Calendar iso={inv.eventISO} />
+              <Calendar iso={inv.eventISO} lang={lang} t={t} />
               {renda ? (
                 <div className="mirror">
                   <GoldMirror />
                   <div className="mirror-in">
-                    <small>Menuju hari bahagia</small>
-                    <Countdown target={inv.eventISO} />
+                    <small>{t.towards}</small>
+                    <Countdown target={inv.eventISO} t={t} />
                   </div>
                 </div>
               ) : (
-                <Countdown target={inv.eventISO} />
+                <Countdown target={inv.eventISO} t={t} />
               )}
             </Reveal>
           </section>
@@ -761,36 +845,36 @@ export default function Invitation({
             {torn}{wave}{frame}
             {fc("bl")}
             <Reveal>
-              <p className="inv-eyebrow">Hari Bahagia</p>
-              <h2>Waktu &amp; Tempat</h2>
+              <p className="inv-eyebrow">{t.happyDay}</p>
+              <h2>{t.timePlace}</h2>
               {divider}
               <div className="inv-tiles">
                 <div className="inv-tile">
                   <IconCalendar />
-                  <small>Tanggal</small>
+                  <small>{t.date}</small>
                   <strong>{inv.dateText}</strong>
                 </div>
                 <div className="inv-tile">
                   <IconClock />
-                  <small>Pukul</small>
+                  <small>{t.time}</small>
                   <strong>{inv.timeText}</strong>
                 </div>
                 {(inv.venueName || inv.venueAddress) && (
                   <div className="inv-tile">
                     <IconPin />
-                    <small>Lokasi</small>
+                    <small>{t.place}</small>
                     <strong>{inv.venueName || inv.venueAddress}</strong>
                     {inv.venueName && inv.venueAddress && <span>{inv.venueAddress}</span>}
                   </div>
                 )}
               </div>
               <div className="inv-actions">
-                <a className="inv-btn" href={calendarUrl(inv)} target="_blank" rel="noreferrer">
-                  Simpan ke Kalender
+                <a className="inv-btn" href={calendarUrl(inv, t)} target="_blank" rel="noreferrer">
+                  {t.addCalendar}
                 </a>
                 {(inv.venueName || inv.venueAddress) && (
                   <a className="inv-btn ghost" href={mapsLink} target="_blank" rel="noreferrer">
-                    Buka di Google Maps
+                    {t.openMaps}
                   </a>
                 )}
               </div>
@@ -800,7 +884,7 @@ export default function Invitation({
                   src={inv.mapEmbedUrl}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Peta lokasi acara"
+                  title={t.mapTitle}
                 />
               )}
             </Reveal>
@@ -811,8 +895,8 @@ export default function Invitation({
             <section className="inv-section inv-schedule">
               {torn}{wave}{frame}
               <Reveal>
-                <p className="inv-eyebrow">Rangkaian Acara</p>
-                <h2>Susunan Acara</h2>
+                <p className="inv-eyebrow">{t.scheduleEyebrow}</p>
+                <h2>{t.scheduleTitle}</h2>
                 {divider}
                 <ol className="inv-timeline">
                   {inv.schedule.map((s, i) => (
@@ -837,8 +921,8 @@ export default function Invitation({
               {torn}{wave}{frame}
               {fc("tr")}
               <Reveal>
-                <p className="inv-eyebrow">Dress Code</p>
-                <h2>Busana Tamu</h2>
+                <p className="inv-eyebrow">{t.dressEyebrow}</p>
+                <h2>{t.dressTitle}</h2>
                 {divider}
                 <div className="inv-sils">
                   <SuitSilhouette />
@@ -846,7 +930,7 @@ export default function Invitation({
                 </div>
                 {inv.dressCode && <p>{inv.dressCode}</p>}
                 {inv.dressColors.length > 0 && (
-                  <div className="inv-swatches" aria-label="Warna yang disarankan">
+                  <div className="inv-swatches" aria-label={t.colorsLabel}>
                     {inv.dressColors.map((c) => (
                       <i key={c} style={{ background: c }} title={c} />
                     ))}
@@ -861,12 +945,12 @@ export default function Invitation({
             <section className="inv-section inv-gallery">
               {torn}{wave}{frame}
               <Reveal>
-                <p className="inv-eyebrow">Galeri</p>
-                <h2>Momen Kami</h2>
+                <p className="inv-eyebrow">{t.galleryEyebrow}</p>
+                <h2>{t.galleryTitle}</h2>
                 {divider}
                 <div className="inv-grid">
                   {inv.gallery.map((src) => (
-                    <button key={src} type="button" onClick={() => setLightbox(src)} aria-label="Perbesar foto">
+                    <button key={src} type="button" onClick={() => setLightbox(src)} aria-label={t.zoomPhoto}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={src} alt="" loading="lazy" />
                     </button>
@@ -883,16 +967,26 @@ export default function Invitation({
               {torn}{wave}{frame}
               <Reveal>
                 {bow}
-                <p className="inv-eyebrow">Tanda Kasih</p>
-                <h2>Hadiah</h2>
+                <p className="inv-eyebrow">{t.giftEyebrow}</p>
+                <h2>{t.giftTitle}</h2>
                 {divider}
                 <span className="inv-giftico">
                   <IconGift />
                 </span>
                 {inv.giftNote && <p>{inv.giftNote}</p>}
+                {inv.giftQr && (
+                  <figure className="inv-qr">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={inv.giftQr} alt="QR" loading="lazy" />
+                    <figcaption>{t.qrCaption}</figcaption>
+                    <a className="inv-btn ghost" href={inv.giftQr} download="qr-hadiah">
+                      {t.qrSave}
+                    </a>
+                  </figure>
+                )}
                 <div className="inv-gift-list">
                   {inv.giftAccounts.map((a, i) => (
-                    <GiftCard key={i} account={a} />
+                    <GiftCard key={i} account={a} t={t} />
                   ))}
                 </div>
               </Reveal>
@@ -904,16 +998,17 @@ export default function Invitation({
             {fcx("tl")}
             {torn}{wave}{frame}
             <Reveal>
-              <p className="inv-eyebrow">RSVP &amp; Ucapan</p>
-              <h2>Konfirmasi Kehadiran</h2>
+              <p className="inv-eyebrow">{t.rsvpEyebrow}</p>
+              <h2>{t.rsvpTitle}</h2>
               {divider}
               {inv.notes && <p className="inv-note">{inv.notes}</p>}
               {waLink && (
                 <a className="inv-btn inv-wa" href={waLink} target="_blank" rel="noreferrer">
-                  <IconWhatsApp /> Konfirmasi via WhatsApp
+                  <IconWhatsApp /> {t.waConfirm}
                 </a>
               )}
-              <RsvpForm invitationId={inv.id} guest={guest} />
+              <RsvpForm invitationId={inv.id} guest={guest} lang={lang} t={t} />
+              {guest?.id && <GuestTicket name={guest.name} title={t.ticketTitle} hint={t.ticketHint} />}
               {wishes.length > 0 && (
                 <ul className="inv-wishes">
                   {wishes.map((w) => (
@@ -954,7 +1049,7 @@ export default function Invitation({
         <div className="inv-lightbox" role="dialog" aria-label="Foto galeri" onClick={() => setLightbox(null)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={lightbox} alt="" />
-          <button type="button" aria-label="Tutup">
+          <button type="button" aria-label={t.closePhoto}>
             ×
           </button>
         </div>

@@ -31,6 +31,8 @@ model Invitation {
   dressColors  String  @default("[]") // JSON: ["#aabbcc", ...]
   giftAccounts String  @default("[]") // JSON: [{bank, number, holder}]
   giftNote     String  @default("")
+  giftQr       String  @default("")   // gambar QR (mis. QRIS) untuk hadiah
+  lang         String  @default("id") // bahasa undangan: id | en
   contactPhone String  @default("")   // nomor WhatsApp untuk konfirmasi
   notes        String  @default("")   // catatan, mis. "Tanpa anak"
   template    String   @default("elegant")
@@ -55,6 +57,8 @@ model Guest {
   rsvp         String   @default("pending") // pending | yes | no
   pax          Int      @default(1)
   openedAt     DateTime?
+  sentAt       DateTime?   // undangan sudah dikirim lewat WhatsApp
+  checkedInAt  DateTime?   // sudah check-in di hari acara
   createdAt    DateTime @default(now())
   wishes       Wish[]
 

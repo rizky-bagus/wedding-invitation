@@ -12,6 +12,7 @@ import {
   isHexColor,
   parseJakartaInput,
 } from "@/lib/util";
+import { normLang } from "@/lib/i18n";
 
 const TEXT_KEYS = [
   "title",
@@ -27,6 +28,7 @@ const TEXT_KEYS = [
   "musicUrl",
   "dressCode",
   "giftNote",
+  "giftQr",
   "notes",
 ] as const;
 
@@ -83,13 +85,16 @@ export function previewOverrides(fields: unknown): Partial<InvitationData> {
   const gallery = str("gallery");
   if (gallery !== undefined) out.gallery = gallery.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
 
+  const lang = normLang(str("lang"));
+  out.lang = lang;
+
   const date = str("eventDate");
   if (date && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date)) {
     const d = parseJakartaInput(date);
     if (!Number.isNaN(d.getTime())) {
       out.eventISO = d.toISOString();
-      out.dateText = formatDate(d);
-      out.timeText = formatTime(d);
+      out.dateText = formatDate(d, lang);
+      out.timeText = formatTime(d, lang);
     }
   }
   return out;

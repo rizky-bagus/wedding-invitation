@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { checkPassword, createSession, destroySession, requireAdmin } from "@/lib/auth";
 import { clientIp, loginLimiter, waitText } from "@/lib/ratelimit";
+import { normLang } from "@/lib/i18n";
 import {
   BODY_FONTS,
   HEADING_FONTS,
@@ -108,6 +109,8 @@ export async function updateInvitation(id: string, _prev: ActionResult, fd: Form
       dressColors: JSON.stringify(cleanColors(str(fd, "dressColors"))),
       giftAccounts: JSON.stringify(cleanAccounts(str(fd, "giftAccounts"))),
       giftNote: str(fd, "giftNote").slice(0, 500),
+      giftQr: str(fd, "giftQr").slice(0, 500),
+      lang: normLang(str(fd, "lang")),
       contactPhone: str(fd, "contactPhone").replace(/[^\d+]/g, "").slice(0, 20),
       notes: str(fd, "notes").slice(0, 500),
       template: TEMPLATES.some((t) => t.id === template) ? template : "elegant",
@@ -168,6 +171,37 @@ export async function addGuests(invitationId: string, _prev: ActionResult, fd: F
 export async function deleteGuest(invitationId: string, guestId: string) {
   await requireAdmin();
   await db.guest.delete({ where: { id: guestId } });
+  revalidatePath(`/admin/${invitationId}`);
+}
+
+/** Tandai undangan sudah dikirim ke tamu (dipakai antrean kirim WhatsApp). */
+export async function markSent(invitationId: string, guestId: string) {
+  await requireAdmin();
+  await db.guest.updateMany({ where: { id: guestId, invitationId }, data: { sentAt: new Date() } });
+  revalidatePath(`/admin/${invitationId}`);
+}
+
+export type CheckInResult = { ok: boolean; message: string; name?: string; pax?: number; already?: boolean };
+
+/** Check-in di hari acara. Cari lewat id tamu atau slug nama (dari QR: ?to=Nama). */
+export async function checkInGuest(invitationId: string, ref: { id?: string; to?: string }): Promise<CheckInResult> {
+  await requireAdmin();
+  const guest = ref.id
+    ? await db.guest.findFirst({ where: { id: ref.id, invitationId } })
+    : await db.guest.findUnique({
+        where: { invitationId_slug: { invitationId, slug: slugify(cleanGuestName(ref.to)) || "tamu" } },
+      });
+  if (!guest) return { ok: false, message: "Tamu tidak ditemukan di daftar." };
+  const pax = guest.rsvp === "yes" ? guest.pax : 1;
+  if (guest.checkedInAt) return { ok: true, already: true, name: guest.name, pax, message: `${guest.name} sudah check-in sebelumnya.` };
+  await db.guest.update({ where: { id: guest.id }, data: { checkedInAt: new Date() } });
+  revalidatePath(`/admin/${invitationId}`);
+  return { ok: true, name: guest.name, pax, message: `${guest.name} berhasil check-in.` };
+}
+
+export async function undoCheckIn(invitationId: string, guestId: string) {
+  await requireAdmin();
+  await db.guest.updateMany({ where: { id: guestId, invitationId }, data: { checkedInAt: null } });
   revalidatePath(`/admin/${invitationId}`);
 }
 

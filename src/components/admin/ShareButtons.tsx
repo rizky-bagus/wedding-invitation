@@ -1,18 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { cleanPhone } from "@/lib/util";
+import { cleanPhone, inviteMessage } from "@/lib/util";
+
+/** Buka WhatsApp dengan pesan undangan untuk satu tamu. Tanpa nomor, WhatsApp meminta memilih kontak. */
+export function openWhatsApp(opts: { path: string; guestName: string; phone: string; couple: string; template: string }) {
+  const link = `${window.location.origin}${opts.path}`;
+  const text = inviteMessage(opts.template, { nama: opts.guestName, pasangan: opts.couple, link });
+  const target = opts.phone ? cleanPhone(opts.phone) : "";
+  window.open(`https://wa.me/${target}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+}
 
 export default function ShareButtons({
   path,
   guestName,
   phone,
   couple,
+  template,
+  onSent,
 }: {
   path: string;
   guestName: string;
   phone: string;
   couple: string;
+  template: string;
+  onSent?: () => void;
 }) {
   const [copied, setCopied] = useState(false);
   const fullUrl = () => `${window.location.origin}${path}`;
@@ -27,21 +39,19 @@ export default function ShareButtons({
     }
   };
 
-  const whatsapp = () => {
-    const text =
-      `Kepada Yth. ${guestName},\n\n` +
-      `Dengan penuh kebahagiaan, kami mengundang Anda ke pernikahan ${couple}.\n` +
-      `Detail undangan dapat dibuka di sini:\n${fullUrl()}\n\nTerima kasih.`;
-    const target = phone ? cleanPhone(phone) : "";
-    window.open(`https://wa.me/${target}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-  };
-
   return (
     <span className="row">
       <button type="button" className="btn small" onClick={copy}>
         {copied ? "Tersalin" : "Salin link"}
       </button>
-      <button type="button" className="btn small alt" onClick={whatsapp}>
+      <button
+        type="button"
+        className="btn small alt"
+        onClick={() => {
+          openWhatsApp({ path, guestName, phone, couple, template });
+          onSent?.();
+        }}
+      >
         WhatsApp
       </button>
     </span>

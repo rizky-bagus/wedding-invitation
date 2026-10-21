@@ -5,6 +5,7 @@ import sharp from "sharp";
 import { db } from "@/lib/db";
 import { STORED_NAME, UPLOAD_DIR } from "@/lib/uploads";
 import { formatDate } from "@/lib/util";
+import { localizedText, normLang } from "@/lib/i18n";
 import { Divider, FlourishCorner, FloralCorner, WaxSeal, mix } from "./og-art";
 
 export const alt = "Undangan pernikahan";
@@ -55,6 +56,7 @@ export default async function Image({ params }: { params: Promise<{ invitation: 
   const { invitation } = await params;
   const inv = await db.invitation.findUnique({ where: { slug: invitation } });
 
+  const lang = normLang(inv?.lang);
   const primary = inv?.primaryColor ?? "#b08968";
   const template = inv?.template ?? "elegant";
   const photo = inv?.coverPhoto ? await coverDataUrl(inv.coverPhoto) : null;
@@ -191,7 +193,7 @@ export default async function Image({ params }: { params: Promise<{ invitation: 
               textShadow: shadow,
             }}
           >
-            {inv?.title ?? "Undangan Pernikahan"}
+            {inv ? localizedText(inv.title, "title", lang) : "Undangan Pernikahan"}
           </div>
           <div style={{ display: "flex", marginTop: 14 }}>
             <Divider />
@@ -213,7 +215,7 @@ export default async function Image({ params }: { params: Promise<{ invitation: 
           </div>
           {inv && (
             <div style={{ display: "flex", marginTop: 20, fontSize: 36, letterSpacing: 2, textShadow: shadow }}>
-              {formatDate(inv.eventDate)}
+              {formatDate(inv.eventDate, lang)}
             </div>
           )}
           {venue && (

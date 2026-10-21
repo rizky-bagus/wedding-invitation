@@ -13,6 +13,7 @@ import {
   slugify,
   TIME_ZONE,
 } from "@/lib/util";
+import { localizedText, normLang, tr, DATE_LOCALE } from "@/lib/i18n";
 import Invitation from "@/components/invitation/Invitation";
 
 /** Parameter ?to= bisa muncul berkali-kali; ambil yang pertama. */
@@ -36,15 +37,17 @@ export async function invitationMetadata(slug: string, to?: string): Promise<Met
   const { inv, name } = await load(slug, to);
   const couple = `${inv.groomName} & ${inv.brideName}`;
   // Judul dan deskripsi inilah yang tampil di pratinjau link WhatsApp.
-  const title = name ? `Undangan untuk ${name} · ${couple}` : `${couple} · ${inv.title}`;
-  const where = inv.venueName ? ` di ${inv.venueName}` : "";
-  const description = `Dengan hormat kami mengundang Anda ke pernikahan ${couple} pada ${formatDate(inv.eventDate)}${where}.`;
+  const lang = normLang(inv.lang);
+  const t = tr(lang);
+  const title = name ? t.metaFor(name, couple) : `${couple} · ${localizedText(inv.title, "title", lang)}`;
+  const where = inv.venueName ? t.metaAt(inv.venueName) : "";
+  const description = t.metaDesc(couple, formatDate(inv.eventDate, lang), where);
   return {
     metadataBase: new URL(await publicOrigin()),
     title,
     description,
     robots: { index: false, follow: false }, // link undangan bersifat pribadi
-    openGraph: { title, description, type: "website", locale: "id_ID", siteName: couple },
+    openGraph: { title, description, type: "website", locale: t.ogLocale, siteName: couple },
     twitter: { card: "summary_large_image", title, description },
   };
 }
@@ -56,7 +59,8 @@ export async function InvitationPage({ slug, to }: { slug: string; to?: string }
     orderBy: { createdAt: "desc" },
     take: 100,
   });
-  const whenFmt = new Intl.DateTimeFormat("id-ID", {
+  const lang = normLang(inv.lang);
+  const whenFmt = new Intl.DateTimeFormat(DATE_LOCALE[lang], {
     timeZone: TIME_ZONE,
     day: "numeric",
     month: "short",
@@ -75,8 +79,8 @@ export async function InvitationPage({ slug, to }: { slug: string; to?: string }
         groomParents: inv.groomParents,
         brideParents: inv.brideParents,
         eventISO: inv.eventDate.toISOString(),
-        dateText: formatDate(inv.eventDate),
-        timeText: formatTime(inv.eventDate),
+        dateText: formatDate(inv.eventDate, lang),
+        timeText: formatTime(inv.eventDate, lang),
         venueName: inv.venueName,
         venueAddress: inv.venueAddress,
         mapEmbedUrl: inv.mapEmbedUrl,
@@ -92,6 +96,8 @@ export async function InvitationPage({ slug, to }: { slug: string; to?: string }
         dressColors: cleanColors(inv.dressColors),
         giftAccounts: cleanAccounts(inv.giftAccounts),
         giftNote: inv.giftNote,
+        giftQr: inv.giftQr,
+        lang,
         contactPhone: inv.contactPhone,
         notes: inv.notes,
         template: inv.template,
