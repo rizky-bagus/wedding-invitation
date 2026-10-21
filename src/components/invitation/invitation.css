@@ -3732,3 +3732,589 @@
 .inv[data-template="gunung"] .inv-count-box {
   border-radius: 14px;
 }
+
+/* ================= Tema: sakura ================= */
+@keyframes inv-petal {
+  0% {
+    transform: translate3d(0, -5vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(var(--dx), 105vh, 0) rotate(540deg);
+    opacity: 0;
+  }
+}
+.inv[data-template="sakura"] {
+  --radius: 4px;
+  --soft: color-mix(in srgb, var(--accent) 9%, var(--bg));
+  --line: color-mix(in srgb, var(--accent) 50%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 24%, var(--bg)), var(--bg) 32%, color-mix(in srgb, var(--accent) 14%, var(--bg)));
+}
+.inv[data-template="sakura"] .inv-cover::before {
+  display: none;
+}
+.inv[data-template="sakura"] .inv-cover-bg {
+  background: radial-gradient(60% 36% at 50% 6%, color-mix(in srgb, var(--accent) 38%, #fff), transparent),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 36%, #fff), var(--bg) 72%);
+  animation: none;
+}
+.inv[data-template="sakura"] .inv-cover-inner {
+  z-index: 1;
+}
+.petalfall {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.petalfall i {
+  position: absolute;
+  top: -24px;
+  border-radius: 80% 0 80% 0;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  opacity: 0;
+  animation: inv-petal linear infinite;
+}
+.sk {
+  position: relative;
+  width: min(330px, 86vw);
+  margin: 2.6rem auto 1.2rem;
+}
+.sk-card {
+  position: relative;
+  padding: 2.2rem 1.4rem 2.3rem;
+  background: color-mix(in srgb, var(--bg) 94%, #fff);
+  border: 1px solid var(--accent);
+  outline: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  outline-offset: -8px;
+  box-shadow: 0 18px 38px color-mix(in srgb, var(--primary) 22%, transparent);
+  color: var(--text);
+}
+.sk-card .inv-eyebrow {
+  color: var(--accent);
+  font-size: 0.62rem;
+}
+.sk h1 {
+  font-size: clamp(1.9rem, 8vw, 2.6rem);
+  margin: 0.5rem 0;
+  color: var(--primary);
+}
+.sk h1 .amp {
+  color: var(--accent);
+  font-size: 0.5em;
+}
+.sk-sun {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0.9rem auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--primary) 70%, #ff8a9a), var(--primary));
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+.inv .sk-br {
+  top: -46px;
+  z-index: 2;
+  width: 150px;
+  height: auto;
+}
+.inv .sk-br.l {
+  left: -42px;
+}
+.inv .sk-br.r {
+  right: -42px;
+  transform: scaleX(-1);
+}
+.inv .sg {
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 0;
+}
+.inv[data-template="sakura"] .inv-cover .sg {
+  --wave: color-mix(in srgb, var(--accent) 55%, #fff);
+  --ridge2: #fff;
+  bottom: -1px;
+}
+.inv[data-template="sakura"] .inv-open {
+  border-radius: 999px;
+}
+.inv[data-template="sakura"] .inv-main {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 0.7rem;
+}
+.inv[data-template="sakura"] .inv-section {
+  position: relative;
+  margin: 1.1rem 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bg) 92%, #fff);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: -7px;
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--primary) 10%, transparent);
+}
+.inv[data-template="sakura"] .inv-section .inv-reveal {
+  position: relative;
+  z-index: 1;
+}
+.inv[data-template="sakura"] .inv-section h2,
+.inv[data-template="sakura"] .inv-person h2 {
+  color: var(--primary);
+}
+.inv[data-template="sakura"] .inv-section .inv-eyebrow {
+  color: var(--accent);
+}
+.inv[data-template="sakura"] .dc {
+  width: clamp(96px, 30vw, 140px);
+  opacity: 0.95;
+}
+.inv[data-template="sakura"] .inv-frame {
+  width: 170px;
+  height: 170px;
+  border: 0;
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+.inv[data-template="sakura"] .inv-btn,
+.inv[data-template="sakura"] .inv-form button {
+  border-radius: 999px;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.inv[data-template="sakura"] .inv-btn.ghost {
+  background: transparent;
+  color: var(--primary);
+}
+.inv[data-template="sakura"] .inv-count-box {
+  border-radius: 14px;
+}
+.inv[data-template="sakura"] .inv-footer {
+  background: color-mix(in srgb, var(--primary) 85%, #000);
+  border-color: transparent;
+  outline-color: rgb(255 255 255 / 0.25);
+  box-shadow: none;
+  color: #fdeef0;
+  padding-top: 5rem;
+}
+.inv[data-template="sakura"] .inv-footer .sg {
+  --wave: color-mix(in srgb, var(--primary) 85%, #000);
+  --ridge2: color-mix(in srgb, #fff 30%, var(--primary));
+  top: 0;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent);
+  mask-image: linear-gradient(180deg, #000, transparent);
+}
+.inv[data-template="sakura"] .inv-footer h2 {
+  color: #fff;
+}
+.inv[data-template="sakura"] .inv-footer .inv-divider {
+  color: color-mix(in srgb, var(--accent) 60%, #fff);
+}
+@media (prefers-reduced-motion: reduce) {
+  .petalfall i {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* ================= Tema: retro 70-an ================= */
+.inv[data-template="retro"] {
+  --radius: 26px;
+  --soft: color-mix(in srgb, var(--accent) 22%, var(--bg));
+  --line: var(--text);
+  background-color: color-mix(in srgb, var(--primary) 14%, var(--bg));
+  background-image: radial-gradient(color-mix(in srgb, var(--primary) 24%, transparent) 1.4px, transparent 1.7px);
+  background-size: 18px 18px;
+}
+.inv[data-template="retro"] .inv-cover::before {
+  display: none;
+}
+.inv[data-template="retro"] .inv-cover-bg {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 70%, var(--bg)) 0%, color-mix(in srgb, var(--primary) 62%, var(--bg)) 55%, var(--primary) 100%);
+  animation: none;
+}
+.rt {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(330px, 86vw);
+  margin: 1.4rem auto 1.2rem;
+}
+.inv .rt .rt-sun {
+  position: relative;
+  width: 78%;
+  height: auto;
+  margin-bottom: -1px;
+}
+.rt-card {
+  position: relative;
+  width: 100%;
+  padding: 1.6rem 1.2rem 1.8rem;
+  background: var(--bg);
+  color: var(--text);
+  border: 3px solid var(--text);
+  border-radius: 28px;
+  box-shadow: 7px 7px 0 var(--text);
+}
+.inv[data-template="retro"] .rt-card .inv-eyebrow {
+  color: var(--text);
+  font-size: 0.62rem;
+}
+.rt h1 {
+  font-size: clamp(2rem, 8.4vw, 2.7rem);
+  margin: 0.4rem 0;
+  color: var(--primary);
+}
+.rt h1 .amp {
+  color: var(--accent);
+  font-size: 0.5em;
+}
+.inv .rt .rt-waves {
+  position: relative;
+  width: 100%;
+  height: 34px;
+  margin-top: 1.1rem;
+}
+.inv .rt-daisy {
+  z-index: 2;
+  width: 78px;
+  height: auto;
+  animation: inv-spin 40s linear infinite;
+}
+.inv .rt-daisy.l {
+  left: -30px;
+  top: 40%;
+}
+.inv .rt-daisy.r {
+  right: -28px;
+  bottom: 24%;
+}
+.inv[data-template="retro"] .inv-open {
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 999px;
+}
+.inv[data-template="retro"] .inv-scrollhint,
+.inv[data-template="retro"] .inv-scrollhint::after {
+  border-color: var(--bg);
+}
+.inv[data-template="retro"] .inv-scrollhint::after {
+  background: var(--bg);
+}
+.inv[data-template="retro"] .inv-main {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 0.9rem;
+}
+.inv[data-template="retro"] .inv-section {
+  position: relative;
+  margin: 1.6rem 0;
+  overflow: hidden;
+  background: var(--bg);
+  border: 3px solid var(--text);
+  border-radius: 28px;
+  box-shadow: 7px 7px 0 var(--primary);
+}
+.inv[data-template="retro"] .inv-main > section:nth-of-type(even) {
+  box-shadow: 7px 7px 0 var(--accent);
+}
+.inv[data-template="retro"] .inv-section .inv-reveal {
+  position: relative;
+  z-index: 1;
+}
+.inv[data-template="retro"] .inv-section h2,
+.inv[data-template="retro"] .inv-person h2 {
+  color: var(--primary);
+}
+.inv[data-template="retro"] .inv-section .inv-eyebrow {
+  display: inline-block;
+  padding: 0.1rem 0.9rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--text);
+}
+.inv[data-template="retro"] .dc {
+  width: 84px;
+  animation: inv-spin 40s linear infinite;
+}
+.inv[data-template="retro"] .dc.tr {
+  top: -26px;
+  right: -26px;
+  transform: none;
+}
+.inv[data-template="retro"] .dc.bl {
+  bottom: -26px;
+  left: -26px;
+}
+.inv[data-template="retro"] .inv-tile,
+.inv[data-template="retro"] .inv-cal,
+.inv[data-template="retro"] .inv-gift-card,
+.inv[data-template="retro"] .inv-wishes li {
+  background: var(--soft);
+  border: 2px solid var(--text);
+  border-radius: 18px;
+  box-shadow: 3px 3px 0 var(--text);
+}
+.inv[data-template="retro"] .inv-cal-grid span.on {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+}
+.inv[data-template="retro"] .inv-count-box {
+  display: grid;
+  place-content: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 2px solid var(--text);
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 3px 3px 0 var(--text);
+}
+.inv[data-template="retro"] .inv-btn,
+.inv[data-template="retro"] .inv-form button {
+  border-radius: 999px;
+  background: var(--primary);
+  border: 2px solid var(--text);
+  box-shadow: 3px 3px 0 var(--text);
+}
+.inv[data-template="retro"] .inv-btn.ghost {
+  background: transparent;
+  color: var(--text);
+}
+.inv[data-template="retro"] .inv-frame {
+  width: 170px;
+  height: 170px;
+  border: 3px solid var(--text);
+  outline: 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.inv[data-template="retro"] .inv-footer {
+  background: var(--text);
+  color: var(--bg);
+  padding-top: 5rem;
+  box-shadow: 7px 7px 0 var(--primary);
+}
+.inv[data-template="retro"] .inv-footer .rt-waves {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 34px;
+  margin: 0;
+}
+.inv[data-template="retro"] .inv-footer h2 {
+  color: var(--accent);
+}
+.inv[data-template="retro"] .inv-footer .inv-divider {
+  color: var(--accent);
+}
+
+/* ================= Tema: hutan ================= */
+@keyframes inv-fly {
+  from {
+    transform: translate(0, 0);
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--fx), var(--fy));
+    opacity: 0.2;
+  }
+}
+.inv[data-template="hutan"] {
+  --radius: 18px;
+  --moss: color-mix(in srgb, var(--primary) 52%, #000);
+  --soft: color-mix(in srgb, var(--primary) 7%, var(--bg));
+  --line: color-mix(in srgb, var(--primary) 28%, transparent);
+  position: relative;
+  color: #e6efe0;
+  background: radial-gradient(60% 24% at 50% 14%, rgb(255 226 122 / 0.12), transparent),
+    radial-gradient(70% 30% at 50% 0%, color-mix(in srgb, var(--primary) 55%, transparent), transparent),
+    linear-gradient(180deg, color-mix(in srgb, var(--primary) 40%, #000), color-mix(in srgb, var(--primary) 26%, #000));
+}
+.flies {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.flies i {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffe27a;
+  box-shadow: 0 0 8px 2px rgb(255 226 122 / 0.7);
+  opacity: 0.3;
+  animation: inv-fly ease-in-out infinite alternate;
+}
+.inv[data-template="hutan"] .inv-cover,
+.inv[data-template="hutan"] .inv-main {
+  position: relative;
+  z-index: 1;
+}
+.inv[data-template="hutan"] .inv-cover::before {
+  display: none;
+}
+.inv[data-template="hutan"] .inv-cover-bg {
+  background: none;
+  animation: none;
+}
+.fr {
+  position: relative;
+  width: min(330px, 86vw);
+  margin: 2.4rem auto 3.6rem;
+}
+.fr-card {
+  position: relative;
+  z-index: 1;
+  padding: 2rem 1.4rem 2.3rem;
+  background: color-mix(in srgb, var(--bg) 96%, #fff);
+  color: var(--text);
+  border-radius: 26px;
+  outline: 1.5px dashed color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: -9px;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.45);
+}
+.inv[data-template="hutan"] .fr-card .inv-eyebrow {
+  color: var(--accent);
+  font-size: 0.62rem;
+}
+.fr h1 {
+  font-size: clamp(1.9rem, 8vw, 2.6rem);
+  margin: 0.5rem 0;
+  color: var(--primary);
+}
+.fr h1 .amp {
+  color: var(--accent);
+  font-size: 0.5em;
+}
+.inv .fr-fern {
+  bottom: -14px;
+  z-index: 0;
+  width: 130px;
+  height: auto;
+  transform-origin: 50% 100%;
+}
+.inv .fr-fern.l {
+  left: -66px;
+  transform: rotate(-8deg);
+}
+.inv .fr-fern.r {
+  right: -66px;
+  transform: scaleX(-1) rotate(-8deg);
+}
+.inv .fr-mush {
+  left: 8px;
+  bottom: -30px;
+  z-index: 2;
+  width: 100px;
+  height: auto;
+}
+.inv[data-template="hutan"] .inv-to {
+  background: rgb(255 255 255 / 0.08);
+  border-color: rgb(255 255 255 / 0.25);
+  color: #e6efe0;
+}
+.inv[data-template="hutan"] .inv-open {
+  background: var(--accent);
+  border-radius: 999px;
+}
+.inv[data-template="hutan"] .inv-scrollhint,
+.inv[data-template="hutan"] .inv-scrollhint::after {
+  border-color: #ffe9a8;
+}
+.inv[data-template="hutan"] .inv-scrollhint::after {
+  background: #ffe9a8;
+}
+.inv[data-template="hutan"] .inv-main {
+  max-width: 560px;
+  padding: 0 0.8rem;
+}
+.inv[data-template="hutan"] .inv-section {
+  position: relative;
+  margin: 1.3rem 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bg) 96%, #fff);
+  color: var(--text);
+  border-radius: 26px;
+  outline: 1.5px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: -10px;
+  box-shadow: 0 18px 36px rgb(0 0 0 / 0.4);
+}
+.inv[data-template="hutan"] .inv-section .inv-reveal {
+  position: relative;
+  z-index: 1;
+}
+.inv[data-template="hutan"] .inv-section h2,
+.inv[data-template="hutan"] .inv-person h2 {
+  color: var(--primary);
+}
+.inv[data-template="hutan"] .inv-section .inv-eyebrow {
+  color: var(--accent);
+}
+.inv[data-template="hutan"] .dc {
+  width: 72px;
+  opacity: 0.92;
+}
+.inv[data-template="hutan"] .dc.tl {
+  top: -20px;
+  left: -8px;
+  transform: rotate(180deg) scaleX(-1);
+}
+.inv[data-template="hutan"] .dc.tr {
+  top: -20px;
+  right: -8px;
+  transform: rotate(180deg);
+}
+.inv[data-template="hutan"] .dc.bl,
+.inv[data-template="hutan"] .dc.br {
+  width: 92px;
+  bottom: -4px;
+}
+.inv[data-template="hutan"] .inv-frame {
+  width: 170px;
+  height: 170px;
+  border: 0;
+  outline: 0;
+  box-shadow: 0 0 0 5px var(--bg), 0 0 0 6.5px var(--accent);
+}
+.inv[data-template="hutan"] .inv-btn,
+.inv[data-template="hutan"] .inv-form button {
+  border-radius: 999px;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.inv[data-template="hutan"] .inv-btn.ghost {
+  background: transparent;
+  color: var(--primary);
+}
+.inv[data-template="hutan"] .inv-count-box {
+  border-radius: 14px;
+}
+.inv[data-template="hutan"] .inv-footer {
+  background: var(--moss);
+  color: #e6efe0;
+  outline-color: rgb(255 255 255 / 0.22);
+  box-shadow: none;
+}
+.inv[data-template="hutan"] .inv-footer h2 {
+  color: #ffe9a8;
+}
+.inv[data-template="hutan"] .inv-footer .inv-divider {
+  color: #ffe9a8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flies i {
+    animation: none;
+    opacity: 0.6;
+  }
+}

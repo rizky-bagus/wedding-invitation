@@ -8,7 +8,7 @@ import { useId } from "react";
 const f = (n: number) => Math.round(n * 100) / 100;
 const uid = (raw: string) => raw.replace(/[^a-zA-Z0-9]/g, "");
 /** Pseudo-acak deterministik dari indeks (sama di server dan klien). Hash bilangan bulat (Math.imul) agar sebaran merata. */
-const rnd = (i: number, k: number) => {
+export const rnd = (i: number, k: number) => {
   let n = i * 131 + k * 7919 + 12345;
   n = Math.imul(n ^ (n >>> 16), 0x45d9f3b);
   n = Math.imul(n ^ (n >>> 16), 0x45d9f3b);

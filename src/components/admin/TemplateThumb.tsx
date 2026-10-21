@@ -21,6 +21,9 @@ const SPECS: Record<string, Spec> = {
   oriental: { bg: "#9b1c24", card: "#fbf3e4", accent: "#d6a23c", shape: "oriental" },
   galaksi: { bg: "#141a4a", card: "#ffffff", accent: "#f0c75e", shape: "galaxy" },
   gunung: { bg: "#e9a67e", card: "#f6efe4", accent: "#e08a4a", shape: "mountain" },
+  sakura: { bg: "#f9dfe4", card: "#fdf4f4", accent: "#e58fa5", shape: "sakura" },
+  retro: { bg: "#e9b872", card: "#f6e7c8", accent: "#c4572b", shape: "retro" },
+  hutan: { bg: "#17301f", card: "#f2f0de", accent: "#c8553d", shape: "forest" },
 };
 
 /** Tiga garis teks (nama, ampersand, tanggal) dalam warna aksen. */
@@ -197,6 +200,42 @@ export default function TemplateThumb({ id }: { id: string }) {
           <Lines x={30} y={16} color="#2f4a3a" w={20} />
           <path d="M0 80 V64 L10 54 L18 62 L30 48 L42 62 L50 52 L60 62 V80Z" fill="#2f4a3a" />
           <path d="M30 48 L26 54 L30 53 L34 54Z" fill="#fff" />
+        </g>
+      )}
+      {s.shape === "sakura" && (
+        <g>
+          <path d="M-2 8 C14 12 24 10 34 20" stroke="#6b4a3a" strokeWidth="1.6" fill="none" />
+          {[[8, 12], [22, 11], [34, 20], [50, 70]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r={i === 3 ? 3.4 : 3} fill={s.accent} />
+          ))}
+          <rect x="10" y="26" width="40" height="38" rx="2" fill={s.card} stroke={s.accent} strokeWidth="0.8" />
+          <circle cx="30" cy="35" r="5" fill="#c23a50" />
+          <Lines x={30} y={44} color="#b84a6a" w={20} />
+          <path d="M0 72 q5 -6 10 0 t10 0 t10 0 t10 0 t10 0 t10 0 V80 H0Z" fill="#b84a6a" opacity="0.5" />
+        </g>
+      )}
+      {s.shape === "retro" && (
+        <g>
+          <path d="M12 36 A18 18 0 0 1 48 36Z" fill="#e0a526" />
+          <rect x="12" y="29" width="36" height="1.6" fill={s.bg} />
+          <rect x="12" y="33" width="36" height="2.4" fill={s.bg} />
+          <rect x="9" y="36" width="42" height="30" rx="5" fill={s.card} stroke="#4a2a17" strokeWidth="1.2" />
+          <Lines x={30} y={41} color={s.accent} w={22} />
+          <path d="M0 72 q7 -8 15 0 t15 0 t15 0 t15 0" stroke={s.accent} strokeWidth="2.4" fill="none" />
+          <path d="M0 77 q7 -8 15 0 t15 0 t15 0 t15 0" stroke="#e0a526" strokeWidth="2.4" fill="none" />
+        </g>
+      )}
+      {s.shape === "forest" && (
+        <g>
+          {Array.from({ length: 9 }, (_, i) => (
+            <circle key={i} cx={6 + ((i * 17) % 50)} cy={8 + ((i * 29) % 60)} r="1" fill="#ffe27a" />
+          ))}
+          <path d="M6 4 C8 18 12 28 20 34 M54 4 C52 18 48 28 40 34" stroke="#6fae7a" strokeWidth="2.4" fill="none" />
+          <rect x="10" y="20" width="40" height="40" rx="6" fill={s.card} />
+          <Lines x={30} y={28} color="#2f5a3a" w={20} />
+          <path d="M12 72 C12 64 24 64 24 72Z" fill={s.accent} />
+          <rect x="16" y="72" width="4" height="5" fill="#f3e9d2" />
+          <circle cx="16" cy="68" r="1" fill="#fff" />
         </g>
       )}
       {dark && null}

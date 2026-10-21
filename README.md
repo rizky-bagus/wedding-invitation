@@ -26,15 +26,16 @@ otomatis ditambahkan saat mereka mengonfirmasi kehadiran. Slug `admin`, `api`, `
 
 ## Template
 
-Delapan belas template (tiga terbaru: `oriental` merah-emas dengan lampion dan 囍, `galaksi` langit
-malam berbintang, `gunung` punggung gunung dan pinus; sebelumnya `boho`, `deco`, `pantai`): `elegant`,
+Dua puluh satu template (tiga terbaru: `sakura` ranting bunga, kelopak berguguran dan ombak seigaiha,
+`retro` matahari bergaris dan bayangan tebal ala 70-an, `hutan` pakis, jamur dan kunang-kunang;
+sebelumnya `oriental`, `galaksi`, `gunung`, `boho`, `deco`, `pantai`): `elegant`,
 `floral`, `modern`, `envelope` (amplop bersegel lilin), `botanical`
 (bingkai lengkung, bunga, tepi kertas sobek), `panel` (panel warna pekat), `satin` (kain satin
 bergelombang, plakat berlekuk, calla lily), `kraft` (kertas kraft sobek, dahlia, polaroid bertape),
 `lavender` (gambar garis lavender dan daisy, pita judul), `renda` (oval renda, pita beludru, cermin
 emas), `batik` (motif kawung dan tumpal, sogan dan emas), dan `islami` (lengkung masjid, bintang
 geometris, Basmalah). Semua ilustrasi SVG dibuat sendiri di `src/components/invitation/` (`art.tsx`,
-`ornaments.tsx`, `flora.tsx`, `heritage.tsx`, `nature.tsx`, `scenery.tsx`), tanpa aset pihak ketiga.
+`ornaments.tsx`, `flora.tsx`, `heritage.tsx`, `nature.tsx`, `scenery.tsx`, `motifs.tsx`), tanpa aset pihak ketiga.
 Template Oriental memuat glyph 囍 dari Google Fonts (Noto Serif SC, hanya satu karakter). Menambah template: daftarkan di
 `TEMPLATES` (`src/lib/util.ts`), tambah sketsa di `TemplateThumb.tsx`, dan blok CSS `[data-template]`.
 Tiap undangan punya empat warna: utama, latar, teks, dan aksen (untuk bunga, pita, dan hiasan).

@@ -25,6 +25,9 @@ export const TEMPLATES = [
   { id: "oriental", name: "Oriental", desc: "Merah dan emas, lampion, simbol 囍, motif awan." },
   { id: "galaksi", name: "Galaksi", desc: "Langit malam berbintang, bulan sabit, rasi bintang." },
   { id: "gunung", name: "Pegunungan", desc: "Punggung gunung berlapis, pinus, fajar." },
+  { id: "sakura", name: "Sakura", desc: "Jepang: ranting sakura, kelopak berguguran, ombak seigaiha." },
+  { id: "retro", name: "Retro 70-an", desc: "Matahari bergaris, pita gelombang, bunga daisy, bayangan tebal." },
+  { id: "hutan", name: "Hutan", desc: "Hutan malam: pakis, jamur berbintik, kunang-kunang." },
 ] as const;
 
 /** Preset warna siap pakai: [nama, utama, latar, teks]. */
@@ -52,6 +55,9 @@ export const PALETTES = [
   { name: "Merah Emas", primary: "#9b1c24", bg: "#fbf3e4", text: "#3a1416", accent: "#d6a23c" },
   { name: "Galaxy Indigo", primary: "#141a4a", bg: "#ece8ff", text: "#ece8ff", accent: "#f0c75e" },
   { name: "Forest Dawn", primary: "#2f4a3a", bg: "#f6efe4", text: "#22332a", accent: "#e08a4a" },
+  { name: "Sakura Pink", primary: "#b84a6a", bg: "#fdf4f4", text: "#4a2a33", accent: "#e58fa5" },
+  { name: "Sunset 70s", primary: "#c4572b", bg: "#f6e7c8", text: "#4a2a17", accent: "#e0a526" },
+  { name: "Moss Mushroom", primary: "#2f5a3a", bg: "#f2f0de", text: "#1f3126", accent: "#c8553d" },
 ] as const;
 
 export const HEADING_FONTS = [

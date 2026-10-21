@@ -9,6 +9,7 @@ import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, V
 import { Crescent, GoldDivider, GoldMirror, LaceOval, PointedArch } from "./heritage";
 import { DecoCorner, OceanWave, PalmFan, Pampas, RainbowArch, Shell, Starfish, Sunburst } from "./nature";
 import { Constellation, Lantern, MountainEdge, Moon, Pines, Sparkle, StarField } from "./scenery";
+import { BlossomBranch, Daisy70, Fern, Fireflies, Mushrooms, PetalFall, RetroSun, Seigaiha, WaveStripes } from "./motifs";
 import {
   DressSilhouette,
   FloralCorner,
@@ -332,6 +333,9 @@ export default function Invitation({
   const oriental = tpl === "oriental";
   const galaksi = tpl === "galaksi";
   const gunung = tpl === "gunung";
+  const sakura = tpl === "sakura";
+  const retro = tpl === "retro";
+  const hutan = tpl === "hutan";
   const gold = renda || batik || islami || deco || oriental; // template beraksen emas: pemisah dan bingkai berwarna emas
   const envelopeLike = tpl === "envelope" || kraft;
   const divider = gold ? <GoldDivider /> : <Divider />;
@@ -364,6 +368,12 @@ export default function Invitation({
       pos === "tr" || pos === "bl" ? <Constellation className={`dc ${pos}`} /> : <Sparkle className={`dc ${pos}`} />
     ) : gunung ? (
       pos === "bl" || pos === "br" ? <Pines className={`dc ${pos}`} /> : null // pinus tumbuh dari bawah
+    ) : sakura ? (
+      pos === "tl" || pos === "tr" ? <BlossomBranch className={`dc ${pos}`} /> : null // ranting menjuntai dari atas
+    ) : retro ? (
+      pos === "tr" || pos === "bl" ? <Daisy70 className={`dc ${pos}`} /> : null
+    ) : hutan ? (
+      pos === "tl" || pos === "tr" ? <Fern className={`dc ${pos}`} /> : <Mushrooms className={`dc ${pos}`} /> // pakis menggantung, jamur tumbuh dari bawah
     ) : null;
   const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : cluster(pos));
   /** Hiasan tambahan hanya untuk template baru (botanical sudah cukup ramai). */
@@ -409,11 +419,12 @@ export default function Invitation({
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&text=%E5%9B%8D&display=swap" />
       )}
       {galaksi && <StarField />}
+      {hutan && <Fireflies />}
       {inv.musicUrl && <audio ref={audio} src={inv.musicUrl} loop preload="none" />}
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && coverBg ? { backgroundImage: coverBg } : undefined} />
+        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && coverBg ? { backgroundImage: coverBg } : undefined} />
         {lavender && (
           <>
             <LineSpray className="cv tl" />
@@ -566,6 +577,42 @@ export default function Invitation({
               <Pines className="mt-pine l" />
               <Pines className="mt-pine r" />
             </div>
+          ) : sakura ? (
+            <div className="sk">
+              <BlossomBranch className="sk-br l" />
+              <BlossomBranch className="sk-br r" />
+              <div className="sk-card">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg ? <div className="inv-arch sm round" style={{ backgroundImage: coverBg }} /> : <i className="sk-sun" aria-hidden="true" />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+            </div>
+          ) : retro ? (
+            <div className="rt">
+              <RetroSun className="rt-sun" />
+              <div className="rt-card">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm round" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <WaveStripes className="rt-waves" />
+              <Daisy70 className="rt-daisy l" />
+              <Daisy70 className="rt-daisy r" />
+            </div>
+          ) : hutan ? (
+            <div className="fr">
+              <Fern className="fr-fern l" />
+              <Fern className="fr-fern r" />
+              <div className="fr-card">
+                <p className="inv-eyebrow">{inv.title}</p>
+                {coverBg && <div className="inv-arch sm round" style={{ backgroundImage: coverBg }} />}
+                {names}
+                <p className="inv-cover-date">{inv.dateText}</p>
+              </div>
+              <Mushrooms className="fr-mush" />
+            </div>
           ) : pantai ? (
             <div className="sea">
               <Shell className="sea-shell" />
@@ -624,6 +671,12 @@ export default function Invitation({
         </div>
         {pantai && <OceanWave className="cv-wave" />}
         {gunung && <MountainEdge className="cv-wave" />}
+        {sakura && (
+          <>
+            <PetalFall />
+            <Seigaiha className="sg" />
+          </>
+        )}
         {!opened && !opening && <div className="inv-scrollhint" aria-hidden="true" />}
       </section>
 
@@ -883,6 +936,8 @@ export default function Invitation({
           {/* ---------- Penutup ---------- */}
           <footer className="inv-section inv-footer">
             {torn}{wave}{frame}
+            {sakura && <Seigaiha className="sg" />}
+            {retro && <WaveStripes className="rt-waves" />}
             {fc("br")}
             <Reveal>
               {divider}
