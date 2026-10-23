@@ -5503,6 +5503,7 @@
   position: absolute;
   left: 0;
   top: 58%;
+  white-space: nowrap;
   padding: 0.9rem 0.45rem;
   transform: translateY(-50%) rotate(180deg);
   writing-mode: vertical-rl;
@@ -6006,6 +6007,274 @@
   border: 0;
   opacity: 1;
   box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ===== Animasi hiasan =====
+ * Memakai properti transform terpisah (rotate, translate, scale) supaya tidak menimpa
+ * transform bawaan tiap hiasan (cermin, putaran). Gerak dimatikan oleh aturan reduced-motion di atas. */
+@keyframes inv-sway {
+  from {
+    rotate: -2.5deg;
+    translate: 0 0;
+  }
+  to {
+    rotate: 2.5deg;
+    translate: 0 4px;
+  }
+}
+@keyframes inv-bob {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -7px;
+  }
+}
+@keyframes inv-swing {
+  from {
+    rotate: -6deg;
+  }
+  to {
+    rotate: 6deg;
+  }
+}
+@keyframes inv-wave-drift {
+  from {
+    translate: -2.5% 0;
+  }
+  to {
+    translate: 2.5% 0;
+  }
+}
+@keyframes inv-breathe {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.06;
+  }
+}
+@keyframes inv-glint {
+  0% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+}
+@keyframes inv-div-in {
+  from {
+    scale: 0.3;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+@keyframes inv-frame-breathe {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 4px 4px;
+  }
+}
+@keyframes inv-frame-breathe-r {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: -4px 4px;
+  }
+}
+@keyframes inv-ring {
+  from {
+    box-shadow: 0 10px 22px rgb(0 0 0 / 0.16), 0 0 0 4px color-mix(in srgb, var(--accent) 24%, transparent);
+  }
+  to {
+    box-shadow: 0 10px 22px rgb(0 0 0 / 0.16), 0 0 0 15px color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+}
+@keyframes inv-ring-n {
+  from {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 11px color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+}
+@keyframes inv-stamp {
+  0% {
+    scale: 1.9;
+    rotate: -26deg;
+    opacity: 0;
+  }
+  60% {
+    scale: 0.92;
+    opacity: 1;
+  }
+  100% {
+    scale: 1;
+    rotate: 0deg;
+    opacity: 1;
+  }
+}
+@keyframes inv-shoot {
+  0% {
+    opacity: 0;
+    translate: 0 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  11% {
+    opacity: 0;
+    translate: -280px 160px;
+  }
+  100% {
+    opacity: 0;
+    translate: -280px 160px;
+  }
+}
+/* Hiasan sudut kartu: bergoyang pelan; yang menggantung berpangkal di atas, yang tumbuh berpangkal di bawah */
+.inv .dc {
+  transform-origin: 50% 100%;
+  animation: inv-sway 7s ease-in-out infinite alternate;
+}
+.inv .dc.tl,
+.inv .dc.tr {
+  transform-origin: 50% 0;
+}
+.inv .dc.tr {
+  animation-duration: 8.5s;
+  animation-delay: -2.4s;
+}
+.inv .dc.bl {
+  animation-duration: 9s;
+  animation-delay: -4s;
+}
+.inv .dc.br {
+  animation-duration: 6.5s;
+  animation-delay: -1.2s;
+}
+.inv:is([data-template="floral"], [data-template="retro"]) .dc {
+  transform-origin: 50% 50%;
+}
+.inv[data-template="galaksi"] .dc {
+  transform-origin: 50% 50%;
+  animation: inv-glint 4s ease-in-out infinite alternate;
+}
+.inv .gl {
+  transform-origin: 50% 50%;
+  animation: inv-spin 50s linear infinite;
+}
+.inv .sc {
+  animation: inv-glint 5s ease-in-out infinite alternate;
+}
+.inv .xh {
+  animation: inv-spin 26s linear infinite;
+}
+.inv .dc.gl {
+  animation: inv-spin 50s linear infinite;
+}
+/* Pembatas judul: muncul membesar lalu berkilau pelan */
+.inv .inv-reveal.is-in .inv-divider,
+.inv .inv-reveal.is-in .inv-golddiv {
+  animation: inv-div-in 1s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) both, inv-glint 5s 1.2s ease-in-out infinite alternate;
+}
+/* Foto pengantin: garis bingkai bernapas, lambang & berdenyut, nomor kisah cinta berdenyut */
+.inv .ed-frame::before {
+  animation: inv-frame-breathe 5s ease-in-out infinite alternate;
+}
+.inv .ed-person.groom .ed-frame::before {
+  animation-name: inv-frame-breathe-r;
+}
+.inv .ed-amp {
+  animation: inv-ring 3.2s ease-out infinite;
+}
+.inv .inv-storylist .n {
+  animation: inv-ring-n 3.4s ease-out infinite;
+}
+/* Sampul: gelombang bergeser, lampion berayun, pinus dan daun bergoyang, bulan bernapas */
+.inv .cv-wave {
+  left: -3%;
+  width: 106%;
+  animation: inv-wave-drift 8s ease-in-out infinite alternate;
+}
+.inv:is([data-template="pantai"], [data-template="satin"]) .inv-section .inv-wave {
+  left: -3%;
+  width: 106%;
+  animation: inv-wave-drift 9s ease-in-out infinite alternate;
+}
+.inv .or-lt {
+  transform-origin: 50% 0;
+  animation: inv-swing 4.5s ease-in-out infinite alternate;
+}
+.inv .or-lt.r {
+  animation-duration: 5.4s;
+  animation-delay: -2s;
+}
+.inv .or-xi {
+  animation: inv-glint 3.5s ease-in-out infinite alternate;
+}
+.inv .gx-moon,
+.inv .rt-sun {
+  animation: inv-breathe 6s ease-in-out infinite alternate;
+}
+.inv .gx-const {
+  animation: inv-glint 4.5s ease-in-out infinite alternate;
+}
+.inv :is(.mt-pine, .tp-leaf, .tp-mons, .fr-fern, .ru-wf, .sk-br, .ws-branch, .rb-pm, .rb-palm, .env-fl, .lace-bow, .plaque .pl) {
+  transform-origin: 50% 100%;
+  animation: inv-sway 6.5s ease-in-out infinite alternate;
+}
+.inv :is(.tp-mons, .sk-br) {
+  transform-origin: 50% 0;
+}
+.inv :is(.mt-pine.r, .tp-leaf.r, .tp-mons.r, .fr-fern.r, .ru-wf.r, .sk-br.r, .plaque .pl.br) {
+  animation-duration: 8s;
+  animation-delay: -3s;
+}
+.inv :is(.tp-hib, .fr-mush, .sea-shell, .sea-star, .kr-mark) {
+  animation: inv-bob 4.5s ease-in-out infinite alternate;
+}
+.inv .ws-hanko {
+  animation: inv-stamp 0.8s 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+.inv .mihrab-cres {
+  animation: inv-glint 4s ease-in-out infinite alternate;
+}
+.inv .bk-medal {
+  animation: inv-spin 70s linear infinite;
+}
+.inv .dk > .inv-sunburst {
+  animation: inv-glint 5s ease-in-out infinite alternate;
+}
+.amb-shoot i {
+  position: absolute;
+  width: 96px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #fff, rgb(255 255 255 / 0));
+  filter: drop-shadow(0 0 4px rgb(255 255 255 / 0.9));
+  rotate: -30deg;
+  opacity: 0;
+  animation: inv-shoot linear infinite;
+}
+/* template yang punya animasi sendiri tetap memakainya */
+.inv[data-template="floral"] .dc {
+  animation: inv-spin 90s linear infinite;
+}
+.inv[data-template="retro"] .dc {
+  animation: inv-spin 40s linear infinite;
+}
+.inv .rt-daisy {
+  animation: inv-spin 40s linear infinite;
+}
+.inv .plaque-seal {
+  animation: none !important;
 }
 
 /* Nama panjang (terutama font tulisan tangan) tidak boleh melebarkan sampul atau kartu pembuka */

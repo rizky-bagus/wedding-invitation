@@ -182,8 +182,12 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
             <input name="venueAddress" defaultValue={inv.venueAddress} />
           </label>
           <label className="span2">
-            Google Maps embed (URL src atau seluruh tag iframe)
-            <input name="mapEmbedUrl" defaultValue={inv.mapEmbedUrl} placeholder="https://www.google.com/maps/embed?pb=..." />
+            Link Google Maps (opsional)
+            <input name="mapEmbedUrl" defaultValue={inv.mapEmbedUrl} placeholder="https://maps.app.goo.gl/... (kosongkan untuk peta otomatis)" />
+            <span className="hint">
+              Peta dan tombol &quot;Buka di Google Maps&quot; dibuat otomatis dari nama dan alamat lokasi, tanpa kode embed. Agar titiknya persis,
+              buka tempatnya di Google Maps, klik Bagikan, lalu tempel linknya di sini. Kode embed lama tetap bisa dipakai.
+            </span>
           </label>
           <label className="span2">
             Kalimat pembuka

@@ -3,11 +3,11 @@
 import { Fragment, useActionState, useEffect, useRef, useState } from "react";
 import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
 import { previewOverrides } from "@/lib/preview";
-import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem, type StoryItem } from "@/lib/util";
+import { calendarMonth, cleanPhone, mapLinks, type GiftAccount, type ScheduleItem, type StoryItem } from "@/lib/util";
 import { localizedText, normLang, tr, type Lang } from "@/lib/i18n";
 import GuestTicket from "./GuestTicket";
 import { Crosshair, DotGrid, Kawung, Rosette, Star8, TemplateDivider } from "./dividers";
-import { Butterflies, CloudShape, Hearts, Skyline, Sparkles } from "./ambient";
+import { Butterflies, CloudShape, Hearts, ShootingStars, Skyline, Sparkles } from "./ambient";
 import { BananaLeaf, Enso, Hanko, Hibiscus, InkBranch, Monstera, PostStamp, Postmark, StringLights, Wildflowers } from "./motifs2";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
 import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, Vinyl } from "./flora";
@@ -327,9 +327,8 @@ export default function Invitation({
     .join("&");
 
   const initials = `${inv.groomName.charAt(0)} & ${inv.brideName.charAt(0)}`.toUpperCase();
-  const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    [inv.venueName, inv.venueAddress].filter(Boolean).join(" "),
-  )}`;
+  // Peta: dari link Google Maps yang ditempel, atau otomatis dari nama dan alamat lokasi (tanpa kode embed).
+  const map = mapLinks(inv.mapEmbedUrl, inv.venueName, inv.venueAddress);
   const cssUrl = (src: string) => `url("${src.replace(/["\\\n]/g, encodeURIComponent)}")`;
   const archSrc = inv.gallery[0] || inv.coverPhoto;
   const archBg = archSrc ? cssUrl(archSrc) : undefined;
@@ -408,6 +407,8 @@ export default function Invitation({
     <Fireflies count={14} />
   ) : ["envelope", "kraft", "retro"].includes(tpl) ? (
     <Hearts count={8} />
+  ) : galaksi ? (
+    <ShootingStars />
   ) : null);
   /** Bunga khas template baru: calla lily (satin), dahlia (kraft), garis lavender (lavender). */
   const cluster = (pos: string) =>
@@ -514,6 +515,7 @@ export default function Invitation({
       <section className="inv-cover">
         {(["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "boho", "poster"].includes(tpl)) && <Sparkles />}
         {(["envelope", "kraft", "retro"].includes(tpl)) && <Hearts />}
+        {galaksi && <ShootingStars />}
         {(["floral", "botanical", "lavender", "tropis"].includes(tpl)) && <Butterflies />}
         {(["gunung", "pantai"].includes(tpl)) && <Skyline />}
         <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && !washi && !tropis && !koran && !rustic && coverBg ? { backgroundImage: coverBg } : undefined} />
@@ -980,16 +982,16 @@ export default function Invitation({
                 <a className="inv-btn" href={calendarUrl(inv, t)} target="_blank" rel="noreferrer">
                   {t.addCalendar}
                 </a>
-                {(inv.venueName || inv.venueAddress) && (
-                  <a className="inv-btn ghost" href={mapsLink} target="_blank" rel="noreferrer">
+                {map.openUrl && (
+                  <a className="inv-btn ghost" href={map.openUrl} target="_blank" rel="noreferrer">
                     {t.openMaps}
                   </a>
                 )}
               </div>
-              {inv.mapEmbedUrl && (
+              {map.embedSrc && (
                 <iframe
                   className="inv-map"
-                  src={inv.mapEmbedUrl}
+                  src={map.embedSrc}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title={t.mapTitle}

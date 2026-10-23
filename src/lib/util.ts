@@ -235,6 +235,50 @@ export function extractMapSrc(input: string): string {
   return (match ? match[1] : input).trim();
 }
 
+const MAPS_HOSTS = ["google.com", "www.google.com", "maps.google.com", "maps.app.goo.gl", "goo.gl"];
+
+/** Parse URL dengan aman; hanya https yang diterima. */
+function safeUrl(input: string): URL | null {
+  try {
+    const u = new URL(input);
+    return u.protocol === "https:" ? u : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Peta lokasi tanpa kode embed. Kolom peta boleh berisi: kosong, kode embed Google (sudah diekstrak ke URL),
+ * atau link Google Maps biasa (termasuk link pendek dari tombol Bagikan). Hasilnya:
+ * - embedSrc: sumber iframe yang aman (embed resmi, atau peta bersemat tanpa kunci dari koordinat/nama tempat/alamat)
+ * - openUrl: link yang dibuka tombol "Buka di Google Maps"
+ */
+export function mapLinks(field: string, venueName: string, venueAddress: string): { embedSrc: string; openUrl: string } {
+  const query = [venueName, venueAddress].filter(Boolean).join(" ").trim();
+  const keyless = (q: string) => `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=16&output=embed`;
+  const search = (q: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+
+  const url = safeUrl(field.trim());
+  const google = url && MAPS_HOSTS.includes(url.hostname) ? url : null;
+
+  // Embed resmi dari Google: dipakai apa adanya untuk iframe.
+  if (google && google.hostname.endsWith("google.com") && google.pathname.startsWith("/maps/embed")) {
+    return { embedSrc: google.toString(), openUrl: query ? search(query) : "" };
+  }
+
+  if (google) {
+    // Cari titik paling presisi yang bisa dibaca dari link: koordinat, parameter q, atau nama tempat.
+    const href = decodeURIComponent(google.toString());
+    const coords = href.match(/@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/) ?? href.match(/!3d(-?\d{1,3}\.\d+)!4d(-?\d{1,3}\.\d+)/);
+    const q = google.searchParams.get("q") ?? google.searchParams.get("query");
+    const place = google.pathname.match(/\/maps\/place\/([^/@]+)/)?.[1]?.replace(/\+/g, " ");
+    const target = coords ? `${coords[1]},${coords[2]}` : q || place || query;
+    return { embedSrc: target ? keyless(target) : "", openUrl: google.toString() };
+  }
+
+  return { embedSrc: query ? keyless(query) : "", openUrl: query ? search(query) : "" };
+}
+
 export function parseGallery(json: string): string[] {
   try {
     const arr = JSON.parse(json);

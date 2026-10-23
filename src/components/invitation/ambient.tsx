@@ -73,6 +73,25 @@ export function Butterflies({ count = 3 }: { count?: number }) {
   );
 }
 
+/** Bintang jatuh yang melintas sesekali. */
+export function ShootingStars({ count = 3 }: { count?: number }) {
+  return (
+    <div className="amb amb-shoot" aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => (
+        <i
+          key={i}
+          style={{
+            top: `${f(2 + rnd(i, 1) * 40)}%`,
+            left: `${f(35 + rnd(i, 2) * 60)}%`,
+            animationDelay: `${f(rnd(i, 3) * 12)}s`,
+            animationDuration: `${f(9 + rnd(i, 4) * 7)}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 /** Hati kecil yang naik pelan sambil bergoyang. */
 export function Hearts({ count = 9 }: { count?: number }) {
   return (
