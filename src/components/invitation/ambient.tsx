@@ -73,11 +73,47 @@ export function Butterflies({ count = 3 }: { count?: number }) {
   );
 }
 
+/** Hati kecil yang naik pelan sambil bergoyang. */
+export function Hearts({ count = 9 }: { count?: number }) {
+  return (
+    <div className="amb amb-hearts" aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => (
+        <svg
+          key={i}
+          className="heart"
+          viewBox="0 0 24 22"
+          style={
+            {
+              left: `${f(rnd(i, 1) * 96)}%`,
+              width: f(10 + rnd(i, 2) * 12),
+              animationDuration: `${f(12 + rnd(i, 3) * 10)}s`,
+              animationDelay: `-${f(rnd(i, 4) * 20)}s`,
+              "--sway": `${Math.round((rnd(i, 5) - 0.5) * 60)}px`,
+            } as React.CSSProperties
+          }
+        >
+          <path d="M12 21C2 13 1 7 5 4c3-2 6 0 7 3 1-3 4-5 7-3 4 3 3 9-7 17z" fill="currentColor" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+/** Awan sebagai hiasan sudut kartu. */
+export function CloudShape({ className = "" }: { className?: string }) {
+  return (
+    <svg className={`inv-art ${className}`} viewBox="0 0 120 50" aria-hidden="true">
+      <path d="M20 42a14 14 0 0 1 4-27a20 20 0 0 1 38-4a16 16 0 0 1 28 10a13 13 0 0 1 10 21z" style={{ fill: "color-mix(in srgb, var(--primary) 18%, #fff)" }} opacity="0.85" />
+      <path d="M34 34a8 8 0 0 1 10-8M70 30a6 6 0 0 1 8-5" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+    </svg>
+  );
+}
+
 /** Awan yang berarak dan burung yang terbang melintas. */
-export function Skyline({ birds = true }: { birds?: boolean }) {
+export function Skyline({ birds = true, clouds = true }: { birds?: boolean; clouds?: boolean }) {
   return (
     <div className="amb" aria-hidden="true">
-      {[0, 1, 2].map((i) => (
+      {clouds && [0, 1, 2].map((i) => (
         <svg
           key={`c${i}`}
           className="cloud"

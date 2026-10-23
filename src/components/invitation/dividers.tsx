@@ -171,6 +171,55 @@ export function TemplateDivider({ tpl, gold = false }: { tpl: string; gold?: boo
   );
 }
 
+/** Bintang segi delapan geometris (Islami): dua persegi bersilang dan cincin dalam. */
+export function Star8({ className = "" }: { className?: string }) {
+  return (
+    <svg className={`inv-art gl ${className}`} viewBox="0 0 60 60" aria-hidden="true">
+      <g {...S} strokeWidth="1.3">
+        <rect x="12" y="12" width="36" height="36" />
+        <rect x="12" y="12" width="36" height="36" transform="rotate(45 30 30)" />
+        <circle cx="30" cy="30" r="9" />
+        <circle cx="30" cy="30" r="3" fill="currentColor" />
+      </g>
+    </svg>
+  );
+}
+
+/** Motif kawung: empat kelopak lonjong yang bertemu di tengah (Batik). */
+export function Kawung({ className = "" }: { className?: string }) {
+  return (
+    <svg className={`inv-art gl ${className}`} viewBox="0 0 60 60" aria-hidden="true">
+      <g {...S} strokeWidth="1.3">
+        {[0, 90, 180, 270].map((a) => (
+          <ellipse key={a} cx="30" cy="16" rx="7" ry="13" transform={`rotate(${a} 30 30)`} />
+        ))}
+        <circle cx="30" cy="30" r="3.4" fill="currentColor" />
+      </g>
+      <g fill="currentColor" opacity="0.7">
+        {[0, 90, 180, 270].map((a) => (
+          <circle key={a} cx="30" cy="4" r="1.5" transform={`rotate(${a} 30 30)`} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+/** Rosette renda: cincin kelopak dan lubang bundar (Renda). */
+export function Rosette({ className = "" }: { className?: string }) {
+  return (
+    <svg className={`inv-art gl ${className}`} viewBox="0 0 60 60" aria-hidden="true">
+      <g {...S} strokeWidth="1.2">
+        <circle cx="30" cy="30" r="26" />
+        <circle cx="30" cy="30" r="19" strokeDasharray="1.5 3.5" />
+        <circle cx="30" cy="30" r="6" />
+        {Array.from({ length: 8 }, (_, i) => (
+          <ellipse key={i} cx="30" cy="17" rx="3.2" ry="6.2" transform={`rotate(${i * 45} 30 30)`} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
 /** Tanda silang kecil untuk sudut kartu (modern). */
 export function Crosshair({ className = "" }: { className?: string }) {
   return (

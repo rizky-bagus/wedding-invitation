@@ -1,13 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { Fragment, useActionState, useEffect, useRef, useState } from "react";
 import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
 import { previewOverrides } from "@/lib/preview";
 import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem, type StoryItem } from "@/lib/util";
 import { localizedText, normLang, tr, type Lang } from "@/lib/i18n";
 import GuestTicket from "./GuestTicket";
-import { Crosshair, DotGrid, TemplateDivider } from "./dividers";
-import { Butterflies, Skyline, Sparkles } from "./ambient";
+import { Crosshair, DotGrid, Kawung, Rosette, Star8, TemplateDivider } from "./dividers";
+import { Butterflies, CloudShape, Hearts, Skyline, Sparkles } from "./ambient";
 import { BananaLeaf, Enso, Hanko, Hibiscus, InkBranch, Monstera, PostStamp, Postmark, StringLights, Wildflowers } from "./motifs2";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
 import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, Vinyl } from "./flora";
@@ -390,7 +390,25 @@ export default function Invitation({
       <Crosshair className="xh bl" />
       <Crosshair className="xh br" />
     </>
+  ) : rustic ? (
+    <StringLights className="sec-lights" />
   ) : null;
+  /** Hiasan yang melayang di seluruh halaman setelah undangan dibuka (di atas konten, tidak bisa diklik). */
+  const fixedAmbient = (["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "poster", "boho"].includes(tpl) ? (
+    <Sparkles count={10} />
+  ) : sakura ? (
+    <PetalFall count={12} />
+  ) : tpl === "floral" ? (
+    <Petals count={10} />
+  ) : ["botanical", "lavender", "tropis"].includes(tpl) ? (
+    <Butterflies count={2} />
+  ) : ["gunung", "pantai"].includes(tpl) ? (
+    <Skyline clouds={false} />
+  ) : rustic ? (
+    <Fireflies count={14} />
+  ) : ["envelope", "kraft", "retro"].includes(tpl) ? (
+    <Hearts count={8} />
+  ) : null);
   /** Bunga khas template baru: calla lily (satin), dahlia (kraft), garis lavender (lavender). */
   const cluster = (pos: string) =>
     satin ? (
@@ -404,30 +422,47 @@ export default function Invitation({
     ) : pantai ? (
       pos === "tl" || pos === "br" ? <Starfish className={`dc ${pos}`} /> : <Shell className={`dc ${pos}`} />
     ) : oriental ? (
-      pos === "tl" || pos === "tr" ? <Lantern className={`dc ${pos}`} /> : null // lampion menggantung dari atas
+      pos === "tl" || pos === "tr" ? <Lantern className={`dc ${pos}`} /> : <Sparkle className={`dc ${pos}`} /> // lampion menggantung dari atas
     ) : galaksi ? (
       pos === "tr" || pos === "bl" ? <Constellation className={`dc ${pos}`} /> : <Sparkle className={`dc ${pos}`} />
     ) : gunung ? (
-      pos === "bl" || pos === "br" ? <Pines className={`dc ${pos}`} /> : null // pinus tumbuh dari bawah
+      pos === "bl" || pos === "br" ? <Pines className={`dc ${pos}`} /> : <CloudShape className={`dc ${pos}`} /> // pinus tumbuh dari bawah, awan di atas
     ) : sakura ? (
-      pos === "tl" || pos === "tr" ? <BlossomBranch className={`dc ${pos}`} /> : null // ranting menjuntai dari atas
+      <BlossomBranch className={`dc ${pos}`} /> // ranting menjuntai dari atas, dibalik di bawah (CSS)
     ) : retro ? (
-      pos === "tr" || pos === "bl" ? <Daisy70 className={`dc ${pos}`} /> : null
+      <Daisy70 className={`dc ${pos}`} />
     ) : hutan ? (
       pos === "tl" || pos === "tr" ? <Fern className={`dc ${pos}`} /> : <Mushrooms className={`dc ${pos}`} /> // pakis menggantung, jamur tumbuh dari bawah
     ) : washi ? (
-      pos === "tr" ? <InkBranch className={`dc ${pos}`} /> : pos === "bl" ? <Enso className={`dc ${pos}`} /> : null
+      pos === "tr" || pos === "tl" ? <InkBranch className={`dc ${pos}`} /> : <Enso className={`dc ${pos}`} />
+    ) : islami ? (
+      <Star8 className={`dc ${pos}`} />
+    ) : batik ? (
+      <Kawung className={`dc ${pos}`} />
+    ) : renda ? (
+      <Rosette className={`dc ${pos}`} />
+    ) : poster ? (
+      pos === "tl" || pos === "br" ? <Sparkle className={`dc ${pos}`} /> : null
     ) : tropis ? (
       pos === "tl" || pos === "tr" ? <Monstera className={`dc ${pos}`} /> : <Hibiscus className={`dc ${pos}`} />
     ) : rustic ? (
       pos === "bl" || pos === "br" ? <Wildflowers className={`dc ${pos}`} /> : null // bunga liar tumbuh dari bawah
     ) : tpl === "floral" ? (
       <Flower className={`dc ${pos}`} />
-    ) : tpl === "envelope" ? (
+    ) : tpl === "envelope" || koran ? (
       pos === "tr" ? <PostStamp initials={initials} year={year} className={`dc ${pos}`} /> : pos === "bl" ? <Postmark label={t.edition.toUpperCase()} className={`dc ${pos}`} /> : null
     ) : tpl === "panel" ? (
-      pos === "tr" || pos === "bl" ? <DotGrid className={`dc ${pos}`} /> : null
+      <DotGrid className={`dc ${pos}`} />
     ) : null;
+  /** Hiasan di sudut bingkai foto pengantin: ikut motif template, jatuh ke sudut seberang bila sudut itu kosong. */
+  const adorn = (pos: string) => {
+    const opposite = pos === "tl" ? "bl" : pos === "tr" ? "br" : pos;
+    if (botanical) return <FloralCorner className={pos} />;
+    if (deco) return <DecoCorner className={`dc ${pos}`} />;
+    if (tpl === "elegant") return <Corner className={`sc ${pos}`} />;
+    if (tpl === "modern") return <Crosshair className={`xh ${pos}`} />;
+    return cluster(pos) ?? cluster(opposite);
+  };
   const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : cluster(pos));
   /** Hiasan tambahan hanya untuk template baru (botanical sudah cukup ramai). */
   const fcx = (pos: string) => (botanical ? null : cluster(pos));
@@ -477,7 +512,8 @@ export default function Invitation({
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        {(["elegant", "renda", "satin", "deco", "oriental", "islami"].includes(tpl)) && <Sparkles />}
+        {(["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "boho", "poster"].includes(tpl)) && <Sparkles />}
+        {(["envelope", "kraft", "retro"].includes(tpl)) && <Hearts />}
         {(["floral", "botanical", "lavender", "tropis"].includes(tpl)) && <Butterflies />}
         {(["gunung", "pantai"].includes(tpl)) && <Skyline />}
         <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && !washi && !tropis && !koran && !rustic && coverBg ? { backgroundImage: coverBg } : undefined} />
@@ -804,6 +840,8 @@ export default function Invitation({
         </div>
       )}
 
+      {opened && fixedAmbient && <div className="amb-fixed">{fixedAmbient}</div>}
+
       {opened && (
         <main className="inv-main">
           {inv.musicUrl && (
@@ -829,6 +867,7 @@ export default function Invitation({
               </p>
               <div className="ed-arch" style={archBg ? { backgroundImage: archBg } : undefined}>
                 <span className="ed-tab">{t.vows}</span>
+                <span className="ed-crest">{divider}</span>
                 <h2>
                   {inv.groomName} &amp; {inv.brideName}
                 </h2>
@@ -849,23 +888,38 @@ export default function Invitation({
                     ["groom", t.theGroom, inv.groomPhoto, inv.groomName, inv.groomParents],
                   ] as const
                 ).map(([side, label, photo, name, parents], i) => (
-                  <Reveal key={side} className={`ed-person ${side}`} delay={i * 160}>
-                    <span className="ed-vlabel">{label}</span>
-                    <div className="ed-photo">
-                      {photo ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={photo} alt={name} />
-                      ) : (
-                        <div className="inv-mono" aria-hidden="true">
-                          {name.charAt(0).toUpperCase()}
+                  <Fragment key={side}>
+                    {i === 1 && (
+                      <Reveal className="ed-amp">
+                        <span>&amp;</span>
+                      </Reveal>
+                    )}
+                    <Reveal className={`ed-person ${side}`} delay={i * 160}>
+                      <span className="ed-vlabel">{label}</span>
+                      <div className="ed-frame">
+                        <div className="ed-photo">
+                          {photo ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={photo} alt={name} />
+                          ) : (
+                            <div className="inv-mono" aria-hidden="true">
+                              {name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="ed-namecard">
+                            <h2>{name}</h2>
+                            {parents && (
+                              <>
+                                <i className="ed-rule" aria-hidden="true" />
+                                <small>{parents}</small>
+                              </>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      <div className="ed-namecard">
-                        <h2>{name}</h2>
-                        {parents && <small>{parents}</small>}
+                        {adorn(side === "bride" ? "tl" : "tr")}
                       </div>
-                    </div>
-                  </Reveal>
+                    </Reveal>
+                  </Fragment>
                 ))}
               </>
             )}
@@ -1010,6 +1064,7 @@ export default function Invitation({
                     </button>
                   ))}
                 </div>
+                {inv.gallery.length > 1 && <p className="ed-swipe">{t.swipe}</p>}
               </Reveal>
             </section>
           )}
