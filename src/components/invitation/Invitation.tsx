@@ -6,6 +6,8 @@ import { previewOverrides } from "@/lib/preview";
 import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem } from "@/lib/util";
 import { localizedText, normLang, tr, type Lang } from "@/lib/i18n";
 import GuestTicket from "./GuestTicket";
+import { Crosshair, DotGrid, TemplateDivider } from "./dividers";
+import { Butterflies, Skyline, Sparkles } from "./ambient";
 import { BananaLeaf, Enso, Hanko, Hibiscus, InkBranch, Monstera, PostStamp, Postmark, StringLights, Wildflowers } from "./motifs2";
 import { Corner, Divider, Flower, IconCalendar, IconClock, IconNote, IconPin, Petals } from "./ornaments";
 import { Bow, DahliaCluster, LilyCluster, LineSpray, SatinWave, ScallopPlaque, Vinyl } from "./flora";
@@ -358,16 +360,31 @@ export default function Invitation({
   const rustic = tpl === "rustic";
   const gold = renda || batik || islami || deco || oriental; // template beraksen emas: pemisah dan bingkai berwarna emas
   const envelopeLike = tpl === "envelope" || kraft;
-  const divider = gold ? <GoldDivider /> : <Divider />;
+  const divider = <TemplateDivider tpl={tpl} gold={gold} />;
+  const year = inv.dateText.match(/\d{4}/)?.[0] ?? "";
   const torn = botanical || kraft ? <TornEdge /> : null;
   const wave = satin ? <SatinWave /> : pantai ? <OceanWave /> : gunung ? <MountainEdge /> : null;
-  /** Art Deco: empat sudut berundak di setiap kartu. */
+  /** Empat sudut di setiap kartu: berundak (Art Deco), siku berukir (Elegant), tanda silang (Modern). */
   const frame = deco ? (
     <>
       <DecoCorner className="dc tl" />
       <DecoCorner className="dc tr" />
       <DecoCorner className="dc bl" />
       <DecoCorner className="dc br" />
+    </>
+  ) : tpl === "elegant" ? (
+    <>
+      <Corner className="sc tl" />
+      <Corner className="sc tr" />
+      <Corner className="sc bl" />
+      <Corner className="sc br" />
+    </>
+  ) : tpl === "modern" ? (
+    <>
+      <Crosshair className="xh tl" />
+      <Crosshair className="xh tr" />
+      <Crosshair className="xh bl" />
+      <Crosshair className="xh br" />
     </>
   ) : null;
   /** Bunga khas template baru: calla lily (satin), dahlia (kraft), garis lavender (lavender). */
@@ -400,6 +417,12 @@ export default function Invitation({
       pos === "tl" || pos === "tr" ? <Monstera className={`dc ${pos}`} /> : <Hibiscus className={`dc ${pos}`} />
     ) : rustic ? (
       pos === "bl" || pos === "br" ? <Wildflowers className={`dc ${pos}`} /> : null // bunga liar tumbuh dari bawah
+    ) : tpl === "floral" ? (
+      <Flower className={`dc ${pos}`} />
+    ) : tpl === "envelope" ? (
+      pos === "tr" ? <PostStamp initials={initials} year={year} className={`dc ${pos}`} /> : pos === "bl" ? <Postmark label={t.edition.toUpperCase()} className={`dc ${pos}`} /> : null
+    ) : tpl === "panel" ? (
+      pos === "tr" || pos === "bl" ? <DotGrid className={`dc ${pos}`} /> : null
     ) : null;
   const fc = (pos: string) => (botanical ? <FloralCorner className={pos} /> : cluster(pos));
   /** Hiasan tambahan hanya untuk template baru (botanical sudah cukup ramai). */
@@ -450,6 +473,9 @@ export default function Invitation({
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
+        {(["elegant", "renda", "satin", "deco", "oriental", "islami"].includes(tpl)) && <Sparkles />}
+        {(["floral", "botanical", "lavender", "tropis"].includes(tpl)) && <Butterflies />}
+        {(["gunung", "pantai"].includes(tpl)) && <Skyline />}
         <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && !washi && !tropis && !koran && !rustic && coverBg ? { backgroundImage: coverBg } : undefined} />
         {lavender && (
           <>

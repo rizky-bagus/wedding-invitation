@@ -5220,3 +5220,232 @@
 .inv[data-template="rustic"] .inv-footer .inv-divider {
   color: #ffd98a;
 }
+
+/* ================= Hiasan tambahan lintas template ================= */
+/* Lapisan melayang di sampul: serbuk emas, kupu-kupu, awan, burung. */
+.amb {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+@keyframes inv-spark {
+  0%,
+  100% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1) rotate(45deg);
+    opacity: 0.95;
+  }
+}
+.amb-spark i {
+  position: absolute;
+  background: var(--gold, var(--accent));
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--gold, var(--accent)) 70%, transparent));
+  animation: inv-spark ease-in-out infinite;
+}
+@keyframes inv-drift {
+  from {
+    transform: translate(0, 0) rotate(-8deg);
+  }
+  to {
+    transform: translate(var(--bx), var(--by)) rotate(10deg);
+  }
+}
+@keyframes inv-flap {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.3);
+  }
+}
+.amb-bf {
+  z-index: 3; /* kupu-kupu melayang di atas kartu sampul */
+}
+.bf {
+  position: absolute;
+  height: auto;
+  animation: inv-drift ease-in-out infinite alternate;
+}
+.bf .wing {
+  transform-box: fill-box;
+  animation: inv-flap 0.34s ease-in-out infinite alternate;
+}
+.bf .wing.l {
+  transform-origin: 100% 50%;
+}
+.bf .wing.r {
+  transform-origin: 0 50%;
+}
+@keyframes inv-cloud {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100vw + 340px));
+  }
+}
+.cloud {
+  position: absolute;
+  left: -170px;
+  height: auto;
+  animation: inv-cloud linear infinite;
+}
+@keyframes inv-bird {
+  from {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(50vw, -18px);
+  }
+  to {
+    transform: translate(calc(100vw + 120px), 6px);
+  }
+}
+.bird {
+  position: absolute;
+  left: -50px;
+  height: auto;
+  color: rgb(40 50 70 / 0.6);
+  animation: inv-bird linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .amb-spark i {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
+/* Template yang sebelumnya polos: kartu perlu posisi relatif agar hiasan sudut menempel. */
+.inv:is([data-template="elegant"], [data-template="modern"], [data-template="floral"], [data-template="envelope"], [data-template="panel"]) .inv-section {
+  position: relative;
+}
+.inv:is([data-template="elegant"], [data-template="modern"], [data-template="floral"], [data-template="envelope"], [data-template="panel"]) .inv-section .inv-reveal {
+  position: relative;
+  z-index: 1;
+}
+.inv:is([data-template="floral"], [data-template="envelope"], [data-template="panel"]) .inv-section {
+  overflow: hidden;
+}
+
+/* Elegant: siku berukir di empat sudut kartu */
+.inv .sc {
+  position: absolute;
+  z-index: 0;
+  width: 58px;
+  height: auto;
+  color: color-mix(in srgb, var(--primary) 55%, transparent);
+  pointer-events: none;
+}
+.inv .sc.tl {
+  top: 12px;
+  left: 12px;
+}
+.inv .sc.tr {
+  top: 12px;
+  right: 12px;
+  transform: scaleX(-1);
+}
+.inv .sc.bl {
+  bottom: 12px;
+  left: 12px;
+  transform: scaleY(-1);
+}
+.inv .sc.br {
+  bottom: 12px;
+  right: 12px;
+  transform: rotate(180deg);
+}
+
+/* Modern: nama panjang tidak boleh melebarkan sampul melewati layar */
+.inv[data-template="modern"] .inv-cover {
+  grid-template-columns: minmax(0, 1fr);
+}
+.inv[data-template="modern"] .inv-cover h1 .n {
+  overflow-wrap: anywhere;
+}
+
+/* Modern: tanda silang tipis di sudut kartu */
+.inv .xh {
+  width: 14px;
+  height: 14px;
+  color: var(--primary);
+  opacity: 0.6;
+}
+.inv .xh.tl {
+  top: 14px;
+  left: 14px;
+}
+.inv .xh.tr {
+  top: 14px;
+  right: 14px;
+}
+.inv .xh.bl {
+  bottom: 14px;
+  left: 14px;
+}
+.inv .xh.br {
+  bottom: 14px;
+  right: 14px;
+}
+
+/* Floral: bunga besar memudar di sudut kartu, berputar pelan */
+.inv[data-template="floral"] .dc {
+  width: 130px;
+  color: color-mix(in srgb, var(--primary) 60%, #fff);
+  opacity: 0.32;
+  animation: inv-spin 90s linear infinite;
+}
+.inv[data-template="floral"] .dc.tl {
+  top: -46px;
+  left: -46px;
+}
+.inv[data-template="floral"] .dc.tr {
+  top: -46px;
+  right: -46px;
+}
+.inv[data-template="floral"] .dc.bl {
+  bottom: -46px;
+  left: -46px;
+}
+.inv[data-template="floral"] .dc.br {
+  bottom: -46px;
+  right: -46px;
+}
+
+/* Envelope: perangko dan cap pos */
+.inv[data-template="envelope"] .dc.tr {
+  top: 14px;
+  right: 14px;
+  width: 50px;
+  transform: rotate(6deg);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25));
+}
+.inv[data-template="envelope"] .dc.bl {
+  bottom: 10px;
+  left: 10px;
+  width: 108px;
+  opacity: 0.55;
+  transform: rotate(-6deg);
+}
+
+/* Panel: kisi titik di dua sudut */
+.inv[data-template="panel"] .dc {
+  width: 46px;
+  opacity: 0.5;
+}
+.inv[data-template="panel"] .dc.tr {
+  top: 14px;
+  right: 14px;
+  transform: none;
+}
+.inv[data-template="panel"] .dc.bl {
+  bottom: 14px;
+  left: 14px;
+}
