@@ -6,6 +6,7 @@ import {
   cleanAccounts,
   cleanColors,
   cleanSchedule,
+  cleanStory,
   extractMapSrc,
   formatDate,
   formatTime,
@@ -72,6 +73,8 @@ export function previewOverrides(fields: unknown): Partial<InvitationData> {
 
   const schedule = str("schedule");
   if (schedule !== undefined) out.schedule = cleanSchedule(schedule);
+  const story = str("story");
+  if (story !== undefined) out.story = cleanStory(story);
   const dressColors = str("dressColors");
   if (dressColors !== undefined) out.dressColors = cleanColors(dressColors);
   const giftAccounts = str("giftAccounts");

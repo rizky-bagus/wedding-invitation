@@ -6,7 +6,7 @@ export type Column = {
   key: string;
   label: string;
   placeholder?: string;
-  type?: "text" | "time" | "color";
+  type?: "text" | "time" | "color" | "textarea";
   /** Lebar relatif kolom (grid fr). */
   fr?: number;
 };
@@ -65,16 +65,27 @@ export default function RowsField({
           className="rows-row"
           style={{ gridTemplateColumns: `${columns.map((c) => `${c.fr ?? 1}fr`).join(" ")} auto` }}
         >
-          {columns.map((c) => (
-            <input
-              key={c.key}
-              type={c.type ?? "text"}
-              value={row[c.key] ?? ""}
-              placeholder={c.placeholder ?? c.label}
-              aria-label={c.label}
-              onChange={(e) => update(i, c.key, e.target.value)}
-            />
-          ))}
+          {columns.map((c) =>
+            c.type === "textarea" ? (
+              <textarea
+                key={c.key}
+                rows={3}
+                value={row[c.key] ?? ""}
+                placeholder={c.placeholder ?? c.label}
+                aria-label={c.label}
+                onChange={(e) => update(i, c.key, e.target.value)}
+              />
+            ) : (
+              <input
+                key={c.key}
+                type={c.type ?? "text"}
+                value={row[c.key] ?? ""}
+                placeholder={c.placeholder ?? c.label}
+                aria-label={c.label}
+                onChange={(e) => update(i, c.key, e.target.value)}
+              />
+            ),
+          )}
           <button type="button" className="btn small ghost" onClick={() => setRows((rs) => rs.filter((_, idx) => idx !== i))} aria-label="Hapus baris">
             ×
           </button>

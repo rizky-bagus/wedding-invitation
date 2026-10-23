@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { markOpened, submitRsvp, type RsvpState } from "@/app/actions/public";
 import { previewOverrides } from "@/lib/preview";
-import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem } from "@/lib/util";
+import { calendarMonth, cleanPhone, type GiftAccount, type ScheduleItem, type StoryItem } from "@/lib/util";
 import { localizedText, normLang, tr, type Lang } from "@/lib/i18n";
 import GuestTicket from "./GuestTicket";
 import { Crosshair, DotGrid, TemplateDivider } from "./dividers";
@@ -49,6 +49,7 @@ export type InvitationData = {
   gallery: string[];
   musicUrl: string;
   schedule: ScheduleItem[];
+  story: StoryItem[];
   dressCode: string;
   dressColors: string[];
   giftAccounts: GiftAccount[];
@@ -329,6 +330,9 @@ export default function Invitation({
   const mapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     [inv.venueName, inv.venueAddress].filter(Boolean).join(" "),
   )}`;
+  const cssUrl = (src: string) => `url("${src.replace(/["\\\n]/g, encodeURIComponent)}")`;
+  const archSrc = inv.gallery[0] || inv.coverPhoto;
+  const archBg = archSrc ? cssUrl(archSrc) : undefined;
   const coverBg = inv.coverPhoto ? `url("${inv.coverPhoto.replace(/["\\\n]/g, encodeURIComponent)}")` : undefined;
   const waLink = inv.contactPhone
     ? `https://wa.me/${cleanPhone(inv.contactPhone)}?text=${encodeURIComponent(
@@ -820,27 +824,51 @@ export default function Invitation({
               )}
               <p className="inv-eyebrow">{t.invite}</p>
               {divider}
-              <p className="inv-quote">{inv.openingText}</p>
+              <p className="ed-invite">
+                {t.cordially} {inv.groomName} &amp; {inv.brideName}
+              </p>
+              <div className="ed-arch" style={archBg ? { backgroundImage: archBg } : undefined}>
+                <span className="ed-tab">{t.vows}</span>
+                <h2>
+                  {inv.groomName} &amp; {inv.brideName}
+                </h2>
+                <p className="ed-quote">{inv.openingText}</p>
+              </div>
             </Reveal>
           </section>
 
           {/* ---------- Mempelai ---------- */}
-          <section className="inv-section inv-couple">
+          <section className="inv-section inv-couple ed-couple">
             {fcx("tl")}
             {torn}{wave}{frame}
-            <Reveal className="inv-person">
-              <Portrait src={inv.groomPhoto} name={inv.groomName} />
-              <h2>{inv.groomName}</h2>
-              {inv.groomParents && <p>{inv.groomParents}</p>}
-            </Reveal>
-            <Reveal className="inv-amp" delay={120}>
-              <span>&amp;</span>
-            </Reveal>
-            <Reveal className="inv-person" delay={240}>
-              <Portrait src={inv.bridePhoto} name={inv.brideName} />
-              <h2>{inv.brideName}</h2>
-              {inv.brideParents && <p>{inv.brideParents}</p>}
-            </Reveal>
+            {(
+              <>
+                {(
+                  [
+                    ["bride", t.theBride, inv.bridePhoto, inv.brideName, inv.brideParents],
+                    ["groom", t.theGroom, inv.groomPhoto, inv.groomName, inv.groomParents],
+                  ] as const
+                ).map(([side, label, photo, name, parents], i) => (
+                  <Reveal key={side} className={`ed-person ${side}`} delay={i * 160}>
+                    <span className="ed-vlabel">{label}</span>
+                    <div className="ed-photo">
+                      {photo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={photo} alt={name} />
+                      ) : (
+                        <div className="inv-mono" aria-hidden="true">
+                          {name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className="ed-namecard">
+                        <h2>{name}</h2>
+                        {parents && <small>{parents}</small>}
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </>
+            )}
           </section>
 
           {/* ---------- Tanggal: kalender + hitung mundur ---------- */}
@@ -975,13 +1003,36 @@ export default function Invitation({
                 <h2>{t.galleryTitle}</h2>
                 {divider}
                 <div className="inv-grid">
-                  {inv.gallery.map((src) => (
-                    <button key={src} type="button" onClick={() => setLightbox(src)} aria-label={t.zoomPhoto}>
+                  {inv.gallery.map((src, i) => (
+                    <button key={`${i}-${src}`} type="button" onClick={() => setLightbox(src)} aria-label={t.zoomPhoto}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={src} alt="" loading="lazy" />
                     </button>
                   ))}
                 </div>
+              </Reveal>
+            </section>
+          )}
+
+          {/* ---------- Kisah cinta ---------- */}
+          {inv.story.length > 0 && (
+            <section className="inv-section inv-story">
+              {torn}{wave}{frame}
+              <Reveal>
+                <p className="inv-eyebrow">{t.storyEyebrow}</p>
+                <h2>{t.storyTitle}</h2>
+                {divider}
+                <ol className="inv-storylist">
+                  {inv.story.map((s, i) => (
+                    <li key={i}>
+                      <span className="n">{String(i + 1).padStart(2, "0")}</span>
+                      <div>
+                        {s.title && <h3>{s.title}</h3>}
+                        {s.text && <p>{s.text}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
               </Reveal>
             </section>
           )}

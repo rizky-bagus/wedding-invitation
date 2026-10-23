@@ -31,6 +31,7 @@ model Invitation {
   dressColors  String  @default("[]") // JSON: ["#aabbcc", ...]
   giftAccounts String  @default("[]") // JSON: [{bank, number, holder}]
   giftNote     String  @default("")
+  story        String  @default("[]") // JSON: [{title, text}] kisah cinta
   giftQr       String  @default("")   // gambar QR (mis. QRIS) untuk hadiah
   lang         String  @default("id") // bahasa undangan: id | en
   contactPhone String  @default("")   // nomor WhatsApp untuk konfirmasi

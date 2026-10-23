@@ -15,6 +15,7 @@ import {
   cleanAccounts,
   cleanColors,
   cleanSchedule,
+  cleanStory,
   BODY_FONTS,
   HEADING_FONTS,
   TEMPLATES,
@@ -207,6 +208,18 @@ export default async function ManageInvitation({ params }: { params: Promise<{ i
             ]}
             defaultValue={cleanSchedule(inv.schedule)}
             addLabel="Tambah acara"
+          />
+          <RowsField
+            name="story"
+            label="Kisah cinta (opsional)"
+            hint="Tiap bagian punya judul dan cerita singkat, mis. Pertemuan Pertama, Lamaran. Tampil sebagai bagian Kisah Cinta."
+            columns={[
+              { key: "title", label: "Judul", placeholder: "Pertemuan Pertama", fr: 1 },
+              { key: "text", label: "Cerita", placeholder: "Ceritakan momennya...", type: "textarea", fr: 3 },
+            ]}
+            defaultValue={cleanStory(inv.story)}
+            addLabel="Tambah bagian cerita"
+            max={8}
           />
           <label className="span2">
             Dress code

@@ -116,6 +116,19 @@ export function cleanSchedule(input: unknown): ScheduleItem[] {
     .slice(0, 20);
 }
 
+export type StoryItem = { title: string; text: string };
+
+/** Kisah cinta: judul dan paragraf; baris kosong dibuang, panjang dan jumlah dibatasi. */
+export function cleanStory(input: unknown): StoryItem[] {
+  return asArray(input)
+    .map((r) => {
+      const o = (r ?? {}) as Record<string, unknown>;
+      return { title: text(o.title, 80), text: text(o.text, 700) };
+    })
+    .filter((r) => r.title || r.text)
+    .slice(0, 8);
+}
+
 export function cleanAccounts(input: unknown): GiftAccount[] {
   return asArray(input)
     .map((r) => {
