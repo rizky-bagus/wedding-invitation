@@ -6315,3 +6315,229 @@
 .inv[data-template="galaksi"] .inv-section .ed-namecard h2 {
   color: #fff;
 }
+
+/* ===== Pola latar halus, tepi bermotif, dan ledakan partikel ===== */
+.inv .inv-section {
+  position: relative;
+}
+/* Pola latar: bentuk ubin SVG dipakai sebagai mask, warnanya dari --accent (ikut tema), sangat tipis */
+.inv .pat {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--accent);
+  opacity: 0.07;
+  -webkit-mask-image: var(--pat, none);
+  mask-image: var(--pat, none);
+  -webkit-mask-size: var(--pat-w, 40px) var(--pat-h, 40px);
+  mask-size: var(--pat-w, 40px) var(--pat-h, 40px);
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+.inv[data-template="poster"] .pat {
+  display: none;
+}
+/* Tepi bermotif di dasar kartu */
+.inv .edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--accent);
+  opacity: 0.34;
+  -webkit-mask-image: var(--edge, none);
+  mask-image: var(--edge, none);
+  -webkit-mask-size: var(--edge-w, 24px) 100%;
+  mask-size: var(--edge-w, 24px) 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+/* -- pola: ubin per template -- */
+.inv[data-template="elegant"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M20 2L38 20L20 38L2 20Z' fill='none' stroke='black' stroke-width='1'/%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3C/svg%3E");
+}
+.inv:is([data-template="modern"], [data-template="panel"]) {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18'%3E%3Ccircle cx='9' cy='9' r='1.2'/%3E%3C/svg%3E");
+  --pat-w: 18px;
+  --pat-h: 18px;
+}
+.inv:is([data-template="floral"], [data-template="sakura"]) {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Ccircle cx='22' cy='14' r='3.6'/%3E%3Ccircle cx='29' cy='19' r='3.6'/%3E%3Ccircle cx='26' cy='28' r='3.6'/%3E%3Ccircle cx='18' cy='28' r='3.6'/%3E%3Ccircle cx='15' cy='19' r='3.6'/%3E%3C/svg%3E");
+  --pat-w: 44px;
+  --pat-h: 44px;
+}
+.inv:is([data-template="botanical"], [data-template="hutan"], [data-template="tropis"], [data-template="lavender"]) {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M8 34C8 20 18 10 34 10C34 26 24 34 8 34Z'/%3E%3C/svg%3E");
+  --pat-w: 44px;
+  --pat-h: 44px;
+}
+.inv:is([data-template="satin"], [data-template="envelope"]) {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M0 14L14 0' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+  --pat-w: 14px;
+  --pat-h: 14px;
+}
+.inv[data-template="kraft"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Cpath d='M13 21C5 14 5 8 9 6.2C11.4 5.2 13 7 13 8.6C13 7 14.6 5.2 17 6.2C21 8 21 14 13 21Z'/%3E%3C/svg%3E");
+  --pat-w: 26px;
+  --pat-h: 26px;
+}
+.inv[data-template="renda"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='8' fill='none' stroke='black'/%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='0' cy='0' r='2'/%3E%3Ccircle cx='40' cy='0' r='2'/%3E%3Ccircle cx='0' cy='40' r='2'/%3E%3Ccircle cx='40' cy='40' r='2'/%3E%3C/svg%3E");
+}
+.inv[data-template="batik"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Cellipse cx='20' cy='10' rx='6' ry='10'/%3E%3Cellipse cx='20' cy='30' rx='6' ry='10'/%3E%3Cellipse cx='10' cy='20' rx='10' ry='6'/%3E%3Cellipse cx='30' cy='20' rx='10' ry='6'/%3E%3C/g%3E%3C/svg%3E");
+}
+.inv[data-template="islami"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Crect x='10' y='10' width='24' height='24'/%3E%3Crect x='10' y='10' width='24' height='24' transform='rotate(45 22 22)'/%3E%3C/g%3E%3C/svg%3E");
+  --pat-w: 44px;
+  --pat-h: 44px;
+}
+.inv[data-template="boho"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='40'%3E%3Cpath d='M4 40V24A9 9 0 0 1 22 24V40' fill='none' stroke='black' stroke-width='1.3'/%3E%3C/svg%3E");
+  --pat-w: 26px;
+  --pat-h: 40px;
+}
+.inv[data-template="deco"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='20'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Cpath d='M0 20A20 20 0 0 1 40 20'/%3E%3Cpath d='M8 20A12 12 0 0 1 32 20'/%3E%3C/g%3E%3C/svg%3E");
+  --pat-h: 20px;
+}
+.inv:is([data-template="pantai"], [data-template="retro"]) {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='16'%3E%3Cpath d='M0 9Q10 1 20 9T40 9' fill='none' stroke='black' stroke-width='1.2'/%3E%3C/svg%3E");
+  --pat-h: 16px;
+}
+.inv[data-template="oriental"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='none' stroke='black' stroke-width='1'%3E%3Ccircle cx='20' cy='20' r='16'/%3E%3Ccircle cx='20' cy='20' r='10'/%3E%3Ccircle cx='20' cy='20' r='4'/%3E%3C/g%3E%3C/svg%3E");
+}
+.inv[data-template="galaksi"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M12 4L13.6 10.4L20 12L13.6 13.6L12 20L10.4 13.6L4 12L10.4 10.4Z'/%3E%3Ccircle cx='36' cy='34' r='1.4'/%3E%3Ccircle cx='30' cy='10' r='1'/%3E%3C/svg%3E");
+  --pat-w: 48px;
+  --pat-h: 48px;
+}
+.inv[data-template="gunung"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='32'%3E%3Cpath d='M8 26L20 6L32 26Z' fill='none' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+  --pat-h: 32px;
+}
+.inv[data-template="washi"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 7Q10 4 20 7T40 7M0 24Q12 27 24 24T40 24' fill='none' stroke='black' stroke-width='0.7'/%3E%3C/svg%3E");
+}
+.inv[data-template="koran"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='24'%3E%3Cpath d='M0 6H40M0 12H40M0 18H26' stroke='black' stroke-width='0.8'/%3E%3C/svg%3E");
+  --pat-h: 24px;
+}
+.inv[data-template="rustic"] {
+  --pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='40'%3E%3Cpath d='M0 20H60M30 0V20M10 20V40M50 20V40' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+  --pat-w: 60px;
+}
+/* -- tepi: ubin per kelompok template -- */
+.inv:is([data-template="elegant"], [data-template="floral"], [data-template="satin"], [data-template="lavender"], [data-template="renda"], [data-template="sakura"], [data-template="botanical"], [data-template="tropis"]) {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 0H24V6C24 10 18 12 12 12C6 12 0 10 0 6Z'/%3E%3C/svg%3E");
+  --edge-w: 24px;
+}
+.inv:is([data-template="batik"], [data-template="oriental"], [data-template="deco"]) {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpath d='M0 0H20L10 10Z'/%3E%3C/svg%3E");
+  --edge-w: 20px;
+}
+.inv:is([data-template="pantai"], [data-template="retro"]) {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='12'%3E%3Cpath d='M0 0H40V5Q30 12 20 5T0 5Z'/%3E%3C/svg%3E");
+  --edge-w: 40px;
+}
+.inv:is([data-template="modern"], [data-template="panel"], [data-template="poster"]) {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='1.8'/%3E%3C/svg%3E");
+  --edge-w: 12px;
+}
+.inv:is([data-template="kraft"], [data-template="rustic"], [data-template="envelope"], [data-template="koran"], [data-template="washi"]) {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='12'%3E%3Crect x='2' y='5' width='8' height='2' rx='1'/%3E%3C/svg%3E");
+  --edge-w: 14px;
+}
+.inv:is([data-template="islami"], [data-template="boho"]) {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M1 12V8A8 8 0 0 1 17 8V12Z'/%3E%3C/svg%3E");
+  --edge-w: 18px;
+}
+.inv[data-template="galaksi"] {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12'%3E%3Cpath d='M8 0L14 6L8 12L2 6Z'/%3E%3C/svg%3E");
+  --edge-w: 16px;
+}
+.inv:is([data-template="gunung"], [data-template="hutan"]) {
+  --edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12'%3E%3Cpath d='M0 12L8 2L16 12Z'/%3E%3C/svg%3E");
+  --edge-w: 16px;
+}
+/* -- ledakan partikel saat disentuh -- */
+@keyframes inv-burst {
+  0% {
+    translate: 0 0;
+    scale: 0.3;
+    opacity: 1;
+  }
+  100% {
+    translate: var(--dx) var(--dy);
+    scale: var(--s);
+    opacity: 0;
+  }
+}
+.tap-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+.burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.burst i {
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  rotate: var(--rot);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 21C2 13 1 7 5 4c3-2 6 0 7 3 1-3 4-5 7-3 4 3 3 9-7 17z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 21C2 13 1 7 5 4c3-2 6 0 7 3 1-3 4-5 7-3 4 3 3 9-7 17z'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: inv-burst 0.9s cubic-bezier(0.15, 0.7, 0.3, 1) both;
+}
+/* kelopak untuk tema bunga */
+.inv:is([data-template="sakura"], [data-template="floral"], [data-template="botanical"], [data-template="lavender"]) .burst i {
+  -webkit-mask-image: none;
+  mask-image: none;
+  border-radius: 80% 0 80% 0;
+  background: linear-gradient(135deg, #fff, var(--accent));
+}
+/* bintang untuk tema langit dan emas */
+.inv:is([data-template="galaksi"], [data-template="deco"], [data-template="oriental"], [data-template="islami"], [data-template="renda"], [data-template="batik"], [data-template="satin"], [data-template="elegant"]) .burst i {
+  -webkit-mask-image: none;
+  mask-image: none;
+  background: var(--gold, var(--accent));
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+/* daun untuk tema hutan */
+.inv:is([data-template="hutan"], [data-template="tropis"], [data-template="boho"], [data-template="gunung"]) .burst i {
+  -webkit-mask-image: none;
+  mask-image: none;
+  border-radius: 0 100% 0 100%;
+  background: color-mix(in srgb, var(--primary) 80%, #fff);
+}
+/* titik sederhana untuk tema minimalis */
+.inv:is([data-template="modern"], [data-template="panel"], [data-template="poster"], [data-template="washi"], [data-template="koran"]) .burst i {
+  -webkit-mask-image: none;
+  mask-image: none;
+  border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  left: -3px;
+  top: -3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tap-layer {
+    display: none;
+  }
+}

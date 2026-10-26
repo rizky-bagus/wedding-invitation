@@ -287,6 +287,22 @@ export default function Invitation({
   const [lightbox, setLightbox] = useState<string | null>(null);
   const audio = useRef<HTMLAudioElement>(null);
 
+  // Ledakan partikel kecil di titik yang disentuh; bentuknya mengikuti tema (lihat CSS .burst).
+  type Burst = { id: number; x: number; y: number; parts: { dx: number; dy: number; rot: number; s: number }[] };
+  const [bursts, setBursts] = useState<Burst[]>([]);
+  const burstId = useRef(0);
+  const onTap = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("input, textarea, select, iframe, audio")) return;
+    const id = ++burstId.current;
+    const parts = Array.from({ length: 9 }, (_, i) => {
+      const a = (i / 9) * Math.PI * 2 + Math.random() * 0.6;
+      const d = 36 + Math.random() * 44;
+      return { dx: Math.round(Math.cos(a) * d), dy: Math.round(Math.sin(a) * d - 14), rot: Math.round((Math.random() - 0.5) * 220), s: 0.7 + Math.random() * 0.7 };
+    });
+    setBursts((b) => [...b.slice(-5), { id, x: e.clientX, y: e.clientY, parts }]);
+    window.setTimeout(() => setBursts((b) => b.filter((x) => x.id !== id)), 1000);
+  };
+
   const tpl = inv.template;
   const finishOpen = () => {
     setOpened(true);
@@ -368,7 +384,7 @@ export default function Invitation({
   const torn = botanical || kraft ? <TornEdge /> : null;
   const wave = satin ? <SatinWave /> : pantai ? <OceanWave /> : gunung ? <MountainEdge /> : null;
   /** Empat sudut di setiap kartu: berundak (Art Deco), siku berukir (Elegant), tanda silang (Modern). */
-  const frame = deco ? (
+  const corners = deco ? (
     <>
       <DecoCorner className="dc tl" />
       <DecoCorner className="dc tr" />
@@ -392,6 +408,14 @@ export default function Invitation({
   ) : rustic ? (
     <StringLights className="sec-lights" />
   ) : null;
+  /** Di setiap kartu: pola latar halus khas tema (.pat), sudut (corners), dan tepi bermotif di bawah (.edge). */
+  const frame = (
+    <>
+      <i className="pat" aria-hidden="true" />
+      {corners}
+      <i className="edge" aria-hidden="true" />
+    </>
+  );
   /** Hiasan yang melayang di seluruh halaman setelah undangan dibuka (di atas konten, tidak bisa diklik). */
   const fixedAmbient = (["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "poster", "boho"].includes(tpl) ? (
     <Sparkles count={10} />
@@ -499,7 +523,17 @@ export default function Invitation({
       data-opened={opened}
       data-script={SCRIPT_FONTS.includes(inv.headingFont)}
       style={style}
+      onClick={onTap}
     >
+      <div className="tap-layer" aria-hidden="true">
+        {bursts.map((b) => (
+          <span key={b.id} className="burst" style={{ left: b.x, top: b.y }}>
+            {b.parts.map((p, i) => (
+              <i key={i} style={{ "--dx": `${p.dx}px`, "--dy": `${p.dy}px`, "--rot": `${p.rot}deg`, "--s": p.s } as React.CSSProperties} />
+            ))}
+          </span>
+        ))}
+      </div>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${fontQuery}&display=swap`} />
       {oriental && (
