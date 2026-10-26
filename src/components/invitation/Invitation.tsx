@@ -6,6 +6,7 @@ import { previewOverrides } from "@/lib/preview";
 import { calendarMonth, cleanPhone, mapLinks, type GiftAccount, type ScheduleItem, type StoryItem } from "@/lib/util";
 import { localizedText, normLang, tr, type Lang } from "@/lib/i18n";
 import GuestTicket from "./GuestTicket";
+import { FiligreeCorner, LaurelWreath } from "./luxe";
 import { Crosshair, DotGrid, Kawung, Rosette, Star8, TemplateDivider } from "./dividers";
 import { Butterflies, CloudShape, Hearts, ShootingStars, Skyline, Sparkles } from "./ambient";
 import { BananaLeaf, Enso, Hanko, Hibiscus, InkBranch, Monstera, PostStamp, Postmark, StringLights, Wildflowers } from "./motifs2";
@@ -377,7 +378,8 @@ export default function Invitation({
   const tropis = tpl === "tropis";
   const koran = tpl === "koran";
   const rustic = tpl === "rustic";
-  const gold = renda || batik || islami || deco || oriental; // template beraksen emas: pemisah dan bingkai berwarna emas
+  const luxe = tpl === "luxe";
+  const gold = renda || batik || islami || deco || oriental || luxe; // template beraksen emas: pemisah dan bingkai berwarna emas
   const envelopeLike = tpl === "envelope" || kraft;
   const divider = <TemplateDivider tpl={tpl} gold={gold} />;
   const year = inv.dateText.match(/\d{4}/)?.[0] ?? "";
@@ -407,6 +409,13 @@ export default function Invitation({
     </>
   ) : rustic ? (
     <StringLights className="sec-lights" />
+  ) : luxe ? (
+    <>
+      <FiligreeCorner className="dc tl" />
+      <FiligreeCorner className="dc tr" />
+      <FiligreeCorner className="dc bl" />
+      <FiligreeCorner className="dc br" />
+    </>
   ) : null;
   /** Di setiap kartu: pola latar halus khas tema (.pat), sudut (corners), dan tepi bermotif di bawah (.edge). */
   const frame = (
@@ -417,7 +426,7 @@ export default function Invitation({
     </>
   );
   /** Hiasan yang melayang di seluruh halaman setelah undangan dibuka (di atas konten, tidak bisa diklik). */
-  const fixedAmbient = (["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "poster", "boho"].includes(tpl) ? (
+  const fixedAmbient = (["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "poster", "boho", "luxe"].includes(tpl) ? (
     <Sparkles count={10} />
   ) : sakura ? (
     <PetalFall count={12} />
@@ -484,6 +493,7 @@ export default function Invitation({
     const opposite = pos === "tl" ? "bl" : pos === "tr" ? "br" : pos;
     if (botanical) return <FloralCorner className={pos} />;
     if (deco) return <DecoCorner className={`dc ${pos}`} />;
+    if (luxe) return <FiligreeCorner className={`dc ${pos}`} />;
     if (tpl === "elegant") return <Corner className={`sc ${pos}`} />;
     if (tpl === "modern") return <Crosshair className={`xh ${pos}`} />;
     return cluster(pos) ?? cluster(opposite);
@@ -547,12 +557,12 @@ export default function Invitation({
 
       {/* ---------- Cover ---------- */}
       <section className="inv-cover">
-        {(["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "boho", "poster"].includes(tpl)) && <Sparkles />}
+        {(["elegant", "renda", "satin", "deco", "oriental", "islami", "batik", "boho", "poster", "luxe"].includes(tpl)) && <Sparkles count={luxe ? 26 : 16} />}
         {(["envelope", "kraft", "retro"].includes(tpl)) && <Hearts />}
         {galaksi && <ShootingStars />}
         {(["floral", "botanical", "lavender", "tropis"].includes(tpl)) && <Butterflies />}
         {(["gunung", "pantai"].includes(tpl)) && <Skyline />}
-        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && !washi && !tropis && !koran && !rustic && coverBg ? { backgroundImage: coverBg } : undefined} />
+        <div className="inv-cover-bg" style={!botanical && !satin && !kraft && !gold && !boho && !pantai && !galaksi && !gunung && !sakura && !retro && !hutan && !washi && !tropis && !koran && !rustic && !luxe && coverBg ? { backgroundImage: coverBg } : undefined} />
         {lavender && (
           <>
             <LineSpray className="cv tl" />
@@ -797,6 +807,22 @@ export default function Invitation({
               </div>
               <Wildflowers className="ru-wf l" />
               <Wildflowers className="ru-wf r" />
+            </div>
+          ) : luxe ? (
+            <div className="lx">
+              <FiligreeCorner className="lx-c tl" />
+              <FiligreeCorner className="lx-c tr" />
+              <FiligreeCorner className="lx-c bl" />
+              <FiligreeCorner className="lx-c br" />
+              <p className="inv-eyebrow">{inv.title}</p>
+              <div className="lx-crest">
+                <LaurelWreath initials={coverBg ? "" : initials.replace(/[\s&]/g, "")} />
+                {coverBg && <i className="lx-photo" style={{ backgroundImage: coverBg }} />}
+              </div>
+              {names}
+              <p className="inv-cover-date">
+                <span>{inv.dateText}</span>
+              </p>
             </div>
           ) : pantai ? (
             <div className="sea">

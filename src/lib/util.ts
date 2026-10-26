@@ -35,6 +35,7 @@ export const TEMPLATES = [
   { id: "tropis", name: "Tropis", desc: "Monstera, daun pisang, hibiscus, hijau segar dan merah muda." },
   { id: "koran", name: "Koran Vintage", desc: "Kertas tua bergaya koran, kepala surat, perangko dan cap pos." },
   { id: "rustic", name: "Rustic", desc: "Papan kayu, lampu gantung hangat, bunga liar, jahitan kain goni." },
+  { id: "luxe", name: "Luxe Gold", desc: "Premium: bingkai emas berlapis, monogram karangan laurel, nama berefek foil emas, latar gelap bermarmer." },
 ] as const;
 
 /** Preset warna siap pakai: [nama, utama, latar, teks]. */
@@ -70,6 +71,9 @@ export const PALETTES = [
   { name: "Tropical Punch", primary: "#1f6b4a", bg: "#f6f3e4", text: "#173a2b", accent: "#f06a8a" },
   { name: "Gazette Sepia", primary: "#3b2f23", bg: "#efe3c8", text: "#2f241a", accent: "#a33b2a" },
   { name: "Rustic Oak", primary: "#7a5230", bg: "#f3e8d6", text: "#3a2a1a", accent: "#c98a3a" },
+  { name: "Midnight Luxe", primary: "#d9b86c", bg: "#0b2420", text: "#f2ead7", accent: "#f1dca0" },
+  { name: "Noir Champagne", primary: "#cdb27b", bg: "#121212", text: "#efe8d8", accent: "#e8d5a8" },
+  { name: "Royal Navy Gold", primary: "#d4af5f", bg: "#0c1630", text: "#f3ead2", accent: "#f0dca0" },
 ] as const;
 
 export const HEADING_FONTS = [

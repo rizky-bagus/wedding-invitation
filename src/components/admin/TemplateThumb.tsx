@@ -29,6 +29,7 @@ const SPECS: Record<string, Spec> = {
   tropis: { bg: "#bfe3c8", card: "#f6f3e4", accent: "#f06a8a", shape: "tropical" },
   koran: { bg: "#d9c79e", card: "#efe3c8", accent: "#a33b2a", shape: "gazette" },
   rustic: { bg: "#8a6a47", card: "#f3e8d6", accent: "#c98a3a", shape: "rustic" },
+  luxe: { bg: "#0b2420", card: "#0f2f2a", accent: "#d9b86c", shape: "luxe" },
 };
 
 /** Tiga garis teks (nama, ampersand, tanggal) dalam warna aksen. */
@@ -294,6 +295,18 @@ export default function TemplateThumb({ id }: { id: string }) {
           ))}
           <rect x="10" y="26" width="40" height="42" rx="3" fill={s.card} stroke="#7a5230" strokeWidth="0.8" strokeDasharray="2 1.6" />
           <Lines x={30} y={34} color="#7a5230" w={20} />
+        </g>
+      )}
+      {s.shape === "luxe" && (
+        <g>
+          <rect x="6" y="7" width="48" height="66" fill={s.card} stroke={s.accent} strokeWidth="1.2" />
+          <rect x="9" y="10" width="42" height="60" fill="none" stroke={s.accent} strokeWidth="0.5" />
+          {[[9, 10], [51, 10], [9, 70], [51, 70]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="1.8" fill={s.accent} />
+          ))}
+          <path d="M30 40C22 40 17 34 17 27M30 40C38 40 43 34 43 27" fill="none" stroke={s.accent} strokeWidth="1.4" strokeLinecap="round" />
+          <circle cx="30" cy="30" r="5" fill="none" stroke={s.accent} strokeWidth="0.8" />
+          <Lines x={30} y={46} color={s.accent} w={22} />
         </g>
       )}
       {dark && null}

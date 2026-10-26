@@ -8,10 +8,24 @@ import { Divider } from "./ornaments";
 const f = (n: number) => Math.round(n * 100) / 100;
 const S = { fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
-type Kind = "flourish" | "blossom" | "leaf" | "stars" | "waves" | "diamonds" | "ink" | "wheat" | "peaks" | "cloud" | "stamp";
+type Kind = "filigree" | "flourish" | "blossom" | "leaf" | "stars" | "waves" | "diamonds" | "ink" | "wheat" | "peaks" | "cloud" | "stamp";
 
 function Shape({ kind }: { kind: Kind }) {
   switch (kind) {
+    case "filigree":
+      return (
+        <>
+          <path d="M0 10H46M154 10H200" {...S} strokeWidth="1" />
+          <path d="M46 10C54 4 62 4 68 9C72 12 78 12 82 8M154 10C146 4 138 4 132 9C128 12 122 12 118 8" {...S} strokeWidth="1.1" />
+          <path d="M100 1.5L108.5 10L100 18.5L91.5 10Z" fill="currentColor" />
+          <path d="M100 5.6L104.4 10L100 14.4L95.6 10Z" style={{ fill: "var(--bg)" }} />
+          <path d="M86 10H92M108 10H114" {...S} strokeWidth="1" />
+          <circle cx="40" cy="10" r="1.8" fill="currentColor" />
+          <circle cx="160" cy="10" r="1.8" fill="currentColor" />
+          <circle cx="82" cy="8" r="1.4" fill="currentColor" />
+          <circle cx="118" cy="8" r="1.4" fill="currentColor" />
+        </>
+      );
     case "flourish":
       return (
         <>
@@ -135,6 +149,7 @@ function Shape({ kind }: { kind: Kind }) {
 }
 
 const KIND: Record<string, Kind> = {
+  luxe: "filigree",
   elegant: "flourish",
   renda: "flourish",
   satin: "flourish",
